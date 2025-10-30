@@ -1,12 +1,17 @@
 package com.saham.hr_system.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "leave_requests")
+@Getter
+@Setter
 public class LeaveRequest {
 
     @Id
@@ -18,10 +23,10 @@ public class LeaveRequest {
     private Employee employee;
 
     @Column(name = "start_date", nullable = false)
-    private String startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private String endDate;
+    private LocalDate endDate;
 
     @Column(name = "request_date", nullable = false)
     private LocalDateTime requestDate;
