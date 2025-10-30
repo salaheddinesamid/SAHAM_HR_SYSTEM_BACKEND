@@ -1,4 +1,4 @@
 package com.saham.hr_system.service;
 
-public interface LeaveRequestService {
+public interface LeaveService {
 }

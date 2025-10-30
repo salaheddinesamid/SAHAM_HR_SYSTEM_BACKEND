@@ -29,7 +29,7 @@ public class LeaveRequest {
     @Column(name= "type_of_leave", nullable = false)
     private String typeOfLeave;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = true)
     @Enumerated(EnumType.STRING)
     private LeaveRequestStatus status;
 }
