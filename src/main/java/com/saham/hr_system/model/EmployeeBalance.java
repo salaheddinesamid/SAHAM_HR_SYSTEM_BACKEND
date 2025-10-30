@@ -16,15 +16,14 @@ public class EmployeeBalance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long balanceId;
 
-    @OneToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
     @Column(name = "year")
     private int year;
 
     @Column(name = "initial_balance")
     private double initialBalance;
+
+    @Column(name = "monthly_balance")
+    private double monthlyBalance;
 
     @Column(name = "accumulated_balance")
     private double accumulatedBalance;

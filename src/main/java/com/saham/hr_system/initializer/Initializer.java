@@ -1,8 +1,10 @@
 package com.saham.hr_system.initializer;
 
 import com.saham.hr_system.model.Employee;
+import com.saham.hr_system.model.EmployeeBalance;
 import com.saham.hr_system.model.Role;
 import com.saham.hr_system.model.RoleName;
+import com.saham.hr_system.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.repository.EmployeeRepository;
 import com.saham.hr_system.repository.RoleRepository;
 import com.saham.hr_system.utils.PasswordGenerator;
@@ -11,6 +13,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -20,6 +23,7 @@ public class Initializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final EmployeeRepository employeeRepository;
     private final PasswordGenerator passwordGenerator;
+    private final EmployeeBalanceRepository employeeBalanceRepository;
 
     private static final List<RoleName> DEFAULT_ROLES = List.of(
             RoleName.EMPLOYEE,
@@ -63,6 +67,20 @@ public class Initializer implements CommandLineRunner {
             manager.setJoinDate(LocalDate.of(2020, 1, 1));
             manager.setManager(null);
             employeeRepository.save(manager);
+
+            // Default Balance:
+            EmployeeBalance employeeBalance = new EmployeeBalance();
+            employeeBalance.setInitialBalance(30);
+            employeeBalance.setMonthlyBalance(2);
+            employeeBalance.setAccumulatedBalance(10);
+            employeeBalance.setYear(2025);
+            employeeBalance.setLastUpdated(LocalDateTime.now());
+            employeeBalance.setUsedBalance(0);
+
+            EmployeeBalance savedBalance = employeeBalanceRepository.save(employeeBalance);
+            manager.setBalance(savedBalance);
+            employeeRepository.save(manager);
+
 
             // Default employee
             Employee employee = new Employee();

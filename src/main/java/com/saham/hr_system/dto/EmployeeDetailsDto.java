@@ -28,6 +28,7 @@ public class EmployeeDetailsDto {
     }
 }
 
+@Data
 class BalanceDetails{
     int year;
     double initialBalance;

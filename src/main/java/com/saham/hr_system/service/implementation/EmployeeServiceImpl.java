@@ -22,6 +22,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow();
 
         // Map the employee entity to EmployeeDetailsDto:
-
-;    }
+        return new EmployeeDetailsDto(
+                employee
+        );
+    }
 }

@@ -1,9 +1,11 @@
 package com.saham.hr_system.controller;
 
+import com.saham.hr_system.dto.EmployeeDetailsDto;
 import com.saham.hr_system.service.implementation.EmployeeServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,7 +19,11 @@ public class EmployeeController {
     }
 
     @GetMapping("get")
-    public ResponseEntity<?> getEmployee(){
+    public ResponseEntity<?> getEmployee(@RequestParam String email){
+        EmployeeDetailsDto employee = employeeService.getEmployeeDetails(email);
 
+        return ResponseEntity
+                .status(200)
+                .body(employee);
     }
 }
