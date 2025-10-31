@@ -1,16 +1,23 @@
 package com.saham.hr_system.service.implementation;
 
+import com.saham.hr_system.dto.LeaveRequestDetailsDto;
 import com.saham.hr_system.dto.LeaveRequestDto;
+import com.saham.hr_system.dto.LeaveRequestResponse;
 import com.saham.hr_system.exception.InsufficientBalanceException;
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.EmployeeBalance;
 import com.saham.hr_system.model.LeaveRequest;
+import com.saham.hr_system.model.LeaveRequestStatus;
 import com.saham.hr_system.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.repository.EmployeeRepository;
 import com.saham.hr_system.repository.LeaveRequestRepository;
 import com.saham.hr_system.service.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LeaveServiceImpl implements LeaveService {
@@ -36,6 +43,8 @@ public class LeaveServiceImpl implements LeaveService {
         // Fetch employee's balance:
         EmployeeBalance balance = employee.getBalance();
 
+        double totalDays = leaveRequestDto.getStartDate().until(leaveRequestDto.getEndDate()).getDays() + 1;
+
         if(balance.getDaysLeft() == 0){
             throw new InsufficientBalanceException();
         }
@@ -46,12 +55,22 @@ public class LeaveServiceImpl implements LeaveService {
         leaveRequest.setEndDate(leaveRequestDto.getEndDate());
         leaveRequest.setEmployee(employee);
         leaveRequest.setTypeOfLeave(leaveRequestDto.getType());
-
+        leaveRequest.setRequestDate(LocalDateTime.now());
+        leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
 
         // save the request:
         leaveRequestRepository.save(leaveRequest);
-        // reduce the balance:
-        balance.setDaysLeft(balance.getDaysLeft() - 1);
-        employeeBalanceRepository.save(balance);
+    }
+
+    @Override
+    public List<LeaveRequestResponse> getAllLeaveRequests(String email) {
+
+        // Fetch the employee from db:
+        Employee employee =
+                employeeRepository.findByEmail(email).orElseThrow();
+
+        List<LeaveRequest> requests = leaveRequestRepository.findAllByEmployee(employee);
+
+        return requests.stream().map(LeaveRequestResponse::new).collect(Collectors.toList());
     }
 }

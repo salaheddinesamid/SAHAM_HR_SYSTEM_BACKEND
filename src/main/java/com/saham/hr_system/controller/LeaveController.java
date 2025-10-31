@@ -24,4 +24,11 @@ public class LeaveController {
                 .status(200)
                 .body("Leave applied successfully");
     }
+
+    @GetMapping("get")
+    public ResponseEntity<?> getLeaves(@RequestParam String email){
+        return ResponseEntity
+                .status(200)
+                .body(leaveService.getAllLeaveRequests(email));
+    }
 }

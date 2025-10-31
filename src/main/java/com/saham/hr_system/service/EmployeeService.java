@@ -10,4 +10,6 @@ public interface EmployeeService {
      * @return the personal and balance details of the employee.
      */
     EmployeeDetailsDto getEmployeeDetails(String email);
+
+
 }
