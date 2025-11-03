@@ -18,14 +18,22 @@ public class EmployeeDetailsDto {
     private LocalDate joinDate;
     private BalanceDetails balanceDetails;
 
+    public EmployeeDetailsDto(Employee employee, EmployeeBalance balance) {
+        this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
+        this.email = employee.getEmail();
+        this.entity = employee.getEntity();
+        this.joinDate = employee.getJoinDate();
+        this.occupation = employee.getMatriculation();
+        this.balanceDetails = new BalanceDetails(balance);
+    }
     public EmployeeDetailsDto(Employee employee) {
         this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
         this.email = employee.getEmail();
         this.entity = employee.getEntity();
         this.joinDate = employee.getJoinDate();
         this.occupation = employee.getMatriculation();
-        this.balanceDetails = new BalanceDetails(employee.getBalance());
     }
+
 }
 
 @Data

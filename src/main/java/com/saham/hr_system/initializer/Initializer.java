@@ -69,17 +69,16 @@ public class Initializer implements CommandLineRunner {
             employeeRepository.save(manager);
 
             // Default Balance:
-            EmployeeBalance employeeBalance = new EmployeeBalance();
-            employeeBalance.setInitialBalance(30);
-            employeeBalance.setMonthlyBalance(2);
-            employeeBalance.setAccumulatedBalance(10);
-            employeeBalance.setYear(2025);
-            employeeBalance.setLastUpdated(LocalDateTime.now());
-            employeeBalance.setUsedBalance(0);
+            EmployeeBalance managerBalance = new EmployeeBalance();
+            managerBalance.setInitialBalance(30);
+            managerBalance.setMonthlyBalance(2);
+            managerBalance.setAccumulatedBalance(10);
+            managerBalance.setYear(2025);
+            managerBalance.setLastUpdated(LocalDateTime.now());
+            managerBalance.setUsedBalance(0);
+            managerBalance.setEmployee(manager);
 
-            EmployeeBalance savedBalance = employeeBalanceRepository.save(employeeBalance);
-            manager.setBalance(savedBalance);
-            employeeRepository.save(manager);
+            employeeBalanceRepository.save(managerBalance);
 
 
             // Default employee
@@ -94,6 +93,17 @@ public class Initializer implements CommandLineRunner {
             employee.setEntity("Saham Group");
             employee.setJoinDate(LocalDate.of(2024, 1, 15));
             employeeRepository.save(employee);
+
+            // Default Balance:
+            EmployeeBalance employeeBalance = new EmployeeBalance();
+            employeeBalance.setInitialBalance(30);
+            employeeBalance.setMonthlyBalance(2);
+            employeeBalance.setAccumulatedBalance(10);
+            employeeBalance.setYear(2025);
+            employeeBalance.setLastUpdated(LocalDateTime.now());
+            employeeBalance.setUsedBalance(0);
+            employeeBalance.setEmployee(employee);
+            employeeBalanceRepository.save(employeeBalance);
         }
     }
 }

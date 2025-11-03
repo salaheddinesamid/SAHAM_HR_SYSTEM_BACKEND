@@ -53,7 +53,4 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "managed_by")
     private Employee manager;
-
-    @OneToOne
-    private EmployeeBalance balance;
 }

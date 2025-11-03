@@ -36,4 +36,9 @@ public class EmployeeBalance {
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
+
+    @OneToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "id")
+    private Employee employee;
+
 }

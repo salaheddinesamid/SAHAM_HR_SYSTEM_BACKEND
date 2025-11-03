@@ -41,7 +41,7 @@ public class LeaveServiceImpl implements LeaveService {
                 employeeRepository.findByEmail(email).orElseThrow();
 
         // Fetch employee's balance:
-        EmployeeBalance balance = employee.getBalance();
+        EmployeeBalance balance = employeeBalanceRepository.findByEmployee(employee).orElseThrow();
 
         double totalDays = leaveRequestDto.getStartDate().until(leaveRequestDto.getEndDate()).getDays() + 1;
 
