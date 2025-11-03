@@ -18,7 +18,7 @@ public class DocumentController {
     }
 
     @PostMapping("request")
-    public ResponseEntity<?> requestDocument(String email, DocumentRequestDto requestDto) {
+    public ResponseEntity<?> requestDocument(@RequestParam String email, @RequestBody DocumentRequestDto requestDto) {
         documentService.requestDocument(email, requestDto);
         return ResponseEntity
                 .status(200)
