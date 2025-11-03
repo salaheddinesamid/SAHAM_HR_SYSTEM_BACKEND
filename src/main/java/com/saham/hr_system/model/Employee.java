@@ -32,7 +32,6 @@ public class Employee {
     @Column(name = "occupation",nullable = true)
     private String occupation;
 
-
     @Column(name = "password")
     private String password;
 

@@ -33,13 +33,26 @@ public class DocumentServiceImpl implements DocumentService {
 
         // Create and save the document request:
         DocumentRequest documentRequest = new DocumentRequest();
-        documentRequest.setDocuments(requestDto.getDocuments());
+        String documents = processDocumentName(requestDto.getDocuments());
+        documentRequest.setDocuments(documents);
         documentRequest.setEmployee(employee);
         documentRequest.setRequestDate(LocalDateTime.now());
         documentRequest.setStatus(DocumentRequestStatus.IN_PROCESS);
 
         // save the request:
         documentRequestRepository.save(documentRequest);
+    }
+
+    private String processDocumentName(List<String> documentName) {
+        StringBuilder names = new StringBuilder();
+        for (String name : documentName) {
+            names.append(name).append(", ");
+        }
+        // Remove the trailing comma and space
+        if (!names.isEmpty()) {
+            names.setLength(names.length() - 2);
+        }
+        return names.toString();
     }
 
     @Override
