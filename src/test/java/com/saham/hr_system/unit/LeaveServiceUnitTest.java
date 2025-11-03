@@ -16,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class LeaveServiceUnitTest {

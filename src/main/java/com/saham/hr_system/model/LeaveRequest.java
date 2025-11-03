@@ -29,7 +29,7 @@ public class LeaveRequest {
     private LocalDate endDate;
 
     @Column(name = "total_days", nullable = true)
-    private double totalDays;
+    private Double totalDays;
 
     @Column(name = "request_date", nullable = false)
     private LocalDateTime requestDate;
@@ -40,4 +40,8 @@ public class LeaveRequest {
     @Column(name = "status", nullable = true)
     @Enumerated(EnumType.STRING)
     private LeaveRequestStatus status;
+
+    public double getTotalDays() {
+        return totalDays != null ? totalDays : 0.0;
+    }
 }
