@@ -54,6 +54,7 @@ public class LeaveServiceImpl implements LeaveService {
         leaveRequest.setStartDate(leaveRequestDto.getStartDate());
         leaveRequest.setEndDate(leaveRequestDto.getEndDate());
         leaveRequest.setEmployee(employee);
+        leaveRequest.setTotalDays(totalDays);
         leaveRequest.setTypeOfLeave(leaveRequestDto.getType());
         leaveRequest.setRequestDate(LocalDateTime.now());
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);

@@ -28,6 +28,9 @@ public class LeaveRequest {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @Column(name = "total_days", nullable = true)
+    private double totalDays;
+
     @Column(name = "request_date", nullable = false)
     private LocalDateTime requestDate;
 

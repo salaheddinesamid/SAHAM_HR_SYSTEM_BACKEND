@@ -11,6 +11,7 @@ public class LeaveRequestResponse {
 
     private LocalDate startDate;
     private LocalDate endDate;
+    private double totalDays;
     private LocalDateTime requestDate;
     private String type;
     private String status;
@@ -23,6 +24,7 @@ public class LeaveRequestResponse {
         this.requestDate = request.getRequestDate();
         this.type = request.getTypeOfLeave();
         this.status = request.getStatus().name();
+        this.totalDays = request.getTotalDays();
     }
 
 }
