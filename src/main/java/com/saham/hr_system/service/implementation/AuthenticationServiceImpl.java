@@ -1,13 +1,13 @@
 package com.saham.hr_system.service.implementation;
 
 import com.saham.hr_system.dto.*;
+import com.saham.hr_system.exception.BadCredentialsException;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.jwt.JwtUtils;
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.Role;
 import com.saham.hr_system.repository.EmployeeRepository;
 import com.saham.hr_system.service.AuthenticationService;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -32,8 +32,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public LoginResponseDto authenticate(LoginRequestDto requestDto) {
         // Fetch employee from db:
-        Employee employee = employeeRepository.findByEmail(requestDto.getEmail()).orElseThrow(UserNotFoundException::new);
+        Employee employee = employeeRepository.findByEmail(requestDto.getEmail()).orElse(null);
 
+        // In case the user does not exist:
+        if(employee == null){
+            throw new UserNotFoundException(requestDto.getEmail());
+        }
         // Verify credentials:
         if(!passwordEncoder.matches(requestDto.getPassword(), employee.getPassword())) {
             throw new BadCredentialsException("Invalid credentials for user: " + requestDto.getEmail());
