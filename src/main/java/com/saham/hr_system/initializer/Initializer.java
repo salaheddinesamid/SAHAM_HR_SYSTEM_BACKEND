@@ -10,6 +10,7 @@ import com.saham.hr_system.repository.RoleRepository;
 import com.saham.hr_system.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ public class Initializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final EmployeeRepository employeeRepository;
     private final PasswordGenerator passwordGenerator;
+    private final PasswordEncoder passwordEncoder;
     private final EmployeeBalanceRepository employeeBalanceRepository;
 
     private static final List<RoleName> DEFAULT_ROLES = List.of(
@@ -104,6 +106,68 @@ public class Initializer implements CommandLineRunner {
             employeeBalance.setUsedBalance(0);
             employeeBalance.setEmployee(employee);
             employeeBalanceRepository.save(employeeBalance);
+        }
+
+        if (employeeRepository.findByEmail("admin@saham.com").isEmpty()) {
+
+            Role employeeRole = roleRepository.findByRoleName(RoleName.ADMIN.name()).orElseThrow();
+            Role managerRole = roleRepository.findByRoleName(RoleName.EMPLOYEE.name()).orElseThrow();
+
+            // Default manager
+            Employee admin = new Employee();
+            admin.setFirstName("Admin");
+            admin.setLastName("Samid");
+            admin.setEmail("admin@saham.com");
+            admin.setMatriculation("EMP001");
+            admin.setPassword(passwordGenerator.generatePassword("Admin", "Samid"));
+            admin.setRoles(List.of(employeeRole, managerRole));
+            admin.setEntity("Saham Group");
+            admin.setJoinDate(LocalDate.of(2020, 1, 1));
+            admin.setManager(null);
+            employeeRepository.save(admin);
+
+            // Default Balance:
+            EmployeeBalance managerBalance = new EmployeeBalance();
+            managerBalance.setInitialBalance(30);
+            managerBalance.setMonthlyBalance(2);
+            managerBalance.setAccumulatedBalance(10);
+            managerBalance.setYear(2025);
+            managerBalance.setLastUpdated(LocalDateTime.now());
+            managerBalance.setUsedBalance(0);
+            managerBalance.setEmployee(admin);
+
+            employeeBalanceRepository.save(managerBalance);
+        }
+
+        if (employeeRepository.findByEmail("test@saham.com").isEmpty()) {
+
+            Role employeeRole = roleRepository.findByRoleName(RoleName.ADMIN.name()).orElseThrow();
+            Role managerRole = roleRepository.findByRoleName(RoleName.EMPLOYEE.name()).orElseThrow();
+
+            // Default manager
+            Employee admin = new Employee();
+            admin.setFirstName("Test");
+            admin.setLastName("Test");
+            admin.setEmail("test@saham.com");
+            admin.setMatriculation("EMP001");
+            admin.setPassword(passwordEncoder.encode("test2025"));
+            admin.setRoles(List.of(employeeRole, managerRole));
+            admin.setEntity("Saham Group");
+            admin.setJoinDate(LocalDate.of(2020, 1, 1));
+            admin.setManager(null);
+            employeeRepository.save(admin);
+
+            // Default Balance:
+            EmployeeBalance managerBalance = new EmployeeBalance();
+            managerBalance.setInitialBalance(30);
+            managerBalance.setMonthlyBalance(2);
+            managerBalance.setAccumulatedBalance(10);
+            managerBalance.setYear(2025);
+            managerBalance.setLastUpdated(LocalDateTime.now());
+            managerBalance.setUsedBalance(0);
+            managerBalance.setEmployee(admin);
+
+            employeeBalanceRepository.save(managerBalance);
         }
     }
 }
