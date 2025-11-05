@@ -4,6 +4,7 @@ import com.saham.hr_system.dto.LeaveRequestDetailsDto;
 import com.saham.hr_system.dto.LeaveRequestDto;
 import com.saham.hr_system.dto.LeaveRequestResponse;
 import com.saham.hr_system.exception.InsufficientBalanceException;
+import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.EmployeeBalance;
 import com.saham.hr_system.model.LeaveRequest;
@@ -38,7 +39,7 @@ public class LeaveServiceImpl implements LeaveService {
 
         // Fetch the employee from db:
         Employee employee =
-                employeeRepository.findByEmail(email).orElseThrow();
+                employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
 
         // Fetch employee's balance:
         EmployeeBalance balance = employeeBalanceRepository.findByEmployee(employee).orElseThrow();

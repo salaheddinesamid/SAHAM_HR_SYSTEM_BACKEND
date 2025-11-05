@@ -2,6 +2,7 @@ package com.saham.hr_system.unit;
 
 import com.saham.hr_system.dto.LeaveRequestDto;
 import com.saham.hr_system.exception.InsufficientBalanceException;
+import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.EmployeeBalance;
 import com.saham.hr_system.repository.EmployeeBalanceRepository;
@@ -31,10 +32,8 @@ public class LeaveServiceUnitTest {
     @Mock
     private EmployeeBalanceRepository employeeBalanceRepository;
 
-    @Mock
-    private Employee employee;
 
-    @Mock
+    private Employee employee;
     private EmployeeBalance employeeBalance;
 
     @InjectMocks
@@ -42,15 +41,17 @@ public class LeaveServiceUnitTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         employee = new Employee();
         employee.setId(1L);
         employee.setFirstName("Ciryane");
         employee.setEmail("Ciryane@saham.com");
 
         employeeBalance = new EmployeeBalance();
+        employeeBalance.setBalanceId(1L);
         employeeBalance.setInitialBalance(30);
         employeeBalance.setYear(2025);
-        employeeBalance.setDaysLeft(2);
+        employeeBalance.setDaysLeft(0);
         employeeBalance.setEmployee(employee);
 
     }
@@ -67,7 +68,7 @@ public class LeaveServiceUnitTest {
         );
 
         when(employeeRepository.findByEmail("test@test.com")).thenReturn(Optional.of(employee));
-        when(employeeBalanceRepository.findById(1L)).thenReturn(Optional.of(balance));
+        when(employeeBalanceRepository.findById(1L)).thenReturn(Optional.of(employeeBalance));
 
         when(leaveRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -77,20 +78,35 @@ public class LeaveServiceUnitTest {
     }
 
     @Test
-    void testRequestLeaveInsufficientBalance(){
-        // Mock Request DTO:
-        LeaveRequestDto requestDto = new LeaveRequestDto(
-                LocalDate.of(2024, 7, 1),
-                LocalDate.of(2024, 7, 5),
-                "ANNUAL",
-                ""
-        );
+    void shouldThrowIfInsufficientBalance() {
 
-        when(employeeRepository.findByEmail("test@test.com")).thenReturn(Optional.of(e));
-        when(employeeBalanceRepository.findById(1L)).thenReturn(Optional.of(b));
+        LeaveRequestDto requestDto = new LeaveRequestDto();
+        requestDto.setStartDate(LocalDate.of(2024, 7, 1));
+        requestDto.setEndDate(LocalDate.of(2024, 7, 5));
+        // Arrange
+        employeeBalance.setDaysLeft(0);
+        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
+        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
 
-        InsufficientBalanceException exception =
-                assertThrows(InsufficientBalanceException.class, () -> leaveService.requestLeave(e.getEmail(), requestDto));
+        // Act & Assert
+        assertThrows(InsufficientBalanceException.class,
+                () -> leaveService.requestLeave("Ciryane@saham.com", requestDto));
+        verify(leaveRequestRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowEmployeeNotFound(){
+        // Mock request:
+        LeaveRequestDto leaveRequestDto = new LeaveRequestDto();
+        leaveRequestDto.setStartDate(LocalDate.of(2024, 7, 1));
+        leaveRequestDto.setEndDate(LocalDate.of(2024, 7, 5));
+
+        // Arrange:
+        when(employeeRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
+
+        // Act:
+        assertThrows(UserNotFoundException.class, ()-> leaveService.requestLeave("test@example.com", leaveRequestDto));
 
     }
 }
