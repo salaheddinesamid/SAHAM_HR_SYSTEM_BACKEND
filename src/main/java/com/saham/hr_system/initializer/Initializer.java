@@ -23,7 +23,6 @@ public class Initializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
     private final EmployeeRepository employeeRepository;
-    private final PasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final EmployeeBalanceRepository employeeBalanceRepository;
 
@@ -52,23 +51,58 @@ public class Initializer implements CommandLineRunner {
     }
 
     private void initializeEmployees() {
-        if (employeeRepository.findByEmail("salaheddine.samid@saham.com").isEmpty()) {
 
-            Role employeeRole = roleRepository.findByRoleName(RoleName.EMPLOYEE.name()).orElseThrow();
-            Role managerRole = roleRepository.findByRoleName(RoleName.MANAGER.name()).orElseThrow();
+        Role employeeRole = roleRepository.findByRoleName(RoleName.EMPLOYEE.name()).orElseThrow();
+        Role managerRole = roleRepository.findByRoleName(RoleName.MANAGER.name()).orElseThrow();
+        Role hrRole = roleRepository.findByRoleName(RoleName.HR.name()).orElseThrow();
+
+        Employee savedManager = null;
+        Employee savedEmployee = null;
+        Employee savedHR = null;
+
+        // Manager
+
+        if (employeeRepository.findByEmail("Ciryane@saham.com").isEmpty()) {
 
             // Default manager
             Employee manager = new Employee();
+            manager.setFirstName("Ciryane");
+            manager.setLastName("El Khiati");
+            manager.setEmail("Ciryane@saham.com");
+            manager.setMatriculation("SAHAMEMP006");
+            manager.setPassword(passwordEncoder.encode("cyriane2025"));
+            manager.setRoles(List.of(employeeRole, managerRole, hrRole));
+            manager.setEntity("Saham Horiwzon");
+            manager.setJoinDate(LocalDate.of(2017, 7, 1));
+            manager.setManager(null);
+            savedManager = employeeRepository.save(manager);
+
+            // Default Balance:
+            EmployeeBalance managerBalance = new EmployeeBalance();
+            managerBalance.setInitialBalance(30);
+            managerBalance.setMonthlyBalance(2);
+            managerBalance.setAccumulatedBalance(10);
+            managerBalance.setYear(2025);
+            managerBalance.setLastUpdated(LocalDateTime.now());
+            managerBalance.setUsedBalance(0);
+            managerBalance.setEmployee(savedManager);
+
+            employeeBalanceRepository.save(managerBalance);
+        }
+        if (employeeRepository.findByEmail("samid@saham.com").isEmpty()) {
+
+            // Default employee
+            Employee manager = new Employee();
             manager.setFirstName("Salaheddine");
             manager.setLastName("Samid");
-            manager.setEmail("salaheddine.samid@saham.com");
-            manager.setMatriculation("EMP001");
-            manager.setPassword(passwordGenerator.generatePassword(manager.getFirstName(), manager.getEmail()));
-            manager.setRoles(List.of(employeeRole, managerRole));
+            manager.setEmail("samid@saham.com");
+            manager.setMatriculation("SAHAMEMP001");
+            manager.setPassword(passwordEncoder.encode("salaheddine2025"));
+            manager.setRoles(List.of(employeeRole));
             manager.setEntity("Saham Group");
-            manager.setJoinDate(LocalDate.of(2020, 1, 1));
-            manager.setManager(null);
-            employeeRepository.save(manager);
+            manager.setJoinDate(LocalDate.of(2025, 11, 1));
+            manager.setManager(savedManager);
+            savedEmployee = employeeRepository.save(manager);
 
             // Default Balance:
             EmployeeBalance managerBalance = new EmployeeBalance();
@@ -81,50 +115,24 @@ public class Initializer implements CommandLineRunner {
             managerBalance.setEmployee(manager);
 
             employeeBalanceRepository.save(managerBalance);
-
-
-            // Default employee
-            Employee employee = new Employee();
-            employee.setFirstName("John");
-            employee.setLastName("Doe");
-            employee.setEmail("john.doe@saham.com");
-            employee.setMatriculation("EMP002");
-            employee.setPassword(passwordGenerator.generatePassword(employee.getFirstName(), employee.getEmail()));
-            employee.setRoles(List.of(employeeRole));
-            employee.setManager(manager);
-            employee.setEntity("Saham Group");
-            employee.setJoinDate(LocalDate.of(2024, 1, 15));
-            employeeRepository.save(employee);
-
-            // Default Balance:
-            EmployeeBalance employeeBalance = new EmployeeBalance();
-            employeeBalance.setInitialBalance(30);
-            employeeBalance.setMonthlyBalance(2);
-            employeeBalance.setAccumulatedBalance(10);
-            employeeBalance.setYear(2025);
-            employeeBalance.setLastUpdated(LocalDateTime.now());
-            employeeBalance.setUsedBalance(0);
-            employeeBalance.setEmployee(employee);
-            employeeBalanceRepository.save(employeeBalance);
         }
 
-        if (employeeRepository.findByEmail("admin@saham.com").isEmpty()) {
 
-            Role employeeRole = roleRepository.findByRoleName(RoleName.ADMIN.name()).orElseThrow();
-            Role managerRole = roleRepository.findByRoleName(RoleName.EMPLOYEE.name()).orElseThrow();
+        // HR:
+        if (employeeRepository.findByEmail("myriam@saham.com").isEmpty()) {
 
-            // Default manager
-            Employee admin = new Employee();
-            admin.setFirstName("Admin");
-            admin.setLastName("Samid");
-            admin.setEmail("admin@saham.com");
-            admin.setMatriculation("EMP001");
-            admin.setPassword(passwordGenerator.generatePassword("Admin", "Samid"));
-            admin.setRoles(List.of(employeeRole, managerRole));
-            admin.setEntity("Saham Group");
-            admin.setJoinDate(LocalDate.of(2020, 1, 1));
-            admin.setManager(null);
-            employeeRepository.save(admin);
+            // Default HR
+            Employee hr = new Employee();
+            hr.setFirstName("Myriam");
+            hr.setLastName("Wargane");
+            hr.setEmail("myriam@saham.com");
+            hr.setMatriculation("EMP001");
+            hr.setPassword(passwordEncoder.encode("myriam2025"));
+            hr.setRoles(List.of(employeeRole, hrRole));
+            hr.setEntity("Saham Group");
+            hr.setJoinDate(LocalDate.of(2018, 3, 12));
+            hr.setManager(savedManager);
+            savedHR =  employeeRepository.save(hr);
 
             // Default Balance:
             EmployeeBalance managerBalance = new EmployeeBalance();
@@ -134,38 +142,7 @@ public class Initializer implements CommandLineRunner {
             managerBalance.setYear(2025);
             managerBalance.setLastUpdated(LocalDateTime.now());
             managerBalance.setUsedBalance(0);
-            managerBalance.setEmployee(admin);
-
-            employeeBalanceRepository.save(managerBalance);
-        }
-
-        if (employeeRepository.findByEmail("test@saham.com").isEmpty()) {
-
-            Role employeeRole = roleRepository.findByRoleName(RoleName.ADMIN.name()).orElseThrow();
-            Role managerRole = roleRepository.findByRoleName(RoleName.EMPLOYEE.name()).orElseThrow();
-
-            // Default manager
-            Employee admin = new Employee();
-            admin.setFirstName("Test");
-            admin.setLastName("Test");
-            admin.setEmail("test@saham.com");
-            admin.setMatriculation("EMP001");
-            admin.setPassword(passwordEncoder.encode("test2025"));
-            admin.setRoles(List.of(employeeRole, managerRole));
-            admin.setEntity("Saham Group");
-            admin.setJoinDate(LocalDate.of(2020, 1, 1));
-            admin.setManager(null);
-            employeeRepository.save(admin);
-
-            // Default Balance:
-            EmployeeBalance managerBalance = new EmployeeBalance();
-            managerBalance.setInitialBalance(30);
-            managerBalance.setMonthlyBalance(2);
-            managerBalance.setAccumulatedBalance(10);
-            managerBalance.setYear(2025);
-            managerBalance.setLastUpdated(LocalDateTime.now());
-            managerBalance.setUsedBalance(0);
-            managerBalance.setEmployee(admin);
+            managerBalance.setEmployee(savedHR);
 
             employeeBalanceRepository.save(managerBalance);
         }

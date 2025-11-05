@@ -3,7 +3,7 @@ package com.saham.hr_system.service.implementation;
 import com.saham.hr_system.dto.*;
 import com.saham.hr_system.exception.BadCredentialsException;
 import com.saham.hr_system.exception.UserNotFoundException;
-import com.saham.hr_system.jwt.JwtUtils;
+import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.Role;
 import com.saham.hr_system.repository.EmployeeRepository;
@@ -18,11 +18,11 @@ import java.util.List;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final EmployeeRepository employeeRepository;
-    private final JwtUtils jwtUtils;
+    private final JwtUtilities jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate;
 
-    public AuthenticationServiceImpl(EmployeeRepository employeeRepository, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
+    public AuthenticationServiceImpl(EmployeeRepository employeeRepository, JwtUtilities jwtUtils, PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
         this.employeeRepository = employeeRepository;
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
