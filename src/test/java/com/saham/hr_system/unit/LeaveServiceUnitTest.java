@@ -31,29 +31,32 @@ public class LeaveServiceUnitTest {
     @Mock
     private EmployeeBalanceRepository employeeBalanceRepository;
 
+    @Mock
+    private Employee employee;
+
+    @Mock
+    private EmployeeBalance employeeBalance;
+
     @InjectMocks
     private LeaveServiceImpl leaveService;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        employee = new Employee();
+        employee.setId(1L);
+        employee.setFirstName("Ciryane");
+        employee.setEmail("Ciryane@saham.com");
+
+        employeeBalance = new EmployeeBalance();
+        employeeBalance.setInitialBalance(30);
+        employeeBalance.setYear(2025);
+        employeeBalance.setDaysLeft(2);
+        employeeBalance.setEmployee(employee);
+
     }
 
     @Test
     void testRequestLeave() {
-
-        // Mock Employee:
-        Employee employee = new Employee();
-        employee.setId(1L);
-        employee.setEmail("test@test.com");
-
-
-        // Mock Employee Balance:
-        EmployeeBalance balance = new EmployeeBalance();
-        balance.setBalanceId(1L);
-        balance.setDaysLeft(10);
-        balance.setEmployee(employee);
-
 
         // Mock Request DTO:
         LeaveRequestDto requestDto = new LeaveRequestDto(
@@ -75,18 +78,6 @@ public class LeaveServiceUnitTest {
 
     @Test
     void testRequestLeaveInsufficientBalance(){
-
-        // Mock Employee:
-        Employee e = new Employee();
-        e.setId(1L);
-        e.setEmail("test@test.com");
-
-        // Mock Employee Balance:
-        EmployeeBalance b = new EmployeeBalance();
-        b.setBalanceId(1L);
-        b.setDaysLeft(0);
-        b.setEmployee(e);
-
         // Mock Request DTO:
         LeaveRequestDto requestDto = new LeaveRequestDto(
                 LocalDate.of(2024, 7, 1),
