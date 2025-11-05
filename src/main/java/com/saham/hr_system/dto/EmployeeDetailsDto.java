@@ -23,7 +23,8 @@ public class EmployeeDetailsDto {
         this.email = employee.getEmail();
         this.entity = employee.getEntity();
         this.joinDate = employee.getJoinDate();
-        this.occupation = employee.getMatriculation();
+        this.occupation = employee.getOccupation();
+        this.matriculation = employee.getMatriculation();
         this.balanceDetails = new BalanceDetails(balance);
     }
     public EmployeeDetailsDto(Employee employee) {
