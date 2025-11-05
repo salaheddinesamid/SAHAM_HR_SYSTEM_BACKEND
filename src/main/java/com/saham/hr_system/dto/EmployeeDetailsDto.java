@@ -2,10 +2,12 @@ package com.saham.hr_system.dto;
 
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.EmployeeBalance;
+import com.saham.hr_system.model.Role;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class EmployeeDetailsDto {
@@ -17,6 +19,7 @@ public class EmployeeDetailsDto {
     private String matriculation;
     private LocalDate joinDate;
     private BalanceDetails balanceDetails;
+    private List<String> roles;
     private String managerName;
 
     public EmployeeDetailsDto(Employee employee, EmployeeBalance balance) {
@@ -27,6 +30,7 @@ public class EmployeeDetailsDto {
         this.occupation = employee.getOccupation();
         this.matriculation = employee.getMatriculation();
         this.balanceDetails = new BalanceDetails(balance);
+        this.roles = employee.getRoles().stream().map(Role::getRoleName).toList();
         this.managerName = employee.getManager() != null ?
                 String.format("%s %s", employee.getManager().getFirstName(), employee.getManager().getLastName())
                 : null;
