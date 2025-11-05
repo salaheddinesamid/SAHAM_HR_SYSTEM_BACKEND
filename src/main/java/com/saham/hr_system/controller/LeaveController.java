@@ -5,6 +5,8 @@ import com.saham.hr_system.service.implementation.LeaveServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/leaves")
 public class LeaveController {
@@ -30,6 +32,14 @@ public class LeaveController {
         return ResponseEntity
                 .status(200)
                 .body(leaveService.getAllLeaveRequests(email));
+    }
+
+    @PutMapping("approve-subordinate-request")
+    public ResponseEntity<?> approveRequest(@RequestParam Long leaveRequestId) {
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(Map.of("message","Leave request has been approved"));
     }
 
     @GetMapping("get/subordinates")

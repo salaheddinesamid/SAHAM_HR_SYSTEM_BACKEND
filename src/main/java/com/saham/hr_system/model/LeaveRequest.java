@@ -41,7 +41,20 @@ public class LeaveRequest {
     @Enumerated(EnumType.STRING)
     private LeaveRequestStatus status;
 
+    @Column(name = "approved_by_manager")
+    private boolean approvedByManager;
+
+    @Column(name = "approved_by_hr")
+    private boolean approvedByHr;
+
     public double getTotalDays() {
         return totalDays != null ? totalDays : 0.0;
+    }
+
+    @PrePersist
+    public void prePersist(){
+        if(this.approvedByManager && this.approvedByHr){
+            this.status = LeaveRequestStatus.APPROVED;
+        }
     }
 }

@@ -29,4 +29,10 @@ public interface LeaveService {
      * @return
      */
     List<LeaveRequestResponse> getAllSubordinatesRequests(String email);
+
+    /**
+     * Approve a leave request by its ID.
+     * @param leaveRequestId
+     */
+    void approveSubordinateLeaveRequest(Long leaveRequestId);
 }

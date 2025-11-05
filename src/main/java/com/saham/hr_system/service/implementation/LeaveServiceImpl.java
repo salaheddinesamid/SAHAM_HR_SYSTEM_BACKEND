@@ -95,4 +95,22 @@ public class LeaveServiceImpl implements LeaveService {
                 .map(LeaveRequestResponse::new)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void approveSubordinateLeaveRequest(Long leaveRequestId) {
+        // Fetch the request:
+        LeaveRequest leaveRequest =
+                leaveRequestRepository.findById(leaveRequestId)
+                        .orElseThrow();
+
+        // approve the request:
+        leaveRequest.setApprovedByManager(true);
+
+        // save the request:
+        leaveRequestRepository.save(leaveRequest);
+    }
+
+    private void notifyEmployee(String email){
+
+    }
 }
