@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class LeaveRequestResponse {
 
+    private String requestedBy;
     private LocalDate startDate;
     private LocalDate endDate;
     private double totalDays;
@@ -19,6 +20,7 @@ public class LeaveRequestResponse {
     public LeaveRequestResponse(
             LeaveRequest request
     ){
+        this.requestedBy = request.getEmployee().getFullName();
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
         this.requestDate = request.getRequestDate();

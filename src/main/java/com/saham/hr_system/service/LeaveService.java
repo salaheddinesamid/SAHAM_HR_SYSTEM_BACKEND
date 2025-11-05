@@ -21,4 +21,12 @@ public interface LeaveService {
      * @return list of leave requests.
      */
     List<LeaveRequestResponse> getAllLeaveRequests(String email);
+
+
+    /**
+     * This function is responsible for fetching all the requests made by subordinates of a manager.
+     * @param email
+     * @return
+     */
+    List<LeaveRequestResponse> getAllSubordinatesRequests(String email);
 }

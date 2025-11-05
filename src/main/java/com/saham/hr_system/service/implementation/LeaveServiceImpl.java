@@ -75,4 +75,24 @@ public class LeaveServiceImpl implements LeaveService {
 
         return requests.stream().map(LeaveRequestResponse::new).collect(Collectors.toList());
     }
+
+    @Override
+    public List<LeaveRequestResponse> getAllSubordinatesRequests(String email) {
+        // Fetch the manager:
+        Employee manager = employeeRepository
+                .findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+
+        // Fetch the subordinates :
+        List<Employee> subordinates = employeeRepository.findAllByManagerId(manager.getId());
+
+
+        List<LeaveRequest> requests = subordinates.stream()
+                .flatMap(employee -> leaveRequestRepository.findAllByEmployee(employee).stream())
+                .toList();
+
+
+        return requests.isEmpty() ? List.of() : requests.stream()
+                .map(LeaveRequestResponse::new)
+                .collect(Collectors.toList());
+    }
 }

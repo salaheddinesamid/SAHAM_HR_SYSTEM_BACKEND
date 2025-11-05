@@ -86,4 +86,8 @@ public class Employee implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+    public String getFullName(){
+        return String.format("%s %s", firstName, lastName);
+    }
 }

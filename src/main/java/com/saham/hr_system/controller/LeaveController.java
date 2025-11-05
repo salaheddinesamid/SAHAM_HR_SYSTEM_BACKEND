@@ -31,4 +31,11 @@ public class LeaveController {
                 .status(200)
                 .body(leaveService.getAllLeaveRequests(email));
     }
+
+    @GetMapping("get/subordinates")
+    public ResponseEntity<?> getSubordinatesRequests(@RequestParam String email){
+        return
+                ResponseEntity.status(200)
+                        .body(leaveService.getAllSubordinatesRequests(email));
+    }
 }
