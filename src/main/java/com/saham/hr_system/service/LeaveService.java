@@ -35,4 +35,10 @@ public interface LeaveService {
      * @param leaveRequestId
      */
     void approveSubordinateLeaveRequest(Long leaveRequestId);
+
+    /**
+     * Final approval of leave request by HR.
+     * @param leaveRequestId
+     */
+    void approveLeaveRequest(Long leaveRequestId);
 }

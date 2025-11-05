@@ -12,4 +12,10 @@ public class LeaveRequestExceptionController {
         return
                 ResponseEntity.badRequest().body("Insufficient leave balance: " + ex.getMessage());
     }
+
+    @ExceptionHandler(LeaveRequestNotApprovedBySupervisorException.class)
+    public ResponseEntity<?> handleLeaveRequestNotApprovedBySupervisorException(LeaveRequestNotApprovedBySupervisorException ex) {
+        return
+                ResponseEntity.badRequest().body("Leave request not approved by supervisor: " + ex.getMessage());
+    }
 }

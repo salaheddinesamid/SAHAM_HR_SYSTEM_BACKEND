@@ -34,12 +34,23 @@ public class LeaveController {
                 .body(leaveService.getAllLeaveRequests(email));
     }
 
+    // Manager approval
     @PutMapping("approve-subordinate-request")
-    public ResponseEntity<?> approveRequest(@RequestParam Long leaveRequestId) {
+    public ResponseEntity<?> approveSubordinateRequest(@RequestParam Long leaveRequestId) {
         return
                 ResponseEntity
                         .status(200)
                         .body(Map.of("message","Leave request has been approved"));
+    }
+
+    // Final approval by HR
+    @PutMapping("approve-request")
+    public ResponseEntity<?> approveRequest(@RequestParam Long leaveRequestId) {
+        leaveService.approveLeaveRequest(leaveRequestId);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(Map.of("message","Leave request has been finally approved"));
     }
 
     @GetMapping("get/subordinates")
