@@ -17,6 +17,7 @@ public class EmployeeDetailsDto {
     private String matriculation;
     private LocalDate joinDate;
     private BalanceDetails balanceDetails;
+    private String managerName;
 
     public EmployeeDetailsDto(Employee employee, EmployeeBalance balance) {
         this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
@@ -26,6 +27,9 @@ public class EmployeeDetailsDto {
         this.occupation = employee.getOccupation();
         this.matriculation = employee.getMatriculation();
         this.balanceDetails = new BalanceDetails(balance);
+        this.managerName = employee.getManager() != null ?
+                String.format("%s %s", employee.getManager().getFirstName(), employee.getManager().getLastName())
+                : null;
     }
     public EmployeeDetailsDto(Employee employee) {
         this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
