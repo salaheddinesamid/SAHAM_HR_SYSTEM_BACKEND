@@ -35,7 +35,7 @@ public class LeaveController {
     }
 
     // Manager approval
-    @PutMapping("approve-subordinate-request")
+    @PutMapping("subordinates/approve-request")
     public ResponseEntity<?> approveSubordinateRequest(@RequestParam Long leaveRequestId) {
         return
                 ResponseEntity
@@ -53,7 +53,7 @@ public class LeaveController {
                         .body(Map.of("message","Leave request has been finally approved"));
     }
 
-    @GetMapping("get/subordinates")
+    @GetMapping("subordinates/get_all_requests")
     public ResponseEntity<?> getSubordinatesRequests(@RequestParam String email){
         return
                 ResponseEntity.status(200)

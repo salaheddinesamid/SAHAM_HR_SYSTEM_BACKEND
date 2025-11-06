@@ -2,9 +2,11 @@ package com.saham.hr_system.unit;
 
 import com.saham.hr_system.dto.LeaveRequestDto;
 import com.saham.hr_system.exception.InsufficientBalanceException;
+import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorException;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.EmployeeBalance;
+import com.saham.hr_system.model.LeaveRequest;
 import com.saham.hr_system.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.repository.EmployeeRepository;
 import com.saham.hr_system.repository.LeaveRequestRepository;
@@ -35,6 +37,7 @@ public class LeaveServiceUnitTest {
 
     private Employee employee;
     private EmployeeBalance employeeBalance;
+    private LeaveRequest leaveRequest;
 
     @InjectMocks
     private LeaveServiceImpl leaveService;
@@ -51,8 +54,16 @@ public class LeaveServiceUnitTest {
         employeeBalance.setBalanceId(1L);
         employeeBalance.setInitialBalance(30);
         employeeBalance.setYear(2025);
-        employeeBalance.setDaysLeft(0);
+        employeeBalance.setDaysLeft(1);
         employeeBalance.setEmployee(employee);
+
+        leaveRequest = new LeaveRequest();
+        leaveRequest.setLeaveRequestId(1L);
+        leaveRequest.setStartDate(LocalDate.of(2024, 7, 1));
+        leaveRequest.setEndDate(LocalDate.of(2024, 7, 5));
+        leaveRequest.setApprovedByHr(false);
+        leaveRequest.setApprovedByHr(false);
+        leaveRequest.setEmployee(employee);
 
     }
 
@@ -67,8 +78,8 @@ public class LeaveServiceUnitTest {
                 ""
         );
 
-        when(employeeRepository.findByEmail("test@test.com")).thenReturn(Optional.of(employee));
-        when(employeeBalanceRepository.findById(1L)).thenReturn(Optional.of(employeeBalance));
+        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
+        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
 
         when(leaveRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -108,5 +119,32 @@ public class LeaveServiceUnitTest {
         // Act:
         assertThrows(UserNotFoundException.class, ()-> leaveService.requestLeave("test@example.com", leaveRequestDto));
 
+    }
+
+    @Test
+    void testApproveLeaveRequestBySupervisor(){
+        Long requestId = 1L;
+
+        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
+        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
+        when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(leaveRequest));
+
+        when(leaveRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act:
+        leaveService.approveSubordinateLeaveRequest(requestId);
+        verify(leaveRequestRepository, times(1)).save(any());
+    }
+
+    @Test
+    void shouldThrowRequestNotApprovedBySupervisor(){
+        Long requestId = 1L;
+        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
+        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
+        when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(leaveRequest));
+
+        // Act
+        assertThrows(LeaveRequestNotApprovedBySupervisorException.class,
+                ()-> leaveService.approveLeaveRequest(requestId));
     }
 }

@@ -14,6 +14,7 @@ import com.saham.hr_system.repository.LeaveRequestRepository;
 import com.saham.hr_system.service.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -112,10 +113,13 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
+    @Transactional
     public void approveLeaveRequest(Long leaveRequestId) {
         // Fetch the request:
         LeaveRequest leaveRequest =
                 leaveRequestRepository.findById(leaveRequestId).orElseThrow();
+
+
 
         // Check if the request has been approved by manager:
         if(!leaveRequest.isApprovedByManager()){
@@ -125,12 +129,26 @@ public class LeaveServiceImpl implements LeaveService {
         // Get the employee:
         Employee employee  = leaveRequest.getEmployee();
 
+        // Fetch employee balance:
+        EmployeeBalance employeeBalance =
+                employeeBalanceRepository.findByEmployee(employee).orElseThrow();
+
         // Otherwise, approve the request and create new leave:
         leaveRequest.setApprovedByHr(true);
         Leave leave = new Leave();
         leave.setFromDate(leaveRequest.getStartDate());
         leave.setToDate(leaveRequest.getEndDate());
         leave.setEmployee(leaveRequest.getEmployee());
+
+        // Decrease employee balance:
+        employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() - leaveRequest.getTotalDays());
+        // save the balance:
+        employeeBalanceRepository.save(employeeBalance);
+
+        // save the leave request:
+        leaveRequestRepository.save(leaveRequest);
+
+        // save the leave:
         leaveRepository.save(leave);
 
         // Notify the employee:
