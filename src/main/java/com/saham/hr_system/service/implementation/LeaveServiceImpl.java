@@ -1,6 +1,5 @@
 package com.saham.hr_system.service.implementation;
 
-import com.saham.hr_system.dto.LeaveRequestDetailsDto;
 import com.saham.hr_system.dto.LeaveRequestDto;
 import com.saham.hr_system.dto.LeaveRequestResponse;
 import com.saham.hr_system.exception.InsufficientBalanceException;
@@ -37,6 +36,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
+    @Transactional
     public void requestLeave(String email ,LeaveRequestDto leaveRequestDto) {
 
         // Fetch the employee from db:
@@ -60,10 +60,15 @@ public class LeaveServiceImpl implements LeaveService {
         leaveRequest.setTotalDays(totalDays);
         leaveRequest.setTypeOfLeave(leaveRequestDto.getType());
         leaveRequest.setRequestDate(LocalDateTime.now());
+        leaveRequest.setApprovedByManager(false);
+        leaveRequest.setApprovedByHr(false);
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
 
         // save the request:
         leaveRequestRepository.save(leaveRequest);
+
+        // notify manager:
+        notifyManager(null);
     }
 
     @Override
@@ -156,7 +161,13 @@ public class LeaveServiceImpl implements LeaveService {
 
     }
 
+    // Notify employee of leave request approval or rejection:
     private void notifyEmployee(String email){
+
+    }
+
+    // Notify the manager of subordinate's leave request or approval/rejection:
+    private void notifyManager(String email){
 
     }
 }

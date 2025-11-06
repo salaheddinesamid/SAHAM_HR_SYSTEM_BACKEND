@@ -147,4 +147,9 @@ public class LeaveServiceUnitTest {
         assertThrows(LeaveRequestNotApprovedBySupervisorException.class,
                 ()-> leaveService.approveLeaveRequest(requestId));
     }
+
+    @Test
+    void testApproveLeaveRequest(){
+
+    }
 }
