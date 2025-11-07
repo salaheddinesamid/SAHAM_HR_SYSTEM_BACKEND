@@ -175,7 +175,7 @@ public class LeaveServiceImpl implements LeaveService {
 
         // Otherwise:
         leaveRequest.setApprovedByManager(false);
-        leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
+        // leaveRequest.setStatus(LeaveRequestStatus.REJECTED); (the leave request cannot be rejected unless is rejected by HR and Manager)
 
         leaveRequestRepository.save(leaveRequest);
 
