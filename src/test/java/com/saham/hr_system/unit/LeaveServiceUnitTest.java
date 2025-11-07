@@ -7,6 +7,7 @@ import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.EmployeeBalance;
 import com.saham.hr_system.model.LeaveRequest;
+import com.saham.hr_system.model.LeaveRequestStatus;
 import com.saham.hr_system.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.repository.EmployeeRepository;
 import com.saham.hr_system.repository.LeaveRequestRepository;
@@ -18,8 +19,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -36,8 +39,11 @@ public class LeaveServiceUnitTest {
 
 
     private Employee employee;
+    private Employee subordinate;
+    private EmployeeBalance subordinateBalance;
     private EmployeeBalance employeeBalance;
     private LeaveRequest leaveRequest;
+    private LeaveRequest subordinateLeaveRequest;
 
     @InjectMocks
     private LeaveServiceImpl leaveService;
@@ -50,6 +56,13 @@ public class LeaveServiceUnitTest {
         employee.setFirstName("Ciryane");
         employee.setEmail("Ciryane@saham.com");
 
+        subordinate = new Employee();
+        subordinate.setId(2L);
+        subordinate.setFirstName("Salaheddine");
+        subordinate.setLastName("Samid");
+        subordinate.setEmail("salaheddine@saham.com");
+        subordinate.setManager(employee);
+
         employeeBalance = new EmployeeBalance();
         employeeBalance.setBalanceId(1L);
         employeeBalance.setInitialBalance(30);
@@ -57,13 +70,31 @@ public class LeaveServiceUnitTest {
         employeeBalance.setDaysLeft(1);
         employeeBalance.setEmployee(employee);
 
+        subordinateBalance = new EmployeeBalance();
+        subordinateBalance.setBalanceId(1L);
+        subordinateBalance.setInitialBalance(30);
+        subordinateBalance.setYear(2025);
+        subordinateBalance.setDaysLeft(1);
+        subordinateBalance.setEmployee(employee);
+
+        // Leave request made by manager:
         leaveRequest = new LeaveRequest();
         leaveRequest.setLeaveRequestId(1L);
         leaveRequest.setStartDate(LocalDate.of(2024, 7, 1));
         leaveRequest.setEndDate(LocalDate.of(2024, 7, 5));
-        leaveRequest.setApprovedByHr(false);
+        leaveRequest.setApprovedByManager(true);
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setEmployee(employee);
+
+        // Leave request made by subordinate:
+        subordinateLeaveRequest = new LeaveRequest();
+        subordinateLeaveRequest.setLeaveRequestId(2L);
+        subordinateLeaveRequest.setStartDate(LocalDate.of(2024, 7, 1));
+        subordinateLeaveRequest.setEndDate(LocalDate.of(2024, 7, 5));
+        subordinateLeaveRequest.setApprovedByManager(false);
+        subordinateLeaveRequest.setApprovedByHr(false);
+        subordinateLeaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
+        subordinateLeaveRequest.setEmployee(subordinate);
 
     }
 
@@ -151,5 +182,23 @@ public class LeaveServiceUnitTest {
     @Test
     void testApproveLeaveRequest(){
 
+    }
+
+    @Test
+    void testGetAllSubordinatesLeaveRequestShouldReturnOnlyInProcessAndNotApprovedByManager() {
+        // Arrange:
+        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
+        when(employeeRepository.findAllByManagerId(employee.getId())).thenReturn(List.of(subordinate));
+        when(leaveRequestRepository.findAllByEmployeeAndStatusAndApprovedByManager(
+                subordinate, LeaveRequestStatus.IN_PROCESS, false))
+                .thenReturn(List.of(subordinateLeaveRequest));
+
+        // Act:
+        var result = leaveService.getAllSubordinatesRequests(employee.getEmail());
+
+        // Assert:
+        assertEquals(1, result.size());
+        verify(leaveRequestRepository, times(1))
+                .findAllByEmployeeAndStatusAndApprovedByManager(subordinate, LeaveRequestStatus.IN_PROCESS, false);
     }
 }

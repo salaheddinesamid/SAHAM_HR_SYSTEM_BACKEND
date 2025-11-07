@@ -90,12 +90,12 @@ public class LeaveServiceImpl implements LeaveService {
         Employee manager = employeeRepository
                 .findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
 
-        // Fetch the subordinates :
+        // Fetch the subordinates
         List<Employee> subordinates = employeeRepository.findAllByManagerId(manager.getId());
 
-
+        // Fetch leave requests (IN PROCESS ONLY):
         List<LeaveRequest> requests = subordinates.stream()
-                .flatMap(employee -> leaveRequestRepository.findAllByEmployee(employee).stream())
+                .flatMap(employee -> leaveRequestRepository.findAllByEmployeeAndStatusAndApprovedByManager(employee, LeaveRequestStatus.IN_PROCESS, false).stream())
                 .toList();
 
 
