@@ -1,12 +1,13 @@
 package com.saham.hr_system.service;
 
-import com.saham.hr_system.dto.LeaveRequestDetailsDto;
 import com.saham.hr_system.dto.LeaveRequestDto;
 import com.saham.hr_system.dto.LeaveRequestResponse;
-import com.saham.hr_system.model.LeaveRequest;
 
 import java.util.List;
 
+/**
+ * LeaveService interface defines all the functionalities related to leave management in the HR system.
+ */
 public interface LeaveService {
 
     /**
@@ -47,4 +48,10 @@ public interface LeaveService {
      * @param leaveRequestId
      */
     void approveLeaveRequest(Long leaveRequestId);
+
+    /**
+     * This function handles leave request final rejection by HR.
+     * @param leaveRequestId
+     */
+    void rejectLeaveRequest(Long leaveRequestId);
 }

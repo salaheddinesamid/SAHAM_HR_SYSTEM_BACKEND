@@ -64,6 +64,16 @@ public class LeaveController {
                         .body(Map.of("message","Leave request has been finally approved"));
     }
 
+    // Final Rejection by HR:
+    @PutMapping("reject-request")
+    public ResponseEntity<?> rejectRequest(@RequestParam Long requestId){
+        leaveService.rejectLeaveRequest(requestId);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(Map.of("message","Leave request has been finally rejected"));
+    }
+
     @GetMapping("subordinates/get_all_requests")
     public ResponseEntity<?> getSubordinatesRequests(@RequestParam String email){
         return

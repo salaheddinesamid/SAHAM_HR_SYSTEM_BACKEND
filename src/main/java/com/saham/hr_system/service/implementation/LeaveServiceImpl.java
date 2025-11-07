@@ -183,6 +183,26 @@ public class LeaveServiceImpl implements LeaveService {
         notifyEmployee(leaveRequest.getEmployee().getEmail());
     }
 
+    @Override
+    public void rejectLeaveRequest(Long leaveRequestId) {
+        // Fetch the request:
+        LeaveRequest leaveRequest = leaveRequestRepository
+                .findById(leaveRequestId)
+                .orElseThrow();
+
+        // Check if the request has already been approved:
+        if(leaveRequest.getStatus().equals(LeaveRequestStatus.REJECTED)){
+            throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());
+        }
+
+        // Otherwise:
+        leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
+        leaveRequestRepository.save(leaveRequest);
+
+        // Notify the employee:
+        notifyEmployee(leaveRequest.getEmployee().getEmail());
+    }
+
     // Notify employee of leave request approval or rejection:
     private void notifyEmployee(String email){
 
