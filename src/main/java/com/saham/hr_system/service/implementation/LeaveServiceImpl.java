@@ -3,6 +3,7 @@ package com.saham.hr_system.service.implementation;
 import com.saham.hr_system.dto.LeaveRequestDto;
 import com.saham.hr_system.dto.LeaveRequestResponse;
 import com.saham.hr_system.exception.InsufficientBalanceException;
+import com.saham.hr_system.exception.LeaveRequestAlreadyApprovedException;
 import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorException;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.model.*;
@@ -159,6 +160,27 @@ public class LeaveServiceImpl implements LeaveService {
         // Notify the employee:
         notifyEmployee(employee.getEmail());
 
+    }
+
+    @Override
+    public void rejectSubordinateLeaveRequest(Long leaveRequestId) {
+        // Fetch leave request:
+        LeaveRequest leaveRequest = leaveRequestRepository
+                .findById(leaveRequestId).orElseThrow();
+
+        // Check if the request has already been approved:
+        if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){
+            throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());
+        }
+
+        // Otherwise:
+        leaveRequest.setApprovedByManager(false);
+        leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
+
+        leaveRequestRepository.save(leaveRequest);
+
+        // Notify employee:
+        notifyEmployee(leaveRequest.getEmployee().getEmail());
     }
 
     // Notify employee of leave request approval or rejection:

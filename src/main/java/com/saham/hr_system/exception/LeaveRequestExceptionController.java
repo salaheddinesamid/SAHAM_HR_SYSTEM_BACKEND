@@ -18,4 +18,12 @@ public class LeaveRequestExceptionController {
         return
                 ResponseEntity.badRequest().body("Leave request not approved by supervisor: " + ex.getMessage());
     }
+
+    @ExceptionHandler(LeaveRequestAlreadyApprovedException.class)
+    public ResponseEntity<?> handleLeaveRequestAlreadyApprovedByManagerException(LeaveRequestAlreadyApprovedException ex) {
+        return
+                ResponseEntity.
+                        status(409) // Conflict
+                        .body("Leave request already approved : " + ex.getMessage());
+    }
 }

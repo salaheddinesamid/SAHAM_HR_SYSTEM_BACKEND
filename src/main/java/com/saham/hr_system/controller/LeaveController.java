@@ -37,10 +37,21 @@ public class LeaveController {
     // Manager approval
     @PutMapping("subordinates/approve-request")
     public ResponseEntity<?> approveSubordinateRequest(@RequestParam Long leaveRequestId) {
+        leaveService.approveSubordinateLeaveRequest(leaveRequestId);
         return
                 ResponseEntity
                         .status(200)
                         .body(Map.of("message","Leave request has been approved"));
+    }
+
+    // Manager rejection
+    @PutMapping("subordinates/reject-request")
+    public ResponseEntity<?> rejectSubordinateRequest(@RequestParam Long leaveRequestId) {
+        leaveService.rejectSubordinateLeaveRequest(leaveRequestId);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(Map.of("message","Leave request has been rejected"));
     }
 
     // Final approval by HR

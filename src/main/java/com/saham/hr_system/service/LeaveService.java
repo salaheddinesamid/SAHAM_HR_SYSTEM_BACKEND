@@ -37,6 +37,12 @@ public interface LeaveService {
     void approveSubordinateLeaveRequest(Long leaveRequestId);
 
     /**
+     * Reject a subordinate's leave request by its ID.
+     * @param leaveRequestId
+     */
+    void rejectSubordinateLeaveRequest(Long leaveRequestId);
+
+    /**
      * Final approval of leave request by HR.
      * @param leaveRequestId
      */
