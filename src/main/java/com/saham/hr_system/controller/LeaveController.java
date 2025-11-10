@@ -1,10 +1,12 @@
 package com.saham.hr_system.controller;
 
 import com.saham.hr_system.dto.LeaveRequestDto;
+import com.saham.hr_system.dto.LeaveRequestResponse;
 import com.saham.hr_system.service.implementation.LeaveServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,6 +34,15 @@ public class LeaveController {
         return ResponseEntity
                 .status(200)
                 .body(leaveService.getAllLeaveRequests(email));
+    }
+
+    @GetMapping("hr/get_all_requests")
+    public ResponseEntity<?> getAllRequestsForHR(){
+
+        List<LeaveRequestResponse> requests = leaveService.getAllLeaveRequestsForHR();
+
+        return ResponseEntity.status(200)
+                .body(requests);
     }
 
     // Manager approval

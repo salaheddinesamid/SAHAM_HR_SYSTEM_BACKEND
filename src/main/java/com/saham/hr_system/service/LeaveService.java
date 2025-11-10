@@ -32,6 +32,12 @@ public interface LeaveService {
     List<LeaveRequestResponse> getAllSubordinatesRequests(String email);
 
     /**
+     * This function returns all leave requests approved by managers and pending HR approval.
+     * @return list of leave requests.
+     */
+    List<LeaveRequestResponse> getAllLeaveRequestsForHR();
+
+    /**
      * Approve a leave request by its ID.
      * @param leaveRequestId
      */

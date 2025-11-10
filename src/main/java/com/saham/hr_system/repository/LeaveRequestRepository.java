@@ -20,6 +20,15 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      */
     List<LeaveRequest> findAllByEmployeeAndStatusAndApprovedByManager(Employee employee, LeaveRequestStatus status, boolean approvedByManager);
 
+    /**
+     * This method returns all the requests made by subordinates of a manager that are in process and not yet approved by the HR.
+     * @param status
+     * @param approvedByManager
+     * @return list of leave requests
+     */
+    List<LeaveRequest> findAllByStatusAndApprovedByManager(LeaveRequestStatus status, boolean approvedByManager);
+
+
     List<LeaveRequest> findAllByEmployee(Employee employee);
 
     Optional<LeaveRequest> findByEmployee(Employee employee);

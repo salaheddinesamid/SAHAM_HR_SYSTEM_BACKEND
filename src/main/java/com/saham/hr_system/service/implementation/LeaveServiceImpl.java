@@ -105,6 +105,19 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
+    public List<LeaveRequestResponse> getAllLeaveRequestsForHR() {
+        // Fetch all leave requests that are pending and approved by managers:
+        List<LeaveRequest> requests =
+                leaveRequestRepository.findAllByStatusAndApprovedByManager(
+                        LeaveRequestStatus.IN_PROCESS, true
+                );
+
+        // return a response dto:
+        return
+                requests.stream().map(LeaveRequestResponse::new).collect(Collectors.toList());
+    }
+
+    @Override
     public void approveSubordinateLeaveRequest(Long leaveRequestId) {
         // Fetch the request:
         LeaveRequest leaveRequest =
