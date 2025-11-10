@@ -20,4 +20,10 @@ public interface LoanService {
      * @return list of loan requests.
      */
     List<LoanRequestResponseDto> getAllEmployeeRequests(String email);
+
+    /**
+     * This function fetches all the loan requests made by all employees
+     * @return list of loan requests.
+     */
+    List<LoanRequestResponseDto> getAllLoanRequests();
 }

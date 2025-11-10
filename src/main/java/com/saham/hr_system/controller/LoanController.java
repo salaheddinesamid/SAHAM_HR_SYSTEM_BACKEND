@@ -19,7 +19,9 @@ public class LoanController {
 
     @GetMapping("get-all-requests")
     public ResponseEntity<?> getAllRequests(){
-        return null;
+        return ResponseEntity
+                .status(200)
+                .body(loanService.getAllLoanRequests());
     }
 
     @GetMapping("/employee-requests")

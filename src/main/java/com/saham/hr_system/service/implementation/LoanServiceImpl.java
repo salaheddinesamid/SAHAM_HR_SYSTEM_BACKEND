@@ -59,4 +59,15 @@ public class LoanServiceImpl implements LoanService {
                 requests.stream()
                         .map(LoanRequestResponseDto::new).toList();
     }
+
+    @Override
+    public List<LoanRequestResponseDto> getAllLoanRequests() {
+        // Fetch the requests:
+        List<LoanRequest> requests =
+                loanRequestRepository.findAll();
+
+        return
+                requests.stream()
+                        .map(LoanRequestResponseDto::new).toList();
+    }
 }
