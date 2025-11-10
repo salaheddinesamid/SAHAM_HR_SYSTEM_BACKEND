@@ -1,8 +1,10 @@
 package com.saham.hr_system.unit;
 
 import com.saham.hr_system.dto.LoanRequestDto;
+import com.saham.hr_system.dto.LoanRequestResponseDto;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.model.Employee;
+import com.saham.hr_system.model.LoanRequest;
 import com.saham.hr_system.repository.EmployeeRepository;
 import com.saham.hr_system.repository.LoanRequestRepository;
 import com.saham.hr_system.service.implementation.LoanServiceImpl;
@@ -13,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,6 +34,7 @@ public class LoanServiceUnitTest {
     private LoanServiceImpl loanService;
 
     private Employee employee;
+    private LoanRequest loanRequest;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -39,6 +43,12 @@ public class LoanServiceUnitTest {
         employee.setFirstName("Salaheddine");
         employee.setLastName("Samid");
         employee.setEmail("salaheddine@saham.com");
+
+        loanRequest = new LoanRequest();
+        loanRequest.setRequestId(1L);
+        loanRequest.setEmployee(employee);
+        loanRequest.setApprovedByFinanceDepartment(false);
+        loanRequest.setApprovedByHrDepartment(false);
     }
 
     @Test
@@ -77,6 +87,21 @@ public class LoanServiceUnitTest {
         assertThrows(UserNotFoundException.class, ()-> // Act:
                 loanService.requestLoan("test@gmail.com",requestDto));
         verify(loanRequestRepository, times(0)).save(any());
+    }
+
+    @Test
+    void testGetAllEmployeeLoanRequestsSuccess(){
+        // Arrange:
+        when(employeeRepository.findByEmail("salaheddine@saham.com")).thenReturn(Optional.of(employee));
+        when(loanRequestRepository.findById(1L)).thenReturn(Optional.of(loanRequest));
+
+        // Act:
+        List<LoanRequestResponseDto> res = loanService
+                .getAllEmployeeRequests(employee.getEmail());
+
+        verify(loanRequestRepository, times(1)).findAllByEmployee(employee);
+
+        //
     }
 
 

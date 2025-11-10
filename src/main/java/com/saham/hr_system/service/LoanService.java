@@ -1,6 +1,9 @@
 package com.saham.hr_system.service;
 
 import com.saham.hr_system.dto.LoanRequestDto;
+import com.saham.hr_system.dto.LoanRequestResponseDto;
+
+import java.util.List;
 
 public interface LoanService {
 
@@ -10,4 +13,11 @@ public interface LoanService {
      * @param requestDto
      */
     void requestLoan(String email, LoanRequestDto requestDto);
+
+    /**
+     * This function retrieves all loan requests made by a specific employee.
+     * @param email
+     * @return list of loan requests.
+     */
+    List<LoanRequestResponseDto> getAllEmployeeRequests(String email);
 }

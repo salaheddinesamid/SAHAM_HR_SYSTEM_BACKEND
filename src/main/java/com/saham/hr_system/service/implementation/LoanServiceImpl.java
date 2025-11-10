@@ -1,6 +1,7 @@
 package com.saham.hr_system.service.implementation;
 
 import com.saham.hr_system.dto.LoanRequestDto;
+import com.saham.hr_system.dto.LoanRequestResponseDto;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.model.LoanRequest;
@@ -9,6 +10,8 @@ import com.saham.hr_system.repository.LoanRequestRepository;
 import com.saham.hr_system.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class LoanServiceImpl implements LoanService {
@@ -40,5 +43,20 @@ public class LoanServiceImpl implements LoanService {
 
         // save the request:
         loanRequestRepository.save(loanRequest);
+    }
+
+    @Override
+    public List<LoanRequestResponseDto> getAllEmployeeRequests(String email) {
+        // Fetch the employee from the db:
+        Employee employee = employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
+
+        // Fetch all employee requests:
+        List<LoanRequest> requests =
+                loanRequestRepository.findAllByEmployee(employee);
+
+        // return response:
+        return
+                requests.stream()
+                        .map(LoanRequestResponseDto::new).toList();
     }
 }

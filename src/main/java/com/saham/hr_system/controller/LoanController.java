@@ -17,6 +17,19 @@ public class LoanController {
         this.loanService = loanService;
     }
 
+    @GetMapping("get-all-requests")
+    public ResponseEntity<?> getAllRequests(){
+        return null;
+    }
+
+    @GetMapping("/employee-requests")
+    public ResponseEntity<?> getAllEmployeeRequests(@RequestParam String email){
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(loanService.getAllEmployeeRequests(email));
+    }
+
     @PostMapping("apply")
     public ResponseEntity<?> requestLoan(@RequestParam String email, @RequestBody LoanRequestDto requestDto) {
         loanService.requestLoan(email, requestDto);
