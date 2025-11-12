@@ -1,12 +1,12 @@
 package com.saham.hr_system.initializer;
 
-import com.saham.hr_system.model.Employee;
-import com.saham.hr_system.model.EmployeeBalance;
-import com.saham.hr_system.model.Role;
-import com.saham.hr_system.model.RoleName;
-import com.saham.hr_system.repository.EmployeeBalanceRepository;
-import com.saham.hr_system.repository.EmployeeRepository;
-import com.saham.hr_system.repository.RoleRepository;
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.employees.model.EmployeeBalance;
+import com.saham.hr_system.modules.employees.model.Role;
+import com.saham.hr_system.modules.employees.model.RoleName;
+import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
+import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.employees.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;

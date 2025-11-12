@@ -1,8 +1,8 @@
 package com.saham.hr_system.unit;
 
-import com.saham.hr_system.model.Employee;
-import com.saham.hr_system.repository.DocumentRequestRepository;
-import com.saham.hr_system.service.implementation.DocumentServiceImpl;
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.documents.repository.DocumentRequestRepository;
+import com.saham.hr_system.modules.documents.service.implementation.DocumentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

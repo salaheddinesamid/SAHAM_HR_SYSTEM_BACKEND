@@ -1,17 +1,17 @@
 package com.saham.hr_system.unit;
 
-import com.saham.hr_system.dto.LeaveRequestDto;
+import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.exception.InsufficientBalanceException;
 import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorException;
 import com.saham.hr_system.exception.UserNotFoundException;
-import com.saham.hr_system.model.Employee;
-import com.saham.hr_system.model.EmployeeBalance;
-import com.saham.hr_system.model.LeaveRequest;
-import com.saham.hr_system.model.LeaveRequestStatus;
-import com.saham.hr_system.repository.EmployeeBalanceRepository;
-import com.saham.hr_system.repository.EmployeeRepository;
-import com.saham.hr_system.repository.LeaveRequestRepository;
-import com.saham.hr_system.service.implementation.LeaveServiceImpl;
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.employees.model.EmployeeBalance;
+import com.saham.hr_system.modules.leave.model.LeaveRequest;
+import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
+import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
+import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
+import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

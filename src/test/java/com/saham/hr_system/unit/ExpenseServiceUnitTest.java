@@ -1,13 +1,13 @@
 package com.saham.hr_system.unit;
 
-import com.saham.hr_system.dto.ExpenseItemRequest;
-import com.saham.hr_system.dto.ExpenseRequestDto;
-import com.saham.hr_system.model.Employee;
-import com.saham.hr_system.model.ExpenseItem;
-import com.saham.hr_system.repository.EmployeeRepository;
-import com.saham.hr_system.repository.ExpenseItemRepository;
-import com.saham.hr_system.repository.ExpenseRepository;
-import com.saham.hr_system.service.implementation.ExpenseServiceImpl;
+import com.saham.hr_system.modules.expenses.dto.ExpenseItemRequest;
+import com.saham.hr_system.modules.expenses.dto.ExpenseRequestDto;
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.expenses.model.ExpenseItem;
+import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.expenses.repository.ExpenseItemRepository;
+import com.saham.hr_system.modules.expenses.repository.ExpenseRepository;
+import com.saham.hr_system.modules.expenses.service.implementation.ExpenseServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -1,13 +1,13 @@
 package com.saham.hr_system.unit;
 
-import com.saham.hr_system.dto.LoanRequestDto;
-import com.saham.hr_system.dto.LoanRequestResponseDto;
+import com.saham.hr_system.modules.loan.dto.LoanRequestDto;
+import com.saham.hr_system.modules.loan.dto.LoanRequestResponseDto;
 import com.saham.hr_system.exception.UserNotFoundException;
-import com.saham.hr_system.model.Employee;
-import com.saham.hr_system.model.LoanRequest;
-import com.saham.hr_system.repository.EmployeeRepository;
-import com.saham.hr_system.repository.LoanRequestRepository;
-import com.saham.hr_system.service.implementation.LoanServiceImpl;
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.loan.model.LoanRequest;
+import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
+import com.saham.hr_system.modules.loan.service.implementation.LoanServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

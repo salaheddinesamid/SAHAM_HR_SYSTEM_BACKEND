@@ -1,7 +1,7 @@
 package com.saham.hr_system.filter;
 
 import com.saham.hr_system.jwt.JwtUtilities;
-import com.saham.hr_system.service.implementation.UserDetailsServiceImpl;
+import com.saham.hr_system.modules.auth.service.implementation.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
