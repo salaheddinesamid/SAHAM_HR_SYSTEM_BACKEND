@@ -7,7 +7,6 @@ import com.saham.hr_system.model.RoleName;
 import com.saham.hr_system.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.repository.EmployeeRepository;
 import com.saham.hr_system.repository.RoleRepository;
-import com.saham.hr_system.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;

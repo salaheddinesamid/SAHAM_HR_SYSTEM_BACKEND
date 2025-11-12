@@ -1,24 +1,24 @@
 package com.saham.hr_system.filter;
 
 import com.saham.hr_system.jwt.JwtUtilities;
-import com.saham.hr_system.model.Employee;
 import com.saham.hr_system.service.implementation.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtilities jwtUtilities;
@@ -28,13 +28,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        log.info("Incoming request to: {}", request.getRequestURI());
         String token = "";
         // Extract request cookies:
         if(request.getCookies() != null){
             var cookies = request.getCookies();
             for(var cookie : cookies){
-                if(cookie.getName().equals("jwt_token")){
+                if(cookie.getName().equals("accessToken")){
                     token = cookie.getValue(); // Assign token to a variable:
+                    //System.out.println(token);
                 }
             }
         }
