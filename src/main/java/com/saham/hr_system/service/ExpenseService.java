@@ -1,5 +1,8 @@
 package com.saham.hr_system.service;
 
+import com.saham.hr_system.dto.ExpenseRequestDto;
+import com.saham.hr_system.dto.ExpenseResponseDto;
+
 /**
  *
  */
@@ -10,5 +13,5 @@ public interface ExpenseService {
      * @param expenseRequestDto
      * @return an expense response that contains all the information
      */
-    ExpenseResponseDto newExpense(ExpenseRequestDto expenseRequestDto);
+    ExpenseResponseDto newExpense(String email ,ExpenseRequestDto expenseRequestDto);
 }

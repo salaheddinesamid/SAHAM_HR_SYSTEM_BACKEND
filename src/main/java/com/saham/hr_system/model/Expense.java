@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class Expense {
     private Employee employee;
 
     @Column(name = "issue_date")
-    private LocalDateTime issueDate;
+    private LocalDate issueDate;
 
     @Column(name = "total_amount")
     private double totalAmount;
@@ -33,4 +34,7 @@ public class Expense {
     @OneToMany
     @JoinColumn(name = "items")
     private List<ExpenseItem> items;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }
