@@ -10,6 +10,8 @@ import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.expenses.repository.ExpenseItemRepository;
 import com.saham.hr_system.modules.expenses.repository.ExpenseRepository;
 import com.saham.hr_system.modules.expenses.service.ExpenseService;
+import com.saham.hr_system.modules.expenses.service.implementation.processor.ExpenseRequestProcessor;
+import com.saham.hr_system.modules.expenses.service.implementation.validator.ExpenseRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,45 +25,32 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final EmployeeRepository employeeRepository;
     private final ExpenseRepository expenseRepository;
     private final ExpenseItemRepository expenseItemRepository;
+    private final ExpenseRequestValidator expenseRequestValidator;
+    private final ExpenseRequestProcessor expenseRequestProcessor;
 
     @Autowired
-    public ExpenseServiceImpl(EmployeeRepository employeeRepository, ExpenseRepository expenseRepository, ExpenseItemRepository expenseItemRepository) {
+    public ExpenseServiceImpl(EmployeeRepository employeeRepository, ExpenseRepository expenseRepository, ExpenseItemRepository expenseItemRepository, ExpenseRequestValidator expenseRequestValidator, ExpenseRequestProcessor expenseRequestProcessor) {
         this.employeeRepository = employeeRepository;
         this.expenseRepository = expenseRepository;
         this.expenseItemRepository = expenseItemRepository;
+        this.expenseRequestValidator = expenseRequestValidator;
+        this.expenseRequestProcessor = expenseRequestProcessor;
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ExpenseResponseDto newExpense(String email, ExpenseRequestDto expenseRequestDto) {
         // Fetch the employee:
         Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
 
-        if(expenseRequestDto.getExpenseItems() == null || expenseRequestDto.getExpenseItems().isEmpty()){
-            throw new IllegalArgumentException("Expense must contain at least one item.");
-        }
+        // Validate the request dto:
+        expenseRequestValidator.validateExpenseRequest(expenseRequestDto);
 
         // Otherwise:
-        Expense expense = new Expense();
-        expense.setEmployee(employee);
-        expense.setIssueDate(expenseRequestDto.getIssueDate());
-
-        // process items:
-        List<ExpenseItem> items = processExpenseItems(expenseRequestDto.getExpenseItems());
-        // If processing went successfully, save items to DB:
-        expense.setItems(items);
-        expense.setCreatedAt(LocalDateTime.now());
-
-        assert items != null;
-        double totalAmount= calculateTotalAmount(items);
-
-        assert totalAmount > 0;
-        expense.setTotalAmount(totalAmount);
-
-        // save the new expense:
-        Expense savedExpense =  expenseRepository.save(expense);
-        return new ExpenseResponseDto(savedExpense);
+        // process the expense request:
+        Expense processedExpense = expenseRequestProcessor.processExpense(expenseRequestDto, employee);
+        return new ExpenseResponseDto(processedExpense);
     }
 
     // This function process each expense item and save it to the database

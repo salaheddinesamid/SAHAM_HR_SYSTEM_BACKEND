@@ -1,0 +1,54 @@
+package com.saham.hr_system.modules.expenses.service.implementation.processor;
+
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.expenses.dto.ExpenseItemRequest;
+import com.saham.hr_system.modules.expenses.dto.ExpenseRequestDto;
+import com.saham.hr_system.modules.expenses.model.Expense;
+import com.saham.hr_system.modules.expenses.model.ExpenseItem;
+import com.saham.hr_system.modules.expenses.repository.ExpenseItemRepository;
+import com.saham.hr_system.modules.expenses.repository.ExpenseRepository;
+import com.saham.hr_system.modules.expenses.utils.ExpenseUtils;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Component
+public class ExpenseRequestProcessor {
+
+    private final ExpenseRepository expenseRepository;
+    private final ExpenseItemRepository expenseItemRepository;
+    private final ExpenseUtils expenseUtils;
+
+    public ExpenseRequestProcessor(ExpenseRepository expenseRepository, ExpenseItemRepository expenseItemRepository, ExpenseUtils expenseUtils) {
+        this.expenseRepository = expenseRepository;
+        this.expenseItemRepository = expenseItemRepository;
+        this.expenseUtils = expenseUtils;
+    }
+
+    public Expense processExpense(ExpenseRequestDto expenseRequestDto, Employee employee) {
+
+        Expense expense = new Expense();
+        // process items:
+        List<ExpenseItemRequest> itemRequests = expenseRequestDto.getExpenseItems();
+        List<ExpenseItem> items = itemRequests
+                .stream()
+                .map(expenseItemRequest -> {
+                    ExpenseItem item = new ExpenseItem();
+                    item.setAmount(expenseItemRequest.getAmount());
+                    item.setDesignation(expenseItemRequest.getDesignation());
+                    return expenseItemRepository.save(item);
+                }).toList();
+        expense.setItems(items);
+        expense.setEmployee(employee);
+        expense.setCreatedAt(LocalDateTime.now());
+        expense.setIssueDate(expenseRequestDto.getIssueDate());
+
+        // calculate total amount:
+        double totalAmount = expenseUtils.calculateTotalExpenseItems(items);
+        expense.setTotalAmount(totalAmount);
+
+        // save the expense and return it
+        return expenseRepository.save(expense);
+    }
+}
