@@ -30,4 +30,16 @@ public class ExpenseController {
                 .status(200)
                 .body(response);
     }
+
+    @GetMapping("get-all")
+    public ResponseEntity<?> getAllExpenses(@RequestParam String email) {
+
+        // Act:
+        var response = expenseService.getAllExpenses(email);
+
+        // return HTTP 200 with response body
+        return ResponseEntity
+                .status(200)
+                .body(response);
+    }
 }

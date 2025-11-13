@@ -52,4 +52,18 @@ public class ExpenseServiceImpl implements ExpenseService {
         Expense processedExpense = expenseRequestProcessor.processExpense(expenseRequestDto, employee);
         return new ExpenseResponseDto(processedExpense);
     }
+
+    @Override
+    public List<ExpenseResponseDto> getAllExpenses(String email) {
+        // Get the employee:
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+
+        // Fetch all expenses from db:
+        List<Expense> expenses = expenseRepository.findAllByEmployee(employee);
+        // return response:
+        return expenses.stream()
+                .map(ExpenseResponseDto::new)
+                .toList();
+    }
 }
