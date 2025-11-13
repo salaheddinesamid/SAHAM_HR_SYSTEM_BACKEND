@@ -9,6 +9,7 @@ import com.saham.hr_system.modules.expenses.repository.ExpenseItemRepository;
 import com.saham.hr_system.modules.expenses.repository.ExpenseRepository;
 import com.saham.hr_system.modules.expenses.utils.ExpenseUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,29 +27,31 @@ public class ExpenseRequestProcessor {
         this.expenseUtils = expenseUtils;
     }
 
+    @Transactional
     public Expense processExpense(ExpenseRequestDto expenseRequestDto, Employee employee) {
 
         Expense expense = new Expense();
-        // process items:
-        List<ExpenseItemRequest> itemRequests = expenseRequestDto.getExpenseItems();
-        List<ExpenseItem> items = itemRequests
-                .stream()
-                .map(expenseItemRequest -> {
-                    ExpenseItem item = new ExpenseItem();
-                    item.setAmount(expenseItemRequest.getAmount());
-                    item.setDesignation(expenseItemRequest.getDesignation());
-                    return expenseItemRepository.save(item);
-                }).toList();
-        expense.setItems(items);
+
+        assert employee != null;
         expense.setEmployee(employee);
-        expense.setCreatedAt(LocalDateTime.now());
         expense.setIssueDate(expenseRequestDto.getIssueDate());
+        expense.setCreatedAt(LocalDateTime.now());
 
-        // calculate total amount:
-        double totalAmount = expenseUtils.calculateTotalExpenseItems(items);
-        expense.setTotalAmount(totalAmount);
+        List<ExpenseItem> items = expenseRequestDto.getExpenseItems().stream()
+                .map(req -> {
+                    ExpenseItem item = new ExpenseItem();
+                    item.setAmount(req.getAmount());
+                    item.setDesignation(req.getDesignation());
+                    item.setDate(req.getExpenseDate());
+                    item.setExpense(expense); // 👈 important
+                    return item;
+                })
+                .toList();
 
-        // save the expense and return it
+        expense.setItems(items);
+        expense.setTotalAmount(expenseUtils.calculateTotalExpenseItems(items));
+
         return expenseRepository.save(expense);
+
     }
 }

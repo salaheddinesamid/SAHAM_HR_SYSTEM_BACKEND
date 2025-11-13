@@ -16,12 +16,16 @@ public class ExpenseItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "date")
-    private LocalDate date;
-
-    @Column(name = "designation")
+    @Column(nullable = false)
     private String designation;
 
-    @Column(name = "amount")
+    @Column(nullable = false)
     private double amount;
+
+    @Column(name = "expense_date", nullable = false)
+    private LocalDate date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "expense_id", nullable = false)
+    private Expense expense;
 }

@@ -52,23 +52,4 @@ public class ExpenseServiceImpl implements ExpenseService {
         Expense processedExpense = expenseRequestProcessor.processExpense(expenseRequestDto, employee);
         return new ExpenseResponseDto(processedExpense);
     }
-
-    // This function process each expense item and save it to the database
-    private List<ExpenseItem> processExpenseItems(List<ExpenseItemRequest> itemRequests){
-        return itemRequests.stream()
-                .map(request -> {
-                    ExpenseItem item = new ExpenseItem();
-                    item.setAmount(request.getAmount());
-                    item.setDate(request.getExpenseDate());
-                    item.setDesignation(request.getDesignation());
-                    // save the expense item:
-                    return expenseItemRepository.save(item);
-                }).toList();
-    }
-
-    // This function takes a list of all expense items and returns the total amount
-    public double calculateTotalAmount(List<ExpenseItem> items){
-        return
-                items.stream().map(ExpenseItem::getAmount).reduce(0.0, Double::sum);
-    }
 }

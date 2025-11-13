@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,23 +20,23 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @Column(name = "issue_date")
+    @Column(name = "issue_date", nullable = false)
     private LocalDate issueDate;
 
-    @Column(name = "total_amount")
+    @Column(name = "total_amount", nullable = false)
     private double totalAmount;
 
     @Column(name = "balance")
     private double balance;
 
-    @OneToMany
-    @JoinColumn(name = "items")
-    private List<ExpenseItem> items;
+    @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExpenseItem> items = new ArrayList<>();
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 }
+
