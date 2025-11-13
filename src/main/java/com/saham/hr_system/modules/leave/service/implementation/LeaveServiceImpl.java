@@ -172,6 +172,7 @@ public class LeaveServiceImpl implements LeaveService {
         leave.setFromDate(leaveRequest.getStartDate());
         leave.setToDate(leaveRequest.getEndDate());
         leave.setEmployee(leaveRequest.getEmployee());
+        leave.setLeaveType(LeaveType.ANNUAL);
 
         // Do not Decrease employee balance:
         //employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() - leaveRequest.getTotalDays());
@@ -191,6 +192,7 @@ public class LeaveServiceImpl implements LeaveService {
         leave.setFromDate(leaveRequest.getStartDate());
         leave.setToDate(leaveRequest.getEndDate());
         leave.setEmployee(leaveRequest.getEmployee());
+        leave.setLeaveType(LeaveType.EXCEPTIONAL);
 
         // Decrease employee balance:
         employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() - leaveRequest.getTotalDays());

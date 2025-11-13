@@ -24,6 +24,10 @@ public class Leave {
     @Column(name = "from_date", nullable = false)
     private LocalDate fromDate;
 
+    @Column(name = "leave_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private LeaveType leaveType;
+
     @Column(name= "to_date", nullable = false)
     private LocalDate toDate;
 }

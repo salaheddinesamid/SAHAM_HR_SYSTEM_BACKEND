@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.employees.model;
 
+import com.saham.hr_system.modules.leave.model.Leave;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,6 +47,10 @@ public class Employee implements UserDetails {
     @Column(name = "join_date")
     private LocalDate joinDate;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private EmployeeStatus status;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "employee_roles",
@@ -52,6 +58,9 @@ public class Employee implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Leave> leaves = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "managed_by")
@@ -68,7 +77,7 @@ public class Employee implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() {
+    public boolean isAccountNonExpired()  {
         return UserDetails.super.isAccountNonExpired();
     }
 
