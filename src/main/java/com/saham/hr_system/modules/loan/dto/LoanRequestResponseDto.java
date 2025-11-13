@@ -11,9 +11,6 @@ public class LoanRequestResponseDto {
     private Long id;
     private String requestedBy;
     private double amount;
-    private String paymentModularity;
-    private Integer numberOfDeadlines;
-    private LocalDate collectionDate;
     private LocalDateTime issueDate;
     private boolean isApprovedByHr;
     private boolean isApprovedByFinanceDepartment;
@@ -25,9 +22,6 @@ public class LoanRequestResponseDto {
         this.id = loanRequest.getRequestId();
         this.requestedBy = loanRequest.getEmployee().getFullName();
         this.amount = loanRequest.getAmount();
-        this.paymentModularity = loanRequest.getPaymentModularity();
-        this.numberOfDeadlines = loanRequest.getNumberOfDeadlines();
-        this.collectionDate = loanRequest.getCollectionDate();
         this.isApprovedByHr = loanRequest.isApprovedByHrDepartment();
         this.isApprovedByFinanceDepartment = loanRequest.isApprovedByFinanceDepartment();
         this.status = loanRequest.getStatus().toString();

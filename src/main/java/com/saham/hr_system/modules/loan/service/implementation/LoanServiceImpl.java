@@ -36,8 +36,6 @@ public class LoanServiceImpl implements LoanService {
         loanRequest.setEmployee(employee);
         loanRequest.setAmount(requestDto.getAmount());
         loanRequest.setMotif(requestDto.getMotif());
-        loanRequest.setCollectionDate(requestDto.getCollectionDate());
-        loanRequest.setPaymentModularity(requestDto.getPaymentModularity());
         loanRequest.setApprovedByFinanceDepartment(false);
         loanRequest.setApprovedByFinanceDepartment(false);
 

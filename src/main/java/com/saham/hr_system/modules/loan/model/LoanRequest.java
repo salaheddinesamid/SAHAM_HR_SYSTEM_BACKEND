@@ -26,17 +26,12 @@ public class LoanRequest {
     @Column(name = "amount")
     private double amount;
 
-    @Column(name = "payment_modularity")
-    private String paymentModularity;
-
-    @Column(name = "number_of_deadlines")
-    private Integer numberOfDeadlines;
-
-    @Column(name = "collection_date")
-    private LocalDate collectionDate;
-
     @Column(name = "issue_date")
     private LocalDateTime issueDate;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private LoanType type;
 
     @Column(name = "approved_by_hr_department")
     private boolean approvedByHrDepartment;
