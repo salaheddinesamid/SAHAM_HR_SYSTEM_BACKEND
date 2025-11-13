@@ -66,4 +66,16 @@ public class DocumentServiceImpl implements DocumentService {
                 .map(DocumentRequestResponseDto::new)
                 .toList();
     }
+
+    @Override
+    public List<DocumentRequestResponseDto> getAllEmployeesRequests() {
+        // Fetch document requests that are in process for approval:
+        List<DocumentRequest> documentRequests =
+                documentRequestRepository.findAllByStatus(DocumentRequestStatus.IN_PROCESS);
+        // return mapped response:
+        return
+                documentRequests.stream()
+                        .map(DocumentRequestResponseDto::new)
+                        .toList();
+    }
 }

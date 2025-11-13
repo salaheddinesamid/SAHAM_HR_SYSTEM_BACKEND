@@ -20,4 +20,10 @@ public interface DocumentService {
      * @return list of document requests.
      */
     List<DocumentRequestResponseDto> getAllDocumentRequests(String email);
+
+    /**
+     * This function returns all document requests that needs HR approval
+     * @return list of document requests
+     */
+    List<DocumentRequestResponseDto> getAllEmployeesRequests();
 }

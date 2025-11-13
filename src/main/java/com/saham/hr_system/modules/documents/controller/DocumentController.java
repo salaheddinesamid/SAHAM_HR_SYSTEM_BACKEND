@@ -31,4 +31,11 @@ public class DocumentController {
                 .status(200)
                 .body(documentService.getAllDocumentRequests(email));
     }
+
+    @GetMapping("employees/get-all")
+    public ResponseEntity<?> getEmployeesDocumentRequests(){
+        return ResponseEntity
+                .status(200)
+                .body(documentService.getAllEmployeesRequests());
+    }
 }
