@@ -145,12 +145,6 @@ public class LeaveServiceImpl implements LeaveService {
                 leaveRequestRepository.findById(leaveRequestId).orElseThrow();
 
 
-
-        // Check if the request has been approved by manager:
-        if(!leaveRequest.isApprovedByManager()){
-            throw new LeaveRequestNotApprovedBySupervisorException("Leave request has not been approved by supervisor yet.");
-        }
-
         // Get the employee:
         Employee employee  = leaveRequest.getEmployee();
 
@@ -158,7 +152,40 @@ public class LeaveServiceImpl implements LeaveService {
         EmployeeBalance employeeBalance =
                 employeeBalanceRepository.findByEmployee(employee).orElseThrow();
 
-        // Otherwise, approve the request and create new leave:
+        if(leaveRequest.getTypeOfLeave().equals(LeaveType.ANNUAL)){
+            approveAnnualLeave(leaveRequest, employeeBalance);
+        }
+
+        if(leaveRequest.getTypeOfLeave().equals(LeaveType.EXCEPTIONAL)){
+            approveExceptionalLeave(leaveRequest, employeeBalance);
+        }
+
+        // Notify the employee:
+        notifyEmployee(employee.getEmail());
+
+    }
+
+    private void approveAnnualLeave(LeaveRequest leaveRequest, EmployeeBalance employeeBalance) {
+
+        leaveRequest.setApprovedByHr(true);
+        Leave leave = new Leave();
+        leave.setFromDate(leaveRequest.getStartDate());
+        leave.setToDate(leaveRequest.getEndDate());
+        leave.setEmployee(leaveRequest.getEmployee());
+
+        // Do not Decrease employee balance:
+        //employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() - leaveRequest.getTotalDays());
+        // save the balance:
+        employeeBalanceRepository.save(employeeBalance);
+
+        // save the leave request:
+        leaveRequestRepository.save(leaveRequest);
+
+        // save the leave:
+        leaveRepository.save(leave);
+    }
+
+    private void approveExceptionalLeave(LeaveRequest leaveRequest, EmployeeBalance employeeBalance) {
         leaveRequest.setApprovedByHr(true);
         Leave leave = new Leave();
         leave.setFromDate(leaveRequest.getStartDate());
@@ -175,10 +202,6 @@ public class LeaveServiceImpl implements LeaveService {
 
         // save the leave:
         leaveRepository.save(leave);
-
-        // Notify the employee:
-        notifyEmployee(employee.getEmail());
-
     }
 
     @Override
