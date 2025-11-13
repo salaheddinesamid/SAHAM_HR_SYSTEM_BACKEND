@@ -26,7 +26,7 @@ public class LeaveRequestResponse {
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
         this.requestDate = request.getRequestDate();
-        this.type = request.getTypeOfLeave();
+        this.type = request.getTypeOfLeave().toString();
         this.status = request.getStatus().name();
         this.totalDays = request.getTotalDays();
     }

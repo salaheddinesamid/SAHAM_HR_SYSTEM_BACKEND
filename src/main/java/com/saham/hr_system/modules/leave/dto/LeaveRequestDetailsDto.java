@@ -23,8 +23,8 @@ public class LeaveRequestDetailsDto {
         this.requestedBy = new EmployeeDetailsDto(employee);
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
-        this.type = request.getTypeOfLeave();
-        this.status = request.getTypeOfLeave();
+        this.type = request.getTypeOfLeave().toString();
+        this.status = request.getTypeOfLeave().toString();
     }
 }
 

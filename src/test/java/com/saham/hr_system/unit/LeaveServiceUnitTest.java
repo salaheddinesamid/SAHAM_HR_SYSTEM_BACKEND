@@ -106,6 +106,7 @@ public class LeaveServiceUnitTest {
                 LocalDate.of(2024, 7, 1),
                 LocalDate.of(2024, 7, 5),
                 "ANNUAL",
+                "",
                 ""
         );
 

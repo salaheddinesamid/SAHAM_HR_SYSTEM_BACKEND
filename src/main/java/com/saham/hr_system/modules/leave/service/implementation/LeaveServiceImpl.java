@@ -13,6 +13,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveService;
@@ -63,7 +64,8 @@ public class LeaveServiceImpl implements LeaveService {
         leaveRequest.setEndDate(leaveRequestDto.getEndDate());
         leaveRequest.setEmployee(employee);
         leaveRequest.setTotalDays(totalDays);
-        leaveRequest.setTypeOfLeave(leaveRequestDto.getType());
+        leaveRequest.setTypeOfLeave(LeaveType.valueOf(leaveRequestDto.getType()));
+        leaveRequest.setTypeDetails(leaveRequestDto.getTypeDetails());
         leaveRequest.setRequestDate(LocalDateTime.now());
         leaveRequest.setApprovedByManager(false);
         leaveRequest.setApprovedByHr(false);

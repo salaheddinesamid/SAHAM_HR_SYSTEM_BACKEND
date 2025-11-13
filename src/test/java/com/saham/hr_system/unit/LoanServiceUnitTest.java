@@ -57,7 +57,7 @@ public class LoanServiceUnitTest {
         // Arrange:
         LoanRequestDto requestDto = new LoanRequestDto();
         requestDto.setAmount(2000);
-        requestDto.setCollectionDate(LocalDate.of(2025,12,1));
+        //requestDto.setCollectionDate(LocalDate.of(2025,12,1));
         requestDto.setLoanType("");
         requestDto.setMotif("");
 
@@ -76,7 +76,7 @@ public class LoanServiceUnitTest {
         // Arrange:
         LoanRequestDto requestDto = new LoanRequestDto();
         requestDto.setAmount(2000);
-        requestDto.setCollectionDate(LocalDate.of(2025,12,1));
+        //requestDto.setCollectionDate(LocalDate.of(2025,12,1));
         requestDto.setLoanType("");
         requestDto.setMotif("");
 

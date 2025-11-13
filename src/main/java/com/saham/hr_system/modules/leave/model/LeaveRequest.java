@@ -36,7 +36,11 @@ public class LeaveRequest {
     private LocalDateTime requestDate;
 
     @Column(name= "type_of_leave", nullable = false)
-    private String typeOfLeave;
+    @Enumerated(EnumType.STRING)
+    private LeaveType typeOfLeave;
+
+    @Column(name = "type_details")
+    private String typeDetails;
 
     @Column(name = "status", nullable = true)
     @Enumerated(EnumType.STRING)

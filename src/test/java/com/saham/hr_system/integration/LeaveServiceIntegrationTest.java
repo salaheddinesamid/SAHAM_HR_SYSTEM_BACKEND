@@ -8,6 +8,7 @@ import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -137,7 +138,7 @@ public class LeaveServiceIntegrationTest {
         leaveRequest.setEndDate(LocalDate.of(2025, 12, 5));
         leaveRequest.setEmployee(sub);
         leaveRequest.setRequestDate(LocalDateTime.now());
-        leaveRequest.setTypeOfLeave("");
+        leaveRequest.setTypeOfLeave(LeaveType.ANNUAL);
         leaveRequest.setApprovedByManager(true);
         leaveRequest.setApprovedByHr(false);
 
@@ -173,7 +174,7 @@ public class LeaveServiceIntegrationTest {
         leaveRequest.setEndDate(LocalDate.of(2025, 12, 5));
         leaveRequest.setEmployee(sub);
         leaveRequest.setRequestDate(LocalDateTime.now());
-        leaveRequest.setTypeOfLeave("");
+        leaveRequest.setTypeOfLeave(LeaveType.ANNUAL);
         leaveRequest.setApprovedByManager(false);
         leaveRequest.setApprovedByHr(false);
 
