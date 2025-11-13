@@ -30,6 +30,9 @@ public class Expense {
     @Column(name = "total_amount", nullable = false)
     private double totalAmount;
 
+    @Column(name = "motif")
+    private String motif;
+
     @Column(name = "balance")
     private double balance;
 

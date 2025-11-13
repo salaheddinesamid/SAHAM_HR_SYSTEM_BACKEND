@@ -16,12 +16,16 @@ public class ExpenseResponseDto {
     private LocalDate date;
     private LocalDateTime createdAt;
     private List<ExpenseItemResponse> expenseItems;
+    private String motif;
+    private double totalAmount;
 
     public ExpenseResponseDto(Expense expense) {
         this.id = expense.getId();
         this.issueBy = expense.getEmployee().getFullName();
         this.date = expense.getIssueDate();
         this.createdAt = expense.getCreatedAt();
+        this.totalAmount = expense.getTotalAmount();
+        this.motif = expense.getMotif();
         this.expenseItems =
                 expense.getItems().stream()
                         .map(ExpenseItemResponse::new).toList();
