@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class DocumentRequestResponseDto {
 
     private Long id;
+    private String requestedBy;
     private String documents;
     private LocalDateTime requestDate;
     private String status;
@@ -17,6 +18,7 @@ public class DocumentRequestResponseDto {
             DocumentRequest request
     ) {
        this.id = request.getRequestId();
+       this.requestedBy = request.getEmployee().getFullName();
        this.documents = request.getDocuments();
        this.requestDate = request.getRequestDate();
        this.status = request.getStatus().toString();
