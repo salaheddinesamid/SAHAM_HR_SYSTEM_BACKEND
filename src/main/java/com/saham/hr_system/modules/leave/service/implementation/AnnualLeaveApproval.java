@@ -56,6 +56,10 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // save the balance:
         employeeBalanceRepository.save(employeeBalance);
 
+        // update the leave request:
+        leaveRequest.setStatus(LeaveRequestStatus.APPROVED);
+        leaveRequestRepository.save(leaveRequest);
+
         // create new leave:
         Leave leave = new Leave();
         leave.setEmployee(employee);
@@ -78,6 +82,9 @@ public class AnnualLeaveApproval implements LeaveApproval {
 
         // save the request:
         leaveRequestRepository.save(leaveRequest);
+
+        // notify the employee
+        // notify the HR
     }
 
     @Override
