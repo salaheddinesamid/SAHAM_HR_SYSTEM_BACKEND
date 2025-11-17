@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.leave.service.implementation;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
+import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
@@ -56,16 +57,45 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
 
     @Override
     public void approveSubordinate(Long requestId) {
+        // fetch the request from db:
+        LeaveRequest leaveRequest =leaveRequestRepository.findById(requestId).orElseThrow();
 
+        // set the request:
+        leaveRequest.setApprovedByManager(true);
+
+        // save the request:
+        leaveRequestRepository.save(leaveRequest);
+        // notify the employee:
+        // notify the HR:
     }
 
     @Override
     public void rejectSubordinate(Long requestId) {
+        // fetch the request from db:
+        LeaveRequest leaveRequest =leaveRequestRepository.findById(requestId).orElseThrow();
 
+        // set the request:
+        leaveRequest.setApprovedByManager(false);
+        // if the request is rejected by manager, it is considered as final rejection
+        leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
+
+        // save the request:
+        leaveRequestRepository.save(leaveRequest);
+        // notify the employee:
     }
 
     @Override
     public void rejectLeave(Long requestId) {
+        // Fetch the request:
+        LeaveRequest leaveRequest =
+                leaveRequestRepository.findById(requestId).orElseThrow();
 
+        // set the leave request:
+        leaveRequest.setApprovedByManager(false);
+        leaveRequest.setApprovedByManager(false);
+        leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
+
+        // save the leave request:
+        leaveRequestRepository.save(leaveRequest);
     }
 }

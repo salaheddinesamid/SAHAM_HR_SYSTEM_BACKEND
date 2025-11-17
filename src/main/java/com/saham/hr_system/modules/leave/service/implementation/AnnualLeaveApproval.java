@@ -100,7 +100,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
 
         // Otherwise:
         leaveRequest.setApprovedByManager(false);
-        // leaveRequest.setStatus(LeaveRequestStatus.REJECTED); (the leave request cannot be rejected unless is rejected by HR and Manager)
+        leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
 
         leaveRequestRepository.save(leaveRequest);
 
