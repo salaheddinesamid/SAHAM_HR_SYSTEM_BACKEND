@@ -30,4 +30,7 @@ public class Leave {
 
     @Column(name= "to_date", nullable = false)
     private LocalDate toDate;
+
+    @Column(name = "total_days")
+    private double totalDays;
 }

@@ -14,6 +14,7 @@ public class LeaveRequestDetailsDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private String type;
+    private String document;
     private String status;
 
     public LeaveRequestDetailsDto(
@@ -24,6 +25,7 @@ public class LeaveRequestDetailsDto {
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
         this.type = request.getTypeOfLeave().toString();
+        this.document = request.getMedicalCertificatePath();
         this.status = request.getTypeOfLeave().toString();
     }
 }

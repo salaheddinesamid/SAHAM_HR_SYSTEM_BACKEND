@@ -1,6 +1,118 @@
 package com.saham.hr_system.modules.leave.service.implementation;
 
+import com.saham.hr_system.exception.LeaveRequestAlreadyApprovedException;
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.employees.model.EmployeeBalance;
+import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
+import com.saham.hr_system.modules.leave.model.Leave;
+import com.saham.hr_system.modules.leave.model.LeaveRequest;
+import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
+import com.saham.hr_system.modules.leave.model.LeaveType;
+import com.saham.hr_system.modules.leave.repository.LeaveRepository;
+import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AnnualLeaveApproval implements LeaveApproval {
+
+    private final LeaveRequestRepository leaveRequestRepository;
+    private final LeaveRepository leaveRepository;
+    private final EmployeeBalanceRepository employeeBalanceRepository;
+
+    @Autowired
+    public AnnualLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, EmployeeBalanceRepository employeeBalanceRepository) {
+        this.leaveRequestRepository = leaveRequestRepository;
+        this.leaveRepository = leaveRepository;
+        this.employeeBalanceRepository = employeeBalanceRepository;
+    }
+
+    @Override
+    public boolean supports(String leaveType) {
+        return LeaveType.ANNUAL.equals(LeaveType.valueOf(leaveType));
+    }
+
+    @Override
+    public Leave approve(Long requestId) {
+        // Fetch the request:
+        LeaveRequest leaveRequest =
+                leaveRequestRepository.findById(requestId).orElseThrow();
+
+
+        // Get the employee:
+        Employee employee  = leaveRequest.getEmployee();
+
+        // Fetch employee balance:
+        EmployeeBalance employeeBalance =
+                employeeBalanceRepository.findByEmployee(employee).orElseThrow();
+
+        double totalDays =
+                leaveRequest.getTotalDays();
+
+        // subtract total days from the balance
+        employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() - totalDays);
+        employeeBalance.setUsedBalance(employeeBalance.getUsedBalance() + totalDays);
+        // save the balance:
+        employeeBalanceRepository.save(employeeBalance);
+
+        // create new leave:
+        Leave leave = new Leave();
+        leave.setEmployee(employee);
+        leave.setLeaveType(LeaveType.ANNUAL);
+        leave.setFromDate(leaveRequest.getStartDate());
+        leave.setToDate(leaveRequest.getEndDate());
+
+        return leaveRepository.save(leave);
+    }
+
+    @Override
+    public void approveSubordinate(Long requestId) {
+        // Fetch the request:
+        LeaveRequest leaveRequest =
+                leaveRequestRepository.findById(requestId)
+                        .orElseThrow();
+
+        // approve the request:
+        leaveRequest.setApprovedByManager(true);
+
+        // save the request:
+        leaveRequestRepository.save(leaveRequest);
+    }
+
+    @Override
+    public void rejectSubordinate(Long requestId) {
+        // Fetch leave request:
+        LeaveRequest leaveRequest = leaveRequestRepository
+                .findById(requestId).orElseThrow();
+
+        // Check if the request has already been approved:
+        if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){
+            throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());
+        }
+
+        // Otherwise:
+        leaveRequest.setApprovedByManager(false);
+        // leaveRequest.setStatus(LeaveRequestStatus.REJECTED); (the leave request cannot be rejected unless is rejected by HR and Manager)
+
+        leaveRequestRepository.save(leaveRequest);
+
+    }
+
+    @Override
+    public void rejectLeave(Long requestId) {
+        // Fetch the request:
+        LeaveRequest leaveRequest = leaveRequestRepository
+                .findById(requestId)
+                .orElseThrow();
+
+        // Check if the request has already been approved:
+        if(leaveRequest.getStatus().equals(LeaveRequestStatus.REJECTED)){
+            throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());
+        }
+
+        // Otherwise:
+        leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
+        leaveRequestRepository.save(leaveRequest);
+    }
 }

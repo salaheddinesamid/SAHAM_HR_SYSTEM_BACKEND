@@ -2,10 +2,13 @@ package com.saham.hr_system.modules.leave.controller;
 
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
+import com.saham.hr_system.modules.leave.service.implementation.LeaveDocumentStorageServiceImpl;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,16 +17,32 @@ import java.util.Map;
 public class LeaveController {
 
     private final LeaveServiceImpl leaveService;
+    private final LeaveDocumentStorageServiceImpl documentService;
 
-    public LeaveController(LeaveServiceImpl leaveService) {
+    public LeaveController(LeaveServiceImpl leaveService, LeaveDocumentStorageServiceImpl documentService) {
         this.leaveService = leaveService;
+        this.documentService = documentService;
     }
 
+    /*
     @PostMapping("apply")
     public ResponseEntity<?> applyForLeave(@RequestParam String email,
                                            @RequestBody LeaveRequestDto leaveRequestDto
                                            ){
         leaveService.requestLeave(email,leaveRequestDto);
+        return ResponseEntity
+                .status(200)
+                .body("Leave applied successfully");
+    }
+
+
+     */
+    @PostMapping("apply")
+    public ResponseEntity<?> applyForLeave(@RequestParam String email,
+                                           @RequestPart("requestDto") LeaveRequestDto requestDto,
+                                           @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws IOException {
+        leaveService.requestLeave(email,requestDto, file);
         return ResponseEntity
                 .status(200)
                 .body("Leave applied successfully");
@@ -90,5 +109,17 @@ public class LeaveController {
         return
                 ResponseEntity.status(200)
                         .body(leaveService.getAllSubordinatesRequests(email));
+    }
+
+    // Upload medical certificates:
+    @PostMapping("/medical-certificate/upload")
+    public ResponseEntity<?> handleUpload(@RequestParam("file") MultipartFile file) throws IOException {
+        try{
+            String fileName = documentService.upload(20L,file);
+            return ResponseEntity.status(200).body(fileName);
+        }catch (Exception e){
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+
     }
 }

@@ -52,6 +52,9 @@ public class LeaveRequest {
     @Column(name = "approved_by_hr")
     private boolean approvedByHr;
 
+    @Column(name = "medical_certificate_path")
+    private String medicalCertificatePath;
+
     public double getTotalDays() {
         return totalDays != null ? totalDays : 0.0;
     }

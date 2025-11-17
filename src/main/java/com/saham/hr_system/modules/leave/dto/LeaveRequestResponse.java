@@ -16,6 +16,7 @@ public class LeaveRequestResponse {
     private double totalDays;
     private LocalDateTime requestDate;
     private String type;
+    private String document;
     private String status;
 
     public LeaveRequestResponse(
@@ -28,6 +29,7 @@ public class LeaveRequestResponse {
         this.requestDate = request.getRequestDate();
         this.type = request.getTypeOfLeave().toString();
         this.status = request.getStatus().name();
+        this.document = request.getMedicalCertificatePath();
         this.totalDays = request.getTotalDays();
     }
 
