@@ -4,6 +4,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 public interface LeaveDocumentStorageService {
 
@@ -16,7 +17,7 @@ public interface LeaveDocumentStorageService {
     /**
      *
      */
-    Resource download(String path);
+    Resource download(String path) throws MalformedURLException;
 
     /**
      *

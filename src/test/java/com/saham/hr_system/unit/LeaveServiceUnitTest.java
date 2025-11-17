@@ -115,7 +115,7 @@ public class LeaveServiceUnitTest {
 
         when(leaveRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        leaveService.requestLeave(employee.getEmail(), requestDto);
+        leaveServic.requestLeave(employee.getEmail(), requestDto);
 
         verify(leaveRequestRepository, times(1)).save(any());
     }
