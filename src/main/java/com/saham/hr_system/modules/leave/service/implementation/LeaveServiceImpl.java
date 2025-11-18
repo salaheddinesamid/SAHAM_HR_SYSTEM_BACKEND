@@ -1,19 +1,13 @@
 package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
-import com.saham.hr_system.exception.InsufficientBalanceException;
-import com.saham.hr_system.exception.LeaveRequestAlreadyApprovedException;
 import com.saham.hr_system.exception.UserNotFoundException;
-import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
-import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
-import com.saham.hr_system.modules.leave.model.LeaveType;
-import com.saham.hr_system.modules.leave.repository.LeaveRepository;
+
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
@@ -24,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
