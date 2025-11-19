@@ -2,9 +2,13 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestEmailSender;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -15,8 +19,6 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
     @Autowired
     private JavaMailSender javaEmailSender;
 
-    @Autowired
-    private TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
     private String from;
@@ -24,7 +26,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
     @Override
     public String generateEmployeeContent(LeaveRequest leaveRequest) {
         Context context = new Context();
-        return templateEngine.process("leave-requested", context);
+        return null;
     }
 
     @Override
@@ -38,10 +40,18 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
      * The manager will receive a message of notification.
      */
     @Override
-    public void send() {
-        String employeeEmail = "";
+    public void send() throws MessagingException {
+        String employeeEmail = "salaheddine.samid@medjoolstar.com";
         String managerEmail = "";
+        MimeMessage message = javaEmailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, "UTF-8");
+        sendToEmployee(from, employeeEmail, "Leave Request Submitted", "Your leave request has been submitted.");
+        javaEmailSender.set
+        mimeMessageHelper.setTo(employeeEmail);
+        mimeMessageHelper.setFrom(from);
+        mimeMessageHelper.setSubject("Leave Request Submission");
 
+        javaEmailSender.send(message);
     }
 
     /**

@@ -11,6 +11,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,13 +25,15 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
     private final EmployeeRepository employeeRepository;
     private final LeaveRequestRepository leaveRequestRepository;
     private final EmployeeBalanceRepository employeeBalanceRepository;
+    private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveDocumentStorageServiceImpl leaveDocumentStorageService;
 
     @Autowired
-    public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveDocumentStorageServiceImpl leaveDocumentStorageService) {
+    public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveDocumentStorageServiceImpl leaveDocumentStorageService) {
         this.employeeRepository = employeeRepository;
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
+        this.leaveRequestEmailSender = leaveRequestEmailSender;
         this.leaveDocumentStorageService = leaveDocumentStorageService;
     }
 
@@ -40,7 +43,7 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
     }
 
     @Override
-    public LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) throws IOException {
+    public LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) throws IOException, MessagingException {
         // fetch the employee from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow();
@@ -73,6 +76,9 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
             String filePath = leaveDocumentStorageService.upload(employee.getId(),file);
             leaveRequest.setMedicalCertificatePath(filePath);
         }
+
+        // send email:
+        leaveRequestEmailSender.send();
 
         // save the request:
         return leaveRequestRepository.save(leaveRequest);

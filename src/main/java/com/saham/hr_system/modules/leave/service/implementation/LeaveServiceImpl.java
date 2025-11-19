@@ -12,6 +12,7 @@ import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
 import com.saham.hr_system.modules.leave.service.LeaveService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Override
     @Transactional
-    public void requestLeave(String email , LeaveRequestDto leaveRequestDto, MultipartFile file) throws IOException {
+    public void requestLeave(String email , LeaveRequestDto leaveRequestDto, MultipartFile file) throws IOException, MessagingException {
         // validate the request fields:
         leaveRequestValidator.validate(leaveRequestDto, file);
         // process the request

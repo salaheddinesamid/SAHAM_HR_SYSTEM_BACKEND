@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.leave.service;
 
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
+import jakarta.mail.MessagingException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public interface LeaveService {
      * Request leave for an employee.
      * @param leaveRequestDto
      */
-    void requestLeave(String email, LeaveRequestDto leaveRequestDto, MultipartFile file) throws IOException;
+    void requestLeave(String email, LeaveRequestDto leaveRequestDto, MultipartFile file) throws IOException, MessagingException;
 
     /**
      * Get all leave requests made by an employee.

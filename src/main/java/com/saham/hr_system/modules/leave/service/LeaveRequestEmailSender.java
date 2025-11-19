@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.leave.service;
 
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
+import jakarta.mail.MessagingException;
 
 public interface LeaveRequestEmailSender {
 
@@ -10,5 +11,5 @@ public interface LeaveRequestEmailSender {
     /**
      * This function send emails.
      */
-    void send();
+    void send() throws MessagingException;
 }

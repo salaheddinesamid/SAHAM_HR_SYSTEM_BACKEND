@@ -11,6 +11,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,12 +23,14 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeBalanceRepository employeeBalanceRepository;
+    private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveRequestRepository leaveRequestRepository;
 
     @Autowired
-    public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestRepository leaveRequestRepository) {
+    public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRepository leaveRequestRepository) {
         this.employeeRepository = employeeRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
+        this.leaveRequestEmailSender = leaveRequestEmailSender;
         this.leaveRequestRepository = leaveRequestRepository;
     }
 
@@ -37,7 +40,7 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     }
 
     @Override
-    public LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) {
+    public LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) throws MessagingException {
         // fetch the employee from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow();
@@ -63,6 +66,8 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
         leaveRequest.setApprovedByManager(false);
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
+
+        leaveRequestEmailSender.send();
 
         // save the request:
         return leaveRequestRepository.save(leaveRequest);

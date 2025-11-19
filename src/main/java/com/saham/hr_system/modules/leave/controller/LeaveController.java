@@ -4,6 +4,7 @@ import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveDocumentStorageServiceImpl;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
+import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +42,7 @@ public class LeaveController {
     public ResponseEntity<?> applyForLeave(@RequestParam String email,
                                            @RequestPart("requestDto") LeaveRequestDto requestDto,
                                            @RequestPart(value = "file", required = false) MultipartFile file
-    ) throws IOException {
+    ) throws IOException, MessagingException {
         leaveService.requestLeave(email,requestDto, file);
         return ResponseEntity
                 .status(200)
