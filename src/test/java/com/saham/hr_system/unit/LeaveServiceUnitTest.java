@@ -11,13 +11,19 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
+import com.saham.hr_system.modules.leave.service.implementation.DefaultLeaveRequestProcessor;
+import com.saham.hr_system.modules.leave.service.implementation.ExceptionalLeaveRequestProcessor;
+import com.saham.hr_system.modules.leave.service.implementation.LeaveRequestValidatorImpl;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +42,15 @@ public class LeaveServiceUnitTest {
 
     @Mock
     private EmployeeBalanceRepository employeeBalanceRepository;
+
+    @Mock
+    private LeaveRequestValidatorImpl leaveRequestValidator;
+
+    @Mock
+    private DefaultLeaveRequestProcessor defaultLeaveRequestProcessor;
+
+    @Mock
+    private ExceptionalLeaveRequestProcessor exceptionalLeaveRequestProcessor;
 
 
     private Employee employee;
@@ -98,8 +113,9 @@ public class LeaveServiceUnitTest {
 
     }
 
+    // To be rewritten due to code changes:
     @Test
-    void testRequestLeave() {
+    void testRequestLeave() throws IOException {
 
         // Mock Request DTO:
         LeaveRequestDto requestDto = new LeaveRequestDto(
@@ -110,12 +126,14 @@ public class LeaveServiceUnitTest {
                 ""
         );
 
+        MultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "test".getBytes());
+
         when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
         when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
 
         when(leaveRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        leaveService.requestLeave(employee.getEmail(), requestDto);
+        leaveService.requestLeave(employee.getEmail(), requestDto, file);
 
         verify(leaveRequestRepository, times(1)).save(any());
     }
@@ -133,7 +151,7 @@ public class LeaveServiceUnitTest {
 
         // Act & Assert
         assertThrows(InsufficientBalanceException.class,
-                () -> leaveService.requestLeave("Ciryane@saham.com", requestDto));
+                () -> leaveService.requestLeave("Ciryane@saham.com", requestDto, null));
         verify(leaveRequestRepository, never()).save(any());
     }
 
@@ -149,7 +167,7 @@ public class LeaveServiceUnitTest {
         when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
 
         // Act:
-        assertThrows(UserNotFoundException.class, ()-> leaveService.requestLeave("test@example.com", leaveRequestDto));
+        assertThrows(UserNotFoundException.class, ()-> leaveService.requestLeave("test@example.com", leaveRequestDto, null));
 
     }
 
