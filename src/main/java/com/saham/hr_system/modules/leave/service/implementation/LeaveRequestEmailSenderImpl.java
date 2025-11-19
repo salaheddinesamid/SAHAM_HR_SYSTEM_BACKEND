@@ -46,7 +46,6 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         MimeMessage message = javaEmailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, "UTF-8");
         sendToEmployee(from, employeeEmail, "Leave Request Submitted", "Your leave request has been submitted.");
-        javaEmailSender.set
         mimeMessageHelper.setTo(employeeEmail);
         mimeMessageHelper.setFrom(from);
         mimeMessageHelper.setSubject("Leave Request Submission");
