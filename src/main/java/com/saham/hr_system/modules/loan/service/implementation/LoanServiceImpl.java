@@ -7,6 +7,8 @@ import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
+import com.saham.hr_system.modules.loan.service.LoanRequestProcessor;
+import com.saham.hr_system.modules.loan.service.LoanRequestQueryServiceImpl;
 import com.saham.hr_system.modules.loan.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,54 +20,37 @@ public class LoanServiceImpl implements LoanService {
 
     private final EmployeeRepository employeeRepository;
     private final LoanRequestRepository loanRequestRepository;
+    private final List<LoanRequestProcessor> processors;
+    private final LoanRequestQueryServiceImpl queryService;
 
     @Autowired
-    public LoanServiceImpl(EmployeeRepository employeeRepository, LoanRequestRepository loanRequestRepository) {
+    public LoanServiceImpl(EmployeeRepository employeeRepository, LoanRequestRepository loanRequestRepository, List<LoanRequestProcessor> processors, LoanRequestQueryServiceImpl queryService) {
         this.employeeRepository = employeeRepository;
         this.loanRequestRepository = loanRequestRepository;
+        this.processors = processors;
+        this.queryService = queryService;
     }
 
     @Override
-    public void requestLoan(String email, LoanRequestDto requestDto) {
+    public void requestLoan(String email, LoanRequestDto requestDto) throws Exception {
         // Fetch the employee:
         Employee employee = employeeRepository
                 .findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
+        // find the processor:
+        LoanRequestProcessor processor =
+                processors.stream().filter(p -> p.supports(requestDto.getLoanType())).findFirst().orElse(null);
 
-        // Create new loan request:
-        LoanRequest loanRequest = new LoanRequest();
-        loanRequest.setEmployee(employee);
-        loanRequest.setAmount(requestDto.getAmount());
-        loanRequest.setMotif(requestDto.getMotif());
-        loanRequest.setApprovedByFinanceDepartment(false);
-        loanRequest.setApprovedByFinanceDepartment(false);
-
-        // save the request:
-        loanRequestRepository.save(loanRequest);
+        processor.process(employee, requestDto);
     }
 
     @Override
     public List<LoanRequestResponseDto> getAllEmployeeRequests(String email) {
-        // Fetch the employee from the db:
-        Employee employee = employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
-
-        // Fetch all employee requests:
-        List<LoanRequest> requests =
-                loanRequestRepository.findAllByEmployee(employee);
-
-        // return response:
         return
-                requests.stream()
-                        .map(LoanRequestResponseDto::new).toList();
+                queryService.getAllEmployeeRequests(email);
     }
 
     @Override
     public List<LoanRequestResponseDto> getAllLoanRequests() {
-        // Fetch the requests:
-        List<LoanRequest> requests =
-                loanRequestRepository.findAll();
-
-        return
-                requests.stream()
-                        .map(LoanRequestResponseDto::new).toList();
+       return queryService.getAllLoanRequests();
     }
 }

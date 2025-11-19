@@ -12,7 +12,7 @@ public interface LoanService {
      * @param email
      * @param requestDto
      */
-    void requestLoan(String email, LoanRequestDto requestDto);
+    void requestLoan(String email, LoanRequestDto requestDto) throws Exception;
 
     /**
      * This function retrieves all loan requests made by a specific employee.

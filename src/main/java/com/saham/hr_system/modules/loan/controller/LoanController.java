@@ -33,7 +33,7 @@ public class LoanController {
     }
 
     @PostMapping("apply")
-    public ResponseEntity<?> requestLoan(@RequestParam String email, @RequestBody LoanRequestDto requestDto) {
+    public ResponseEntity<?> requestLoan(@RequestParam String email, @RequestBody LoanRequestDto requestDto) throws Exception {
         loanService.requestLoan(email, requestDto);
         return ResponseEntity
                 .status(200)
