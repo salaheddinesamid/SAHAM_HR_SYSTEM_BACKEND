@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.loan.service.implementation;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.loan.model.Loan;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
+import com.saham.hr_system.modules.loan.model.LoanRequestStatus;
 import com.saham.hr_system.modules.loan.repository.LoanRepository;
 import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
 import com.saham.hr_system.modules.loan.service.LoanApproval;
@@ -36,6 +37,7 @@ public class LoanApprovalImpl implements LoanApproval {
         // approve the request:
         loanRequest.setApprovedByHrDepartment(true);
         loanRequest.setApprovedByFinanceDepartment(true);
+        loanRequest.setStatus(LoanRequestStatus.APPROVED);
 
         // create loan in the database:
         Loan loan = new Loan();
@@ -54,7 +56,20 @@ public class LoanApprovalImpl implements LoanApproval {
     }
 
     @Override
-    public void rejectLoanRequest(Long loanRequestId, String reason) {
+    public void rejectLoanRequest(Long loanRequestId) {
+        // Fetch the loan request from db:
+        LoanRequest loanRequest =
+                loanRequestRepository.findById(loanRequestId).orElseThrow();
 
+        // Fetch the employee from the loan request:
+        Employee employee = loanRequest.getEmployee();
+        // approve the request:
+        loanRequest.setApprovedByHrDepartment(false);
+        loanRequest.setApprovedByFinanceDepartment(false);
+
+        loanRequest.setStatus(LoanRequestStatus.REJECTED);
+
+        // save the loan request:
+        loanRequestRepository.save(loanRequest);
     }
 }

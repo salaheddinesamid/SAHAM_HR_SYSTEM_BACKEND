@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "loans")
 public class Loan {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long loanId;
 
     @ManyToOne

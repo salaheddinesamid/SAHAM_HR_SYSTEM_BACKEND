@@ -52,4 +52,14 @@ public class LoanController {
                 .status(200)
                 .body("Loan request approved successfully");
     }
+
+    @PutMapping("reject-request")
+    public ResponseEntity<?> rejectLoanRequest(@RequestParam Long requestId) {
+        // Implementation for rejecting loan request goes here
+        loanApproval.rejectLoanRequest(requestId);
+        // HTTP response:
+        return ResponseEntity
+                .status(200)
+                .body("Loan request rejected successfully");
+    }
 }

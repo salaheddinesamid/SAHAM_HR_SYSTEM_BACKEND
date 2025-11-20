@@ -10,7 +10,6 @@ public interface LoanApproval {
     /**
      *
      * @param loanRequestId
-     * @param reason
      */
-    void rejectLoanRequest(Long loanRequestId, String reason);
+    void rejectLoanRequest(Long loanRequestId);
 }
