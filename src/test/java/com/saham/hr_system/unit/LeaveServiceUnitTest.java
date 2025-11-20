@@ -56,6 +56,9 @@ public class LeaveServiceUnitTest {
     @InjectMocks
     private ExceptionalLeaveRequestProcessor exceptionalLeaveRequestProcessor;
 
+    @InjectMocks
+    private LeaveRequestCancelerImpl leaveRequestCanceler;
+
 
     private Employee employee;
     private Employee subordinate;
@@ -258,6 +261,17 @@ public class LeaveServiceUnitTest {
         when(employeeBalanceRepository.findByEmployee(subordinate)).thenReturn(Optional.of(subordinateBalance));
         // Act:
         annualLeaveApproval.approve(requestId);
+        verify(leaveRequestRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testCancelLeaveRequestSuccess(){
+        Long requestId = 2L;
+        // Arrange:
+        when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
+        // Act:
+        leaveRequestCanceler.cancelLeaveRequest(requestId);
+        // verify:
         verify(leaveRequestRepository, times(1)).save(any());
     }
 }

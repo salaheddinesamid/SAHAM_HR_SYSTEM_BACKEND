@@ -49,6 +49,16 @@ public class LeaveController {
                 .body("Leave applied successfully");
     }
 
+    @DeleteMapping("cancel")
+    public ResponseEntity<?> cancelLeaveRequest(
+            @RequestParam Long leaveRequestId
+    ){
+       leaveService.cancelRequest(leaveRequestId);
+       return ResponseEntity
+               .status(200)
+               .body(Map.of("message","Leave request has been cancelled successfully"));
+    }
+
     @GetMapping("get")
     public ResponseEntity<?> getLeaves(@RequestParam String email){
         return ResponseEntity

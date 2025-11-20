@@ -30,14 +30,16 @@ public class LeaveServiceImpl implements LeaveService {
     private final LeaveRequestValidatorImpl leaveRequestValidator;
     private final List<LeaveProcessor> processors;
     private final List<LeaveApproval> approvals;
+    private final LeaveRequestCancelerImpl leaveRequestCanceler;
 
     @Autowired
-    public LeaveServiceImpl(LeaveRequestRepository leaveRequestRepository, EmployeeRepository employeeRepository, LeaveRequestValidatorImpl leaveRequestValidator, List<LeaveProcessor> processors, List<LeaveApproval> approvals) {
+    public LeaveServiceImpl(LeaveRequestRepository leaveRequestRepository, EmployeeRepository employeeRepository, LeaveRequestValidatorImpl leaveRequestValidator, List<LeaveProcessor> processors, List<LeaveApproval> approvals, LeaveRequestCancelerImpl leaveRequestCanceler) {
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeRepository = employeeRepository;
         this.leaveRequestValidator = leaveRequestValidator;
         this.processors = processors;
         this.approvals = approvals;
+        this.leaveRequestCanceler = leaveRequestCanceler;
     }
 
     @Override
@@ -52,6 +54,11 @@ public class LeaveServiceImpl implements LeaveService {
 
         assert processor != null;
         processor.process(email,leaveRequestDto, file);
+    }
+
+    @Override
+    public void cancelRequest(Long leaveRequestId) {
+        leaveRequestCanceler.cancelLeaveRequest(leaveRequestId);
     }
 
     @Override

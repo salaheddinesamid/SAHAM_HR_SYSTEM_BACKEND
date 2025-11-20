@@ -64,4 +64,10 @@ public interface LeaveService {
      * @param leaveRequestId
      */
     void rejectLeaveRequest(Long leaveRequestId);
+
+    /**
+     *
+     * @param leaveRequestId
+     */
+    void cancelRequest(Long leaveRequestId);
 }
