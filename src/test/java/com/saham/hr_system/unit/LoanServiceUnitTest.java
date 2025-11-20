@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -108,21 +107,6 @@ public class LoanServiceUnitTest {
         assertThrows(UserNotFoundException.class, ()-> // Act:
                 loanService.requestLoan("test@gmail.com",requestDto));
         verify(loanRequestRepository, times(0)).save(any());
-    }
-
-    @Test
-    void testGetAllEmployeeLoanRequestsSuccess(){
-        // Arrange:
-        when(employeeRepository.findByEmail("salaheddine@saham.com")).thenReturn(Optional.of(employee));
-        when(loanRequestRepository.findById(1L)).thenReturn(Optional.of(loanRequest));
-
-        // Act:
-        List<LoanRequestResponseDto> res = loanService
-                .getAllEmployeeRequests(employee.getEmail());
-
-        verify(loanRequestRepository, times(1)).findAllByEmployee(employee);
-
-        //
     }
 
 

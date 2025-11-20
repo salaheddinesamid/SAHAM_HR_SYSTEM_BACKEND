@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.exception.InsufficientBalanceException;
+import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
@@ -44,7 +45,7 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     public LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) throws MessagingException {
         // fetch the employee from db:
         Employee employee =
-                employeeRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException(email));
+                employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
         // fetch the balance
         EmployeeBalance balance = employeeBalanceRepository
                 .findByEmployee(employee).orElseThrow();

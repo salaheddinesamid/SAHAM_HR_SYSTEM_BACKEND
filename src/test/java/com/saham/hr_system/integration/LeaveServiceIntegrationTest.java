@@ -149,6 +149,7 @@ public class LeaveServiceIntegrationTest {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("email", "Ciryane@saham.com");
+        params.add("approvedBy","Ciryane@saham.com");
         params.add("leaveRequestId", String.valueOf(id));
         mockMvc.perform(put("/api/v1/leaves/subordinates/approve-request")
                         .contentType(MediaType.APPLICATION_JSON)

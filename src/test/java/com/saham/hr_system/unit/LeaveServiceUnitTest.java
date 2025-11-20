@@ -1,7 +1,6 @@
 package com.saham.hr_system.unit;
 
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
-import com.saham.hr_system.exception.InsufficientBalanceException;
 import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorException;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.model.Employee;
@@ -13,7 +12,6 @@ import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
-import com.saham.hr_system.modules.leave.service.LeaveDocumentStorageService;
 import com.saham.hr_system.modules.leave.service.implementation.*;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -170,35 +166,11 @@ public class LeaveServiceUnitTest {
         verify(leaveRequestRepository, times(1)).save(any());
     }
 
-    // To be rewritten due to code changes:
     @Test
-    void testRequestLeave() throws IOException, MessagingException {
-
-        // Mock Request DTO:
-        LeaveRequestDto requestDto = new LeaveRequestDto(
-                LocalDate.of(2024, 7, 1),
-                LocalDate.of(2024, 7, 5),
-                "ANNUAL",
-                "",
-                ""
-        );
-
-        MultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "test".getBytes());
-
-        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
-        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
-
-        when(leaveRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
-        leaveService.requestLeave(employee.getEmail(), requestDto, file);
-
-        verify(leaveRequestRepository, times(1)).save(any());
-    }
-
-    @Test
-    void shouldThrowEmployeeNotFound(){
+    void testProcessAnnualLeaveRequestShouldThrowEmployeeNotFound(){
         // Mock request:
         LeaveRequestDto leaveRequestDto = new LeaveRequestDto();
+        leaveRequestDto.setType(LeaveType.ANNUAL.toString());
         leaveRequestDto.setStartDate(LocalDate.of(2024, 7, 1));
         leaveRequestDto.setEndDate(LocalDate.of(2024, 7, 5));
 
@@ -207,7 +179,8 @@ public class LeaveServiceUnitTest {
         when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
 
         // Act:
-        assertThrows(UserNotFoundException.class, ()-> leaveService.requestLeave("test@example.com", leaveRequestDto, null));
+        assertThrows(UserNotFoundException.class, ()->
+                defaultLeaveRequestProcessor.process("test@example.com", leaveRequestDto, null));
 
     }
 
@@ -233,7 +206,7 @@ public class LeaveServiceUnitTest {
     @Test
     void testApproveAnnualLeaveRequest(){
         Long requestId = 2L;
-        leaveRequest.setApprovedByManager(true);
+        subordinateLeaveRequest.setApprovedByManager(true);
         // Arrange:
         when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         when(employeeRepository.findByEmail(subordinate.getEmail())).thenReturn(Optional.of(employee));

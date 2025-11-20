@@ -61,8 +61,6 @@ public class LoanApprovalImpl implements LoanApproval {
         LoanRequest loanRequest =
                 loanRequestRepository.findById(loanRequestId).orElseThrow();
 
-        // Fetch the employee from the loan request:
-        Employee employee = loanRequest.getEmployee();
         // approve the request:
         loanRequest.setApprovedByHrDepartment(false);
         loanRequest.setApprovedByFinanceDepartment(false);

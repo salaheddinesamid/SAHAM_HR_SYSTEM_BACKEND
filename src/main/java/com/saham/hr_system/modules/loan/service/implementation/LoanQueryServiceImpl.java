@@ -1,51 +1,15 @@
 package com.saham.hr_system.modules.loan.service.implementation;
 
-import com.saham.hr_system.exception.UserNotFoundException;
-import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
-import com.saham.hr_system.modules.loan.dto.LoanRequestResponseDto;
-import com.saham.hr_system.modules.loan.model.LoanRequest;
-import com.saham.hr_system.modules.loan.model.LoanRequestStatus;
-import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
-import com.saham.hr_system.modules.loan.service.LoanRequestQueryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.saham.hr_system.modules.loan.model.LoanResponseDto;
+import com.saham.hr_system.modules.loan.service.LoanQueryService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
 @Component
-public class LoanQueryServiceImpl implements LoanRequestQueryService {
-
-    private final LoanRequestRepository loanRequestRepository;
-    private final EmployeeRepository employeeRepository;
-
-    @Autowired
-    public LoanQueryServiceImpl(LoanRequestRepository loanRequestRepository, EmployeeRepository employeeRepository) {
-        this.loanRequestRepository = loanRequestRepository;
-        this.employeeRepository = employeeRepository;
-    }
-
+public class LoanQueryServiceImpl implements LoanQueryService {
     @Override
-    public List<LoanRequestResponseDto> getAllEmployeeRequests(String email) {
-        // fetch the employee requests from db:
-        Employee employee =
-                employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
-        // fetch the requests from db:
-        List<LoanRequest> requests =
-                loanRequestRepository.findAllByEmployee(employee);
-
-        // map the loan requests:
-        return
-                requests.stream().map(LoanRequestResponseDto::new).toList();
-    }
-
-    @Override
-    public List<LoanRequestResponseDto> getAllPendingRequests() {
-        // fetch the requests from db:
-        List<LoanRequest> requests = loanRequestRepository
-                .findAllByStatus(LoanRequestStatus.IN_PROCESS);
-
-        // map the loan requests:
-        return
-                requests.stream().map(LoanRequestResponseDto::new).toList();
+    public List<LoanResponseDto> getAllLoans() {
+        return List.of();
     }
 }
