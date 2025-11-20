@@ -13,6 +13,7 @@ import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,7 +44,7 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     public LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) throws MessagingException {
         // fetch the employee from db:
         Employee employee =
-                employeeRepository.findByEmail(email).orElseThrow();
+                employeeRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException(email));
         // fetch the balance
         EmployeeBalance balance = employeeBalanceRepository
                 .findByEmployee(employee).orElseThrow();
