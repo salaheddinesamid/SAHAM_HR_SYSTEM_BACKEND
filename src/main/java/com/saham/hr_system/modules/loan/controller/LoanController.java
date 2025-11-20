@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.loan.controller;
 
 import com.saham.hr_system.modules.loan.dto.LoanRequestDto;
+import com.saham.hr_system.modules.loan.service.implementation.LoanApprovalImpl;
 import com.saham.hr_system.modules.loan.service.implementation.LoanServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.*;
 public class LoanController {
 
     private final LoanServiceImpl loanService;
+    private final LoanApprovalImpl loanApproval;
 
     @Autowired
-    public LoanController(LoanServiceImpl loanService) {
+    public LoanController(LoanServiceImpl loanService, LoanApprovalImpl loanApproval) {
         this.loanService = loanService;
+        this.loanApproval = loanApproval;
     }
 
     @GetMapping("get-all-requests")
@@ -38,5 +41,15 @@ public class LoanController {
         return ResponseEntity
                 .status(200)
                 .body("Loan request submitted successfully");
+    }
+
+    @PutMapping("approve-request")
+    public ResponseEntity<?> approveLoanRequest(@RequestParam Long requestId) {
+        // Implementation for approving loan request goes here
+        loanApproval.approveLoanRequest(requestId);
+        // HTTP response:
+        return ResponseEntity
+                .status(200)
+                .body("Loan request approved successfully");
     }
 }

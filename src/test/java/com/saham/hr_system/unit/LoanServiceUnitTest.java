@@ -6,7 +6,9 @@ import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.loan.repository.LoanRepository;
 import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
+import com.saham.hr_system.modules.loan.service.implementation.LoanApprovalImpl;
 import com.saham.hr_system.modules.loan.service.implementation.LoanRequestValidatorImpl;
 import com.saham.hr_system.modules.loan.service.implementation.LoanServiceImpl;
 import com.saham.hr_system.modules.loan.service.implementation.NormalLoanRequestProcessor;
@@ -32,10 +34,16 @@ public class LoanServiceUnitTest {
     private LoanRequestRepository loanRequestRepository;
 
     @Mock
+    private LoanRepository loanRepository;
+
+    @Mock
     private LoanRequestValidatorImpl loanRequestValidator;
 
     @InjectMocks
     private NormalLoanRequestProcessor normalLoanRequestProcessor;
+
+    @InjectMocks
+    private LoanApprovalImpl loanApprovalImpl;
 
     @InjectMocks
     private LoanServiceImpl loanService;
@@ -71,22 +79,15 @@ public class LoanServiceUnitTest {
 
     }
 
+
     @Test
-    void testRequestLoanSuccess() throws Exception {
-
+    void testApproveLoanRequestSuccess(){
         // Arrange:
-        LoanRequestDto requestDto = new LoanRequestDto();
-        requestDto.setAmount(2000);
-        //requestDto.setCollectionDate(LocalDate.of(2025,12,1));
-        requestDto.setLoanType("");
-        requestDto.setMotif("");
-
-        when(employeeRepository.findByEmail("salaheddine@saham.com")).thenReturn(Optional.of(employee));
-
+        when(loanRequestRepository.findById(1L)).thenReturn(Optional.of(loanRequest));
         when(loanRequestRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
         // Act:
-        loanService.requestLoan(employee.getEmail(),requestDto);
+        loanApprovalImpl.approveLoanRequest(1L);
         verify(loanRequestRepository, times(1)).save(any());
     }
 
