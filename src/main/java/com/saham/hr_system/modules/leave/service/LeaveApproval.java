@@ -8,21 +8,22 @@ public interface LeaveApproval {
     /**
      *
      * @param requestId
+     *
      * @return
      */
     Leave approve(Long requestId);
 
     /**
-     *
      * @param requestId
+     * @param approvedBy is the email of the manager to check if the manager is the direct manager of the employee
      */
-    void approveSubordinate(Long requestId);
+    void approveSubordinate(String approvedBy, Long requestId);
 
     /**
      *
      * @param requestId
      */
-    void rejectSubordinate(Long requestId);
+    void rejectSubordinate(String rejectedBy,Long requestId);
 
     /**
      *

@@ -56,7 +56,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void approveSubordinate(Long requestId) {
+    public void approveSubordinate(String approvedBy,Long requestId) {
         // fetch the request from db:
         LeaveRequest leaveRequest =leaveRequestRepository.findById(requestId).orElseThrow();
 
@@ -70,7 +70,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void rejectSubordinate(Long requestId) {
+    public void rejectSubordinate(String rejectedBy,Long requestId) {
         // fetch the request from db:
         LeaveRequest leaveRequest =leaveRequestRepository.findById(requestId).orElseThrow();
 

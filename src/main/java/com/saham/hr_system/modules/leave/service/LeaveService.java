@@ -43,14 +43,15 @@ public interface LeaveService {
     /**
      * Approve a leave request by its ID.
      * @param leaveRequestId
+     * @param approvedBy
      */
-    void approveSubordinateLeaveRequest(Long leaveRequestId);
+    void approveSubordinateLeaveRequest(String approvedBy,Long leaveRequestId);
 
     /**
      * Reject a subordinate's leave request by its ID.
      * @param leaveRequestId
      */
-    void rejectSubordinateLeaveRequest(Long leaveRequestId);
+    void rejectSubordinateLeaveRequest(String rejectedBy, Long leaveRequestId);
 
     /**
      * Final approval of leave request by HR.

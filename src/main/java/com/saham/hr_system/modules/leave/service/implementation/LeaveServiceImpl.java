@@ -100,14 +100,14 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public void approveSubordinateLeaveRequest(Long leaveRequestId) {
+    public void approveSubordinateLeaveRequest(String approvedBy,Long leaveRequestId) {
         LeaveRequest leaveRequest = leaveRequestRepository.findById(leaveRequestId).orElseThrow();
         LeaveApproval approval =
                 approvals.stream().filter(p-> p.supports(leaveRequest.getTypeOfLeave().toString()))
                 .findFirst().orElse(null);
         // approve:
         assert approval != null;
-        approval.approveSubordinate(leaveRequestId);
+        approval.approveSubordinate(approvedBy,leaveRequestId);
     }
 
     @Override
@@ -124,14 +124,14 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public void rejectSubordinateLeaveRequest(Long leaveRequestId) {
+    public void rejectSubordinateLeaveRequest(String rejectedBy,Long leaveRequestId) {
         LeaveRequest leaveRequest = leaveRequestRepository.findById(leaveRequestId).orElseThrow();
         LeaveApproval approval =
                 approvals.stream().filter(p-> p.supports(leaveRequest.getTypeOfLeave().toString()))
                         .findFirst().orElse(null);
         // approve:
         assert approval != null;
-        approval.rejectSubordinate(leaveRequestId);
+        approval.rejectSubordinate(rejectedBy ,leaveRequestId);
     }
 
     @Override

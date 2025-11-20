@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.exception.LeaveRequestAlreadyApprovedException;
+import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorException;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
@@ -39,13 +40,26 @@ public class AnnualLeaveApproval implements LeaveApproval {
         LeaveRequest leaveRequest =
                 leaveRequestRepository.findById(requestId).orElseThrow();
 
-
         // Get the employee:
         Employee employee  = leaveRequest.getEmployee();
 
         // Fetch employee balance:
         EmployeeBalance employeeBalance =
                 employeeBalanceRepository.findByEmployee(employee).orElseThrow();
+
+        // Check if the request is approved by manager:
+        if(!leaveRequest.isApprovedByManager()){
+            throw new LeaveRequestNotApprovedBySupervisorException(leaveRequest.getLeaveRequestId().toString());
+        }
+        // Check if the request has already been approved:
+        if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){
+            throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());
+        }
+        // Check if the request has already been declined:
+        if(leaveRequest.getStatus().equals(LeaveRequestStatus.REJECTED)){
+            throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());
+        }
+        // Otherwise:
 
         double totalDays =
                 leaveRequest.getTotalDays();
@@ -71,11 +85,19 @@ public class AnnualLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void approveSubordinate(Long requestId) {
+    public void approveSubordinate(String approvedBy,Long requestId) {
         // Fetch the request:
         LeaveRequest leaveRequest =
                 leaveRequestRepository.findById(requestId)
                         .orElseThrow();
+        // Fetch the employee:
+        Employee employee  = leaveRequest.getEmployee();
+        // Fetch the manager:
+        Employee manager = employee.getManager();
+
+        if(!manager.getEmail().equals(approvedBy)){
+            throw new SecurityException("You are not authorized to approve this request");
+        }
 
         // approve the request:
         leaveRequest.setApprovedByManager(true);
@@ -88,10 +110,19 @@ public class AnnualLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void rejectSubordinate(Long requestId) {
+    public void rejectSubordinate(String rejectedBy,Long requestId) {
         // Fetch leave request:
         LeaveRequest leaveRequest = leaveRequestRepository
                 .findById(requestId).orElseThrow();
+
+        // Fetch the employee:
+        Employee employee  = leaveRequest.getEmployee();
+        // Fetch the manager:
+        Employee manager = employee.getManager();
+
+        if(!manager.getEmail().equals(rejectedBy)){
+            throw new SecurityException("You are not authorized to approve this request");
+        }
 
         // Check if the request has already been approved:
         if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){

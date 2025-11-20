@@ -26,4 +26,12 @@ public class LeaveRequestExceptionController {
                         status(409) // Conflict
                         .body("Leave request already approved : " + ex.getMessage());
     }
+
+    @ExceptionHandler(LeaveRequestAlreadyRejectedException.class)
+    public ResponseEntity<?> handleLeaveRequestAlreadyRejectedException(LeaveRequestAlreadyRejectedException ex) {
+        return
+                ResponseEntity.
+                        status(409) // Conflict
+                        .body("Leave request already rejected : " + ex.getMessage());
+    }
 }

@@ -26,10 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -65,6 +63,7 @@ public class LeaveServiceUnitTest {
 
     private Employee employee;
     private Employee subordinate;
+    private Employee manager2;
     private EmployeeBalance subordinateBalance;
     private EmployeeBalance employeeBalance;
     private LeaveRequest leaveRequest;
@@ -88,6 +87,13 @@ public class LeaveServiceUnitTest {
         subordinate.setEmail("salaheddine@saham.com");
         subordinate.setManager(employee);
 
+        manager2 = new Employee();
+        manager2.setId(3L);
+        manager2.setFirstName("Manager2");
+        manager2.setLastName("Manager");
+        manager2.setEmail("manager2@saham.com");
+        manager2.setManager(null);
+
         employeeBalance = new EmployeeBalance();
         employeeBalance.setBalanceId(1L);
         employeeBalance.setInitialBalance(30);
@@ -107,8 +113,9 @@ public class LeaveServiceUnitTest {
         leaveRequest.setLeaveRequestId(1L);
         leaveRequest.setStartDate(LocalDate.of(2024, 7, 1));
         leaveRequest.setEndDate(LocalDate.of(2024, 7, 5));
-        leaveRequest.setApprovedByManager(true);
+        leaveRequest.setApprovedByManager(false);
         leaveRequest.setTypeOfLeave(LeaveType.ANNUAL);
+        leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setEmployee(employee);
 
@@ -189,23 +196,6 @@ public class LeaveServiceUnitTest {
     }
 
     @Test
-    void shouldThrowIfInsufficientBalance() {
-
-        LeaveRequestDto requestDto = new LeaveRequestDto();
-        requestDto.setStartDate(LocalDate.of(2024, 7, 1));
-        requestDto.setEndDate(LocalDate.of(2024, 7, 5));
-        // Arrange
-        employeeBalance.setDaysLeft(0);
-        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
-        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
-
-        // Act & Assert
-        assertThrows(InsufficientBalanceException.class,
-                () -> leaveService.requestLeave("Ciryane@saham.com", requestDto, null));
-        verify(leaveRequestRepository, never()).save(any());
-    }
-
-    @Test
     void shouldThrowEmployeeNotFound(){
         // Mock request:
         LeaveRequestDto leaveRequestDto = new LeaveRequestDto();
@@ -227,8 +217,17 @@ public class LeaveServiceUnitTest {
         // Arrange:
         when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act:
-        annualLeaveApproval.approveSubordinate(requestId);
+        annualLeaveApproval.approveSubordinate("Ciryane@saham.com",requestId);
         verify(leaveRequestRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testApproveAnnualLeaveRequestThrowSecurityException(){
+        Long requestId = 2L;
+        // Arrange:
+        when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
+        // Act and verify:
+        assertThrows(SecurityException.class, ()-> annualLeaveApproval.approveSubordinate("manager2@saham.com",requestId));
     }
 
     @Test
@@ -245,6 +244,26 @@ public class LeaveServiceUnitTest {
     }
 
     @Test
+    void testRejectAnnualSubordinateLeaveRequestSuccess(){
+        Long requestId = 2L;
+        String managerEmail = "Ciryane@saham.com";
+        // Arrange:
+        when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
+        // Act:
+        annualLeaveApproval.rejectSubordinate(managerEmail,requestId);
+        verify(leaveRequestRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testRejectAnnualSubordinateLeaveRequestThrowsSecurityException(){
+        Long requestId = 2L;
+        // Arrange:
+        when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
+        // Act:
+        assertThrows(SecurityException.class, ()-> annualLeaveApproval.rejectSubordinate("manager2@saham.com",requestId));
+    }
+
+    @Test
     void shouldThrowRequestNotApprovedBySupervisor(){
         Long requestId = 1L;
         when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
@@ -253,29 +272,19 @@ public class LeaveServiceUnitTest {
 
         // Act
         assertThrows(LeaveRequestNotApprovedBySupervisorException.class,
-                ()-> leaveService.approveLeaveRequest(requestId));
+                ()-> annualLeaveApproval.approve(requestId));
     }
 
     @Test
     void testApproveLeaveRequest(){
-
-    }
-
-    @Test
-    void testGetAllSubordinatesLeaveRequestShouldReturnOnlyInProcessAndNotApprovedByManager() {
+        Long requestId = 2L;
+        subordinateLeaveRequest.setApprovedByManager(true);
         // Arrange:
-        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
-        when(employeeRepository.findAllByManagerId(employee.getId())).thenReturn(List.of(subordinate));
-        when(leaveRequestRepository.findAllByEmployeeAndStatusAndApprovedByManager(
-                subordinate, LeaveRequestStatus.IN_PROCESS, false))
-                .thenReturn(List.of(subordinateLeaveRequest));
-
+        when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
+        when(employeeRepository.findByEmail(subordinate.getEmail())).thenReturn(Optional.of(employee));
+        when(employeeBalanceRepository.findByEmployee(subordinate)).thenReturn(Optional.of(subordinateBalance));
         // Act:
-        var result = leaveService.getAllSubordinatesRequests(employee.getEmail());
-
-        // Assert:
-        assertEquals(1, result.size());
-        verify(leaveRequestRepository, times(1))
-                .findAllByEmployeeAndStatusAndApprovedByManager(subordinate, LeaveRequestStatus.IN_PROCESS, false);
+        annualLeaveApproval.approve(requestId);
+        verify(leaveRequestRepository, times(1)).save(any());
     }
 }

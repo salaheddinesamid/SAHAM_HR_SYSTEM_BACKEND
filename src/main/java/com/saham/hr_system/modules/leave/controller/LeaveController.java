@@ -67,8 +67,8 @@ public class LeaveController {
 
     // Manager approval
     @PutMapping("subordinates/approve-request")
-    public ResponseEntity<?> approveSubordinateRequest(@RequestParam Long leaveRequestId) {
-        leaveService.approveSubordinateLeaveRequest(leaveRequestId);
+    public ResponseEntity<?> approveSubordinateRequest(@RequestParam String approvedBy,@RequestParam Long leaveRequestId) {
+        leaveService.approveSubordinateLeaveRequest(approvedBy,leaveRequestId);
         return
                 ResponseEntity
                         .status(200)
@@ -77,8 +77,8 @@ public class LeaveController {
 
     // Manager rejection
     @PutMapping("subordinates/reject-request")
-    public ResponseEntity<?> rejectSubordinateRequest(@RequestParam Long leaveRequestId) {
-        leaveService.rejectSubordinateLeaveRequest(leaveRequestId);
+    public ResponseEntity<?> rejectSubordinateRequest(@RequestParam String rejectedBy,@RequestParam Long leaveRequestId) {
+        leaveService.rejectSubordinateLeaveRequest(rejectedBy, leaveRequestId);
         return
                 ResponseEntity
                         .status(200)
