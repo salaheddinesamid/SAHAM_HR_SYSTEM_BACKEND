@@ -50,7 +50,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public List<LoanRequestResponseDto> getAllLoanRequests() {
-       return queryService.getAllLoanRequests();
+    public List<LoanRequestResponseDto> getPendingLoanRequests() {
+       return queryService.getAllPendingRequests();
     }
 }
