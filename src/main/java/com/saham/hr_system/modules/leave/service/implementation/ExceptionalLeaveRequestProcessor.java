@@ -78,7 +78,7 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
         }
 
         // send email:
-        leaveRequestEmailSender.send();
+        //leaveRequestEmailSender.send();
 
         // save the request:
         return leaveRequestRepository.save(leaveRequest);

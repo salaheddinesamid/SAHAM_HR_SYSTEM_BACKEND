@@ -26,7 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ExpenseServiceImplTest {
+class ExpenseServiceUnitTest {
 
     @Mock
     private EmployeeRepository employeeRepository;

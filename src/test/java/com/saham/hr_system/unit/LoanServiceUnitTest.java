@@ -7,7 +7,9 @@ import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
+import com.saham.hr_system.modules.loan.service.implementation.LoanRequestValidatorImpl;
 import com.saham.hr_system.modules.loan.service.implementation.LoanServiceImpl;
+import com.saham.hr_system.modules.loan.service.implementation.NormalLoanRequestProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,6 +30,12 @@ public class LoanServiceUnitTest {
 
     @Mock
     private LoanRequestRepository loanRequestRepository;
+
+    @Mock
+    private LoanRequestValidatorImpl loanRequestValidator;
+
+    @InjectMocks
+    private NormalLoanRequestProcessor normalLoanRequestProcessor;
 
     @InjectMocks
     private LoanServiceImpl loanService;
@@ -51,7 +59,20 @@ public class LoanServiceUnitTest {
     }
 
     @Test
-    void testRequestLoanSuccess(){
+    void processNormalLoanRequestSuccess() throws Exception {
+        LoanRequestDto requestDto = new LoanRequestDto();
+        requestDto.setLoanType("NORMAL");
+        requestDto.setAmount(23000);
+        requestDto.setMotif("Personal expenses");
+
+        // Act:
+        normalLoanRequestProcessor.process(employee,requestDto);
+        verify(loanRequestRepository, times(1)).save(any());
+
+    }
+
+    @Test
+    void testRequestLoanSuccess() throws Exception {
 
         // Arrange:
         LoanRequestDto requestDto = new LoanRequestDto();

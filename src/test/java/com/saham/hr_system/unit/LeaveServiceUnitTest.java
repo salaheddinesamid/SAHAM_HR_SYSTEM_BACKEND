@@ -10,11 +10,12 @@ import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.leave.model.LeaveType;
+import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
-import com.saham.hr_system.modules.leave.service.implementation.DefaultLeaveRequestProcessor;
-import com.saham.hr_system.modules.leave.service.implementation.ExceptionalLeaveRequestProcessor;
-import com.saham.hr_system.modules.leave.service.implementation.LeaveRequestValidatorImpl;
-import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
+import com.saham.hr_system.modules.leave.service.LeaveDocumentStorageService;
+import com.saham.hr_system.modules.leave.service.implementation.*;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,6 +39,9 @@ public class LeaveServiceUnitTest {
     private LeaveRequestRepository leaveRequestRepository;
 
     @Mock
+    private LeaveRepository leaveRepository;
+
+    @Mock
     private EmployeeRepository employeeRepository;
 
     @Mock
@@ -47,9 +51,15 @@ public class LeaveServiceUnitTest {
     private LeaveRequestValidatorImpl leaveRequestValidator;
 
     @Mock
+    private LeaveDocumentStorageServiceImpl leaveDocumentStorageService;
+
+    @InjectMocks
+    private AnnualLeaveApproval annualLeaveApproval;
+
+    @InjectMocks
     private DefaultLeaveRequestProcessor defaultLeaveRequestProcessor;
 
-    @Mock
+    @InjectMocks
     private ExceptionalLeaveRequestProcessor exceptionalLeaveRequestProcessor;
 
 
@@ -89,7 +99,7 @@ public class LeaveServiceUnitTest {
         subordinateBalance.setBalanceId(1L);
         subordinateBalance.setInitialBalance(30);
         subordinateBalance.setYear(2025);
-        subordinateBalance.setDaysLeft(1);
+        subordinateBalance.setDaysLeft(20);
         subordinateBalance.setEmployee(employee);
 
         // Leave request made by manager:
@@ -98,6 +108,7 @@ public class LeaveServiceUnitTest {
         leaveRequest.setStartDate(LocalDate.of(2024, 7, 1));
         leaveRequest.setEndDate(LocalDate.of(2024, 7, 5));
         leaveRequest.setApprovedByManager(true);
+        leaveRequest.setTypeOfLeave(LeaveType.ANNUAL);
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setEmployee(employee);
 
@@ -113,9 +124,48 @@ public class LeaveServiceUnitTest {
 
     }
 
+    /**
+     *
+     * @throws MessagingException
+     */
+    @Test
+    void testProcessAnnualLeaveRequestSuccess() throws MessagingException {
+        LeaveRequestDto requestDto = new LeaveRequestDto();
+        requestDto.setStartDate(LocalDate.of(2024, 7, 1));
+        requestDto.setEndDate(LocalDate.of(2024, 7, 5));
+        requestDto.setType("ANNUAL");
+        requestDto.setComment("");
+
+        // Arrange:
+        when(employeeRepository.findByEmail("salaheddine@saham.com")).thenReturn(Optional.of(subordinate));
+        when(employeeBalanceRepository.findByEmployee(subordinate)).thenReturn(Optional.of(subordinateBalance));
+
+        // Act:
+        defaultLeaveRequestProcessor.process(subordinate.getEmail(),requestDto, null);
+        verify(leaveRequestRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testProcessExceptionalLeaveRequestSuccess() throws MessagingException, IOException {
+        LeaveRequestDto requestDto = new LeaveRequestDto();
+        requestDto.setStartDate(LocalDate.of(2024, 7, 1));
+        requestDto.setEndDate(LocalDate.of(2024, 7, 5));
+        requestDto.setType("EXCEPTIONAL");
+        requestDto.setTypeDetails("SICKNESS");
+        requestDto.setComment("");
+
+        // Arrange:
+        when(employeeRepository.findByEmail("salaheddine@saham.com")).thenReturn(Optional.of(subordinate));
+        when(employeeBalanceRepository.findByEmployee(subordinate)).thenReturn(Optional.of(subordinateBalance));
+
+        // Act:
+        exceptionalLeaveRequestProcessor.process(subordinate.getEmail(),requestDto, null);
+        verify(leaveRequestRepository, times(1)).save(any());
+    }
+
     // To be rewritten due to code changes:
     @Test
-    void testRequestLeave() throws IOException {
+    void testRequestLeave() throws IOException, MessagingException {
 
         // Mock Request DTO:
         LeaveRequestDto requestDto = new LeaveRequestDto(
@@ -172,17 +222,25 @@ public class LeaveServiceUnitTest {
     }
 
     @Test
-    void testApproveLeaveRequestBySupervisor(){
-        Long requestId = 1L;
-
-        when(employeeRepository.findByEmail("Ciryane@saham.com")).thenReturn(Optional.of(employee));
-        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
-        when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(leaveRequest));
-
-        when(leaveRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
+    void testApproveAnnualLeaveRequestBySupervisor(){
+        Long requestId = 2L;
+        // Arrange:
+        when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act:
-        leaveService.approveSubordinateLeaveRequest(requestId);
+        annualLeaveApproval.approveSubordinate(requestId);
+        verify(leaveRequestRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testApproveAnnualLeaveRequest(){
+        Long requestId = 2L;
+        leaveRequest.setApprovedByManager(true);
+        // Arrange:
+        when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
+        when(employeeRepository.findByEmail(subordinate.getEmail())).thenReturn(Optional.of(employee));
+        when(employeeBalanceRepository.findByEmployee(subordinate)).thenReturn(Optional.of(subordinateBalance));
+        // Act:
+        annualLeaveApproval.approve(requestId);
         verify(leaveRequestRepository, times(1)).save(any());
     }
 

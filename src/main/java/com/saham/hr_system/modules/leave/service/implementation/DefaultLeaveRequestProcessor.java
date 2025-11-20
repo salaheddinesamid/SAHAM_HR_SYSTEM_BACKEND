@@ -67,7 +67,7 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
 
-        leaveRequestEmailSender.send();
+        //leaveRequestEmailSender.send();
 
         // save the request:
         return leaveRequestRepository.save(leaveRequest);
