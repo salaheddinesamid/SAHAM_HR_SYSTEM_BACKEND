@@ -5,6 +5,7 @@ import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorExceptio
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.EmployeeBalance;
+import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -59,6 +61,9 @@ public class LeaveServiceUnitTest {
     @InjectMocks
     private LeaveRequestCancelerImpl leaveRequestCanceler;
 
+    @InjectMocks
+    private LeaveCancellerImpl leaveCanceller;
+
 
     private Employee employee;
     private Employee subordinate;
@@ -67,6 +72,7 @@ public class LeaveServiceUnitTest {
     private EmployeeBalance employeeBalance;
     private LeaveRequest leaveRequest;
     private LeaveRequest subordinateLeaveRequest;
+    private Leave subordinateLeave;
 
     @InjectMocks
     private LeaveServiceImpl leaveService;
@@ -127,6 +133,14 @@ public class LeaveServiceUnitTest {
         subordinateLeaveRequest.setApprovedByHr(false);
         subordinateLeaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
         subordinateLeaveRequest.setEmployee(subordinate);
+
+        subordinateLeave = new Leave();
+        subordinateLeave.setLeaveId(2L);
+        subordinateLeave.setFromDate(LocalDate.of(2024, 7, 1));
+        subordinateLeave.setToDate(LocalDate.of(2024, 7, 5));
+        subordinateLeave.setLeaveType(LeaveType.ANNUAL);
+        subordinateLeave.setTotalDays(4);
+        subordinateLeave.setEmployee(subordinate);
 
     }
 
@@ -270,8 +284,26 @@ public class LeaveServiceUnitTest {
         // Arrange:
         when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act:
-        leaveRequestCanceler.cancelLeaveRequest(requestId);
+        leaveRequestCanceler.cancel(requestId);
         // verify:
         verify(leaveRequestRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testCancelLeaveSuccess(){
+        Long id = 2L;
+        // Arrange:
+        when(leaveRepository.findById(id)).thenReturn(Optional.of(subordinateLeave));
+        when(employeeBalanceRepository.findByEmployee(subordinate)).thenReturn(Optional.of(subordinateBalance));
+        subordinateBalance.setDaysLeft(15);
+        subordinateBalance.setUsedBalance(10);
+
+        // Act:
+        leaveCanceller.cancel(id);
+
+        // verify and assert:
+        verify(leaveRepository, times(1)).delete(any());
+        assertEquals(19, subordinateBalance.getDaysLeft());
+        assertEquals(6, subordinateBalance.getUsedBalance());
     }
 }

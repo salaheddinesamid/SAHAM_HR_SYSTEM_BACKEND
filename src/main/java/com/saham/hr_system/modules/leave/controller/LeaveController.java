@@ -49,7 +49,12 @@ public class LeaveController {
                 .body("Leave applied successfully");
     }
 
-    @DeleteMapping("cancel-request")
+    /**
+     * This endpoint allows an employee to cancel a leave request by its ID.
+     * @param leaveRequestId
+     * @return
+     */
+    @PutMapping("cancel-request")
     public ResponseEntity<?> cancelLeaveRequest(
             @RequestParam Long leaveRequestId
     ){
@@ -58,6 +63,20 @@ public class LeaveController {
                .status(200)
                .body(Map.of("message","Leave request has been cancelled successfully"));
     }
+
+    /**
+     * This endpoint allows an employee to cancel a leave by its ID.
+     * @param leaveId
+     * @return
+     */
+    @DeleteMapping("cancel")
+    public ResponseEntity<?> cancelLeave(Long leaveId){
+        leaveService.cancelLeave(leaveId);
+
+        return ResponseEntity.status(200)
+                .body(Map.of("message","Leave has been cancelled successfully"));
+    }
+
 
     @GetMapping("get")
     public ResponseEntity<?> getLeaves(@RequestParam String email){

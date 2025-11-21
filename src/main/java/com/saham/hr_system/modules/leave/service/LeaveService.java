@@ -66,8 +66,14 @@ public interface LeaveService {
     void rejectLeaveRequest(Long leaveRequestId);
 
     /**
-     *
+     * This function allows an employee to cancel a leave request by its ID.
      * @param leaveRequestId
      */
     void cancelRequest(Long leaveRequestId);
+
+    /**
+     * This function allows an employee to cancel a leave by its ID.
+     * @param leaveId
+     */
+    void cancelLeave(Long leaveId);
 }

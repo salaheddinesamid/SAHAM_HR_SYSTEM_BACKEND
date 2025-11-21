@@ -31,15 +31,17 @@ public class LeaveServiceImpl implements LeaveService {
     private final List<LeaveProcessor> processors;
     private final List<LeaveApproval> approvals;
     private final LeaveRequestCancelerImpl leaveRequestCanceler;
+    private final LeaveCancellerImpl leaveCanceller;
 
     @Autowired
-    public LeaveServiceImpl(LeaveRequestRepository leaveRequestRepository, EmployeeRepository employeeRepository, LeaveRequestValidatorImpl leaveRequestValidator, List<LeaveProcessor> processors, List<LeaveApproval> approvals, LeaveRequestCancelerImpl leaveRequestCanceler) {
+    public LeaveServiceImpl(LeaveRequestRepository leaveRequestRepository, EmployeeRepository employeeRepository, LeaveRequestValidatorImpl leaveRequestValidator, List<LeaveProcessor> processors, List<LeaveApproval> approvals, LeaveRequestCancelerImpl leaveRequestCanceler, LeaveCancellerImpl leaveCanceller) {
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeRepository = employeeRepository;
         this.leaveRequestValidator = leaveRequestValidator;
         this.processors = processors;
         this.approvals = approvals;
         this.leaveRequestCanceler = leaveRequestCanceler;
+        this.leaveCanceller = leaveCanceller;
     }
 
     @Override
@@ -56,9 +58,22 @@ public class LeaveServiceImpl implements LeaveService {
         processor.process(email,leaveRequestDto, file);
     }
 
+    /**
+     * This method handles endpoint request to cancel a leave request.
+     * @param leaveRequestId
+     */
     @Override
     public void cancelRequest(Long leaveRequestId) {
-        leaveRequestCanceler.cancelLeaveRequest(leaveRequestId);
+        leaveRequestCanceler.cancel(leaveRequestId);
+    }
+
+    /**
+     * This method handles endpoint request to cancel a leave.
+     * @param leaveId
+     */
+    @Override
+    public void cancelLeave(Long leaveId) {
+        leaveCanceller.cancel(leaveId);
     }
 
     @Override

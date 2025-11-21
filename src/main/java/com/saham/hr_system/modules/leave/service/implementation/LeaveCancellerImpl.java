@@ -1,0 +1,57 @@
+package com.saham.hr_system.modules.leave.service.implementation;
+
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.employees.model.EmployeeBalance;
+import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
+import com.saham.hr_system.modules.leave.model.Leave;
+import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
+import com.saham.hr_system.modules.leave.repository.LeaveRepository;
+import com.saham.hr_system.modules.leave.service.LeaveRequestCanceller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+@Component
+public class LeaveCancellerImpl implements LeaveRequestCanceller {
+
+    private final LeaveRepository leaveRepository;
+    private final EmployeeBalanceRepository employeeBalanceRepository;
+
+    @Autowired
+    public LeaveCancellerImpl(LeaveRepository leaveRepository, EmployeeBalanceRepository employeeBalanceRepository) {
+        this.leaveRepository = leaveRepository;
+        this.employeeBalanceRepository = employeeBalanceRepository;
+    }
+
+    @Override
+    public boolean supports(String status) {
+        return LeaveRequestStatus.APPROVED.equals(LeaveRequestStatus.valueOf(status));
+    }
+
+    /**
+     * This function implements the cancellation of an approved leave request
+     * @param id
+     */
+    @Override
+    @Transactional
+    public void cancel(Long id) {
+        // fetch the leave from db:
+        Leave leave = leaveRepository.findById(id).orElseThrow();
+
+        // fetch the employee balance and update it
+        Employee employee = leave.getEmployee();
+        EmployeeBalance employeeBalance = employeeBalanceRepository.findByEmployee(employee).orElseThrow();
+
+        // get the total days of the leave:
+        double totalDays = leave.getTotalDays();
+        // delete the leave:
+        leaveRepository.delete(leave);
+
+        // update the balance:
+        employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() + totalDays);
+        employeeBalance.setUsedBalance(employeeBalance.getUsedBalance() - totalDays);
+
+        // save the balance:
+        employeeBalanceRepository.save(employeeBalance);
+    }
+}
