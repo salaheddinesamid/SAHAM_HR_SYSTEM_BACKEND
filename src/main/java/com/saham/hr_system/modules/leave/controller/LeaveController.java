@@ -49,6 +49,13 @@ public class LeaveController {
                 .body("Leave applied successfully");
     }
 
+    @GetMapping("employee-leaves/get_all")
+    public ResponseEntity<?> getEmployeeLeaves(@RequestParam String email){
+        return ResponseEntity
+                .status(200)
+                .body(leaveService.getAllMyLeaves(email));
+    }
+
     /**
      * This endpoint allows an employee to cancel a leave request by its ID.
      * @param leaveRequestId

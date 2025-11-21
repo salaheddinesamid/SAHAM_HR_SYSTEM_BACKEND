@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.leave.service;
 
+import com.saham.hr_system.modules.leave.dto.LeaveDetailsDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import jakarta.mail.MessagingException;
@@ -76,4 +77,11 @@ public interface LeaveService {
      * @param leaveId
      */
     void cancelLeave(Long leaveId);
+
+    /**
+     * Get all the leaves of an employee
+     * @param email
+     * @return
+     */
+    List<LeaveDetailsDto> getAllMyLeaves(String email);
 }

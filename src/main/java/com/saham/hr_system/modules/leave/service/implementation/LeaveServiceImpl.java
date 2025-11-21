@@ -1,13 +1,16 @@
 package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.leave.dto.LeaveDetailsDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import com.saham.hr_system.exception.UserNotFoundException;
+import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 
+import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 public class LeaveServiceImpl implements LeaveService {
 
     private final LeaveRequestRepository leaveRequestRepository;
+    private final LeaveRepository leaveRepository;
     private final EmployeeRepository employeeRepository;
     private final LeaveRequestValidatorImpl leaveRequestValidator;
     private final List<LeaveProcessor> processors;
@@ -34,8 +38,9 @@ public class LeaveServiceImpl implements LeaveService {
     private final LeaveCancellerImpl leaveCanceller;
 
     @Autowired
-    public LeaveServiceImpl(LeaveRequestRepository leaveRequestRepository, EmployeeRepository employeeRepository, LeaveRequestValidatorImpl leaveRequestValidator, List<LeaveProcessor> processors, List<LeaveApproval> approvals, LeaveRequestCancelerImpl leaveRequestCanceler, LeaveCancellerImpl leaveCanceller) {
+    public LeaveServiceImpl(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, EmployeeRepository employeeRepository, LeaveRequestValidatorImpl leaveRequestValidator, List<LeaveProcessor> processors, List<LeaveApproval> approvals, LeaveRequestCancelerImpl leaveRequestCanceler, LeaveCancellerImpl leaveCanceller) {
         this.leaveRequestRepository = leaveRequestRepository;
+        this.leaveRepository = leaveRepository;
         this.employeeRepository = employeeRepository;
         this.leaveRequestValidator = leaveRequestValidator;
         this.processors = processors;
@@ -74,6 +79,17 @@ public class LeaveServiceImpl implements LeaveService {
     @Override
     public void cancelLeave(Long leaveId) {
         leaveCanceller.cancel(leaveId);
+    }
+
+    @Override
+    public List<LeaveDetailsDto> getAllMyLeaves(String email){
+        // Fetch the employee from db:
+        Employee employee =
+                employeeRepository.findByEmail(email).orElseThrow();
+
+        List<Leave> leaves = leaveRepository.findAllByEmployee(employee);
+
+        return leaves.stream().map(LeaveDetailsDto::new).collect(Collectors.toList());
     }
 
     @Override
