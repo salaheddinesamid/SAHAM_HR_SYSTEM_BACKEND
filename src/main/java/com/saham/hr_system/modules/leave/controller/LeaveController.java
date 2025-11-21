@@ -78,14 +78,23 @@ public class LeaveController {
     }
 
 
-    @GetMapping("get")
+    /**
+     * Get the leave requests of an employee
+     * @param email
+     * @return
+     */
+    @GetMapping("/requests/get")
     public ResponseEntity<?> getLeaves(@RequestParam String email){
         return ResponseEntity
                 .status(200)
                 .body(leaveService.getAllLeaveRequests(email));
     }
 
-    @GetMapping("hr/get_all_requests")
+    /**
+     *
+     * @return
+     */
+    @GetMapping("/requests/hr/get_all")
     public ResponseEntity<?> getAllRequestsForHR(){
 
         List<LeaveRequestResponse> requests = leaveService.getAllLeaveRequestsForHR();
@@ -94,8 +103,13 @@ public class LeaveController {
                 .body(requests);
     }
 
-    // Manager approval
-    @PutMapping("subordinates/approve-request")
+    /**
+     *
+     * @param approvedBy
+     * @param leaveRequestId
+     * @return
+     */
+    @PutMapping("/requests/subordinates/approve-request")
     public ResponseEntity<?> approveSubordinateRequest(@RequestParam String approvedBy,@RequestParam Long leaveRequestId) {
         leaveService.approveSubordinateLeaveRequest(approvedBy,leaveRequestId);
         return
@@ -104,8 +118,13 @@ public class LeaveController {
                         .body(Map.of("message","Leave request has been approved"));
     }
 
-    // Manager rejection
-    @PutMapping("subordinates/reject-request")
+    /**
+     *
+     * @param rejectedBy
+     * @param leaveRequestId
+     * @return
+     */
+    @PutMapping("/requests/subordinates/reject-request")
     public ResponseEntity<?> rejectSubordinateRequest(@RequestParam String rejectedBy,@RequestParam Long leaveRequestId) {
         leaveService.rejectSubordinateLeaveRequest(rejectedBy, leaveRequestId);
         return
@@ -114,8 +133,12 @@ public class LeaveController {
                         .body(Map.of("message","Leave request has been rejected"));
     }
 
-    // Final approval by HR
-    @PutMapping("approve-request")
+    /**
+     *
+     * @param leaveRequestId
+     * @return
+     */
+    @PutMapping("/requests/approve-request")
     public ResponseEntity<?> approveRequest(@RequestParam Long leaveRequestId) {
         leaveService.approveLeaveRequest(leaveRequestId);
         return
@@ -124,8 +147,12 @@ public class LeaveController {
                         .body(Map.of("message","Leave request has been finally approved"));
     }
 
-    // Final Rejection by HR:
-    @PutMapping("reject-request")
+    /**
+     *
+     * @param requestId
+     * @return
+     */
+    @PutMapping("/requests/reject-request")
     public ResponseEntity<?> rejectRequest(@RequestParam Long requestId){
         leaveService.rejectLeaveRequest(requestId);
         return
@@ -134,7 +161,12 @@ public class LeaveController {
                         .body(Map.of("message","Leave request has been finally rejected"));
     }
 
-    @GetMapping("subordinates/get_all_requests")
+    /**
+     *
+     * @param email
+     * @return
+     */
+    @GetMapping("/requests/subordinates/get_all")
     public ResponseEntity<?> getSubordinatesRequests(@RequestParam String email){
         return
                 ResponseEntity.status(200)
