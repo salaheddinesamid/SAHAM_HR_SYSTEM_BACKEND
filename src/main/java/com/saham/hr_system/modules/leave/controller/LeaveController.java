@@ -49,7 +49,7 @@ public class LeaveController {
                 .body("Leave applied successfully");
     }
 
-    @DeleteMapping("cancel")
+    @DeleteMapping("cancel-request")
     public ResponseEntity<?> cancelLeaveRequest(
             @RequestParam Long leaveRequestId
     ){
