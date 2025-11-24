@@ -80,6 +80,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         leave.setLeaveType(LeaveType.ANNUAL);
         leave.setFromDate(leaveRequest.getStartDate());
         leave.setToDate(leaveRequest.getEndDate());
+        leave.setTotalDays(totalDays);
 
         return leaveRepository.save(leave);
     }
