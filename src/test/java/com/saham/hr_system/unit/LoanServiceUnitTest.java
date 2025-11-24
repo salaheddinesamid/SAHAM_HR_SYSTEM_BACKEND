@@ -78,7 +78,6 @@ public class LoanServiceUnitTest {
 
     }
 
-
     @Test
     void testApproveLoanRequestSuccess(){
         // Arrange:
