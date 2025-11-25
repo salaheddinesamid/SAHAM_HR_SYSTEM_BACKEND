@@ -15,8 +15,6 @@ target/
 
 src/main/resources/folders
 src/main/resources/application.properties
-src/main/resources/application-test.properties
-src/main/resources/application-prod.properties
 
 ### IntelliJ IDEA ###
 .idea
