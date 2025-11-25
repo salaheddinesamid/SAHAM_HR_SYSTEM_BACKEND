@@ -28,4 +28,7 @@ public class ExpenseItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expense_id", nullable = false)
     private Expense expense;
+
+    @Column(name = "invoiced", nullable = false)
+    private boolean invoiced;
 }

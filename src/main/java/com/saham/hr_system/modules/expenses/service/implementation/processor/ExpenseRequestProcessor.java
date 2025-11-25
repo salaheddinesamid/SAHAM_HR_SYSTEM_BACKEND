@@ -3,8 +3,10 @@ package com.saham.hr_system.modules.expenses.service.implementation.processor;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.expenses.dto.ExpenseItemRequest;
 import com.saham.hr_system.modules.expenses.dto.ExpenseRequestDto;
+import com.saham.hr_system.modules.expenses.model.Currency;
 import com.saham.hr_system.modules.expenses.model.Expense;
 import com.saham.hr_system.modules.expenses.model.ExpenseItem;
+import com.saham.hr_system.modules.expenses.model.ExpenseLocation;
 import com.saham.hr_system.modules.expenses.repository.ExpenseItemRepository;
 import com.saham.hr_system.modules.expenses.repository.ExpenseRepository;
 import com.saham.hr_system.modules.expenses.utils.ExpenseUtils;
@@ -43,13 +45,16 @@ public class ExpenseRequestProcessor {
                     item.setAmount(req.getAmount());
                     item.setDesignation(req.getDesignation());
                     item.setDate(req.getExpenseDate());
-                    item.setExpense(expense); // 👈 important
-                    return item;
+                    item.setExpense(expense);
+                    return expenseItemRepository.save(item); // save the item:
                 })
                 .toList();
 
-        expense.setItems(items);
+        expense.setItems(items); // set the items
         expense.setTotalAmount(expenseUtils.calculateTotalExpenseItems(items));
+        expense.setCurrency(Currency.valueOf(expenseRequestDto.getCurrency())); // set the currency
+        expense.setExchangeRate(expenseRequestDto.getExchangeRate()); // set the exchange rate
+        expense.setExpenseLocation(ExpenseLocation.valueOf(expenseRequestDto.getLocation())); // set the location
 
         return expenseRepository.save(expense);
 

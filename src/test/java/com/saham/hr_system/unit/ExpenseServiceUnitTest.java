@@ -5,8 +5,10 @@ import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.expenses.dto.ExpenseItemRequest;
 import com.saham.hr_system.modules.expenses.dto.ExpenseRequestDto;
 import com.saham.hr_system.modules.expenses.dto.ExpenseResponseDto;
+import com.saham.hr_system.modules.expenses.model.Currency;
 import com.saham.hr_system.modules.expenses.model.Expense;
 import com.saham.hr_system.modules.expenses.model.ExpenseItem;
+import com.saham.hr_system.modules.expenses.model.ExpenseLocation;
 import com.saham.hr_system.modules.expenses.repository.ExpenseItemRepository;
 import com.saham.hr_system.modules.expenses.repository.ExpenseRepository;
 import com.saham.hr_system.modules.expenses.service.implementation.ExpenseServiceImpl;
@@ -63,14 +65,19 @@ class ExpenseServiceUnitTest {
         ExpenseItemRequest item1 = new ExpenseItemRequest();
         item1.setDesignation("Hotel");
         item1.setAmount(2000.0);
+        item1.setInvoiced(true);
 
         ExpenseItemRequest item2 = new ExpenseItemRequest();
         item2.setDesignation("Transport");
         item2.setAmount(1000.0);
+        item2.setInvoiced(false);
 
         requestDto = new ExpenseRequestDto();
         requestDto.setIssueDate(LocalDate.of(2024, 12, 3));
         requestDto.setExpenseItems(List.of(item1, item2));
+        requestDto.setCurrency("USD");
+        requestDto.setExchangeRate(9);
+        requestDto.setLocation("OUTSIDE_MOROCCO");
 
         ExpenseItem expenseItem1 = new ExpenseItem();
         expenseItem1.setDesignation("Hotel");
@@ -84,6 +91,10 @@ class ExpenseServiceUnitTest {
         processedExpense.setEmployee(employee);
         processedExpense.setTotalAmount(3000.0);
         processedExpense.setItems(List.of(expenseItem1, expenseItem2));
+        processedExpense.setCurrency(Currency.USD);
+        processedExpense.setExchangeRate(9);
+        processedExpense.setIssueDate(LocalDate.of(2024, 12, 3));
+        processedExpense.setExpenseLocation(ExpenseLocation.OUTSIDE_MOROCCO);
     }
 
     @Test
@@ -102,6 +113,13 @@ class ExpenseServiceUnitTest {
         verify(employeeRepository, times(1)).findByEmail(employee.getEmail());
         verify(expenseRequestValidator, times(1)).validateExpenseRequest(requestDto);
         verify(expenseRequestProcessor, times(1)).processExpense(requestDto, employee);
+
+        // verify all fields has been set:
+        assertNotNull(response.getIssueBy());
+        assertEquals(3000.0,response.getTotalAmount());
+        //assertEquals("USD", response.getCurrency());
+        assertEquals("OUTSIDE_MOROCCO", response.getLocation());
+        assertEquals(9, response.getExchangeRate());
     }
 
     @Test

@@ -9,4 +9,5 @@ public class ExpenseItemRequest {
     private LocalDate expenseDate;
     private String designation;
     private double amount;
+    private boolean invoiced;
 }

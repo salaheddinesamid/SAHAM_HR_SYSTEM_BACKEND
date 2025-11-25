@@ -18,6 +18,9 @@ public class ExpenseResponseDto {
     private List<ExpenseItemResponse> expenseItems;
     private String motif;
     private double totalAmount;
+    private String currency;
+    private double exchangeRate;
+    private String location;
 
     public ExpenseResponseDto(Expense expense) {
         this.id = expense.getId();
@@ -25,6 +28,9 @@ public class ExpenseResponseDto {
         this.date = expense.getIssueDate();
         this.createdAt = expense.getCreatedAt();
         this.totalAmount = expense.getTotalAmount();
+        this.currency = expense.getCurrency().toString();
+        this.exchangeRate = expense.getExchangeRate();
+        this.location = expense.getExpenseLocation().toString();
         this.motif = expense.getMotif();
         this.expenseItems =
                 expense.getItems().stream()
@@ -38,6 +44,7 @@ class ExpenseItemResponse{
     private LocalDate date;
     private String designation;
     private double amount;
+    private boolean invoiced;
     ExpenseItemResponse(
             ExpenseItem expenseItem
     ){
@@ -45,5 +52,6 @@ class ExpenseItemResponse{
         this.date = expenseItem.getDate();
         this.designation = expenseItem.getDesignation();
         this.amount = expenseItem.getAmount();
+        this.invoiced = expenseItem.isInvoiced();
     }
 }

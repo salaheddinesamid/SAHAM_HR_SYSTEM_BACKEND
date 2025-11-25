@@ -30,6 +30,17 @@ public class Expense {
     @Column(name = "total_amount", nullable = false)
     private double totalAmount;
 
+    @Column(name = "currency")
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+    @Column(name = "exchange_rate")
+    private double exchangeRate;
+
+    @Column(name = "expense_location")
+    @Enumerated(EnumType.STRING)
+    private ExpenseLocation expenseLocation;
+
     @Column(name = "motif")
     private String motif;
 
