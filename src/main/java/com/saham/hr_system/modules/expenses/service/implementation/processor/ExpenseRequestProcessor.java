@@ -38,6 +38,7 @@ public class ExpenseRequestProcessor {
         expense.setEmployee(employee);
         expense.setIssueDate(expenseRequestDto.getIssueDate());
         expense.setCreatedAt(LocalDateTime.now());
+        expense.setMotif(expenseRequestDto.getMotif());
 
         List<ExpenseItem> items = expenseRequestDto.getExpenseItems().stream()
                 .map(req -> {
@@ -46,7 +47,7 @@ public class ExpenseRequestProcessor {
                     item.setDesignation(req.getDesignation());
                     item.setDate(req.getExpenseDate());
                     item.setExpense(expense);
-                    return expenseItemRepository.save(item); // save the item:
+                    return item;
                 })
                 .toList();
 
