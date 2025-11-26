@@ -18,5 +18,5 @@ public interface LoanRequestQueryService {
      *
      * @return
      */
-    List<LoanRequestResponseDto> getAllPendingRequests();
+    List<LoanRequestResponseDto> getAllRequests();
 }

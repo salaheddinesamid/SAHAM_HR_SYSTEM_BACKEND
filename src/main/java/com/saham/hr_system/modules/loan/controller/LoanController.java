@@ -24,7 +24,7 @@ public class LoanController {
     public ResponseEntity<?> getAllRequests(){
         return ResponseEntity
                 .status(200)
-                .body(loanService.getPendingLoanRequests());
+                .body(loanService.getAllRequests());
     }
 
     @GetMapping("/employee-requests")

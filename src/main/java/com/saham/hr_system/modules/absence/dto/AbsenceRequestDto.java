@@ -1,6 +1,5 @@
 package com.saham.hr_system.modules.absence.dto;
 
-import jakarta.mail.Multipart;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
