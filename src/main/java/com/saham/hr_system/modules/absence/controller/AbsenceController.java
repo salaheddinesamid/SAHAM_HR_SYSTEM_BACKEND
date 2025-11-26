@@ -4,6 +4,7 @@ import com.saham.hr_system.modules.absence.dto.AbsenceRequestDetails;
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDto;
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestQueryImpl;
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestServiceImpl;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,9 @@ public class AbsenceController {
         this.absenceRequestQuery = absenceRequestQuery;
     }
 
-    @PostMapping("new")
-    public ResponseEntity<?> newAbsence(@RequestParam String email, @RequestBody AbsenceRequestDto requestDto) throws Exception {
+    @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> newAbsence(@RequestParam String email,
+                                        @ModelAttribute AbsenceRequestDto requestDto) throws Exception {
         // Act:
         AbsenceRequestDetails response = absenceRequestService.requestAbsence(email,requestDto);
         // return HTTP response:

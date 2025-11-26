@@ -11,5 +11,9 @@ public class AbsenceRequestValidatorImpl implements AbsenceRequestValidator {
         if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
             throw new Exception("Start date cannot be after end date.");
         }
+
+        if(requestDto.getType().equals("SICKNESS") && (requestDto.getMedicalCertificate() == null || requestDto.getMedicalCertificate().isEmpty())){
+            throw new Exception("Medical certificate is required for sickness absence.");
+        }
     }
 }
