@@ -16,6 +16,8 @@ target/
 src/main/resources/folders
 src/main/resources/application.properties
 
+src/main/java/com/saham/hr_system/initializer/Initializer.java
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
