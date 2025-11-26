@@ -4,12 +4,10 @@ import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import jakarta.mail.MessagingException;
 
 public interface LeaveRequestEmailSender {
-
-    String generateEmployeeContent(LeaveRequest leaveRequest);
-    String generateManagerContent(LeaveRequest leaveRequest);
-
     /**
      * This function send emails.
      */
-    void send() throws MessagingException;
+    void sendLeaveApprovalEmail(LeaveRequest leaveRequest) throws MessagingException;
+
+    void sendManagerNotificationEmail(LeaveRequest leaveRequest, String managerEmail) throws MessagingException;
 }

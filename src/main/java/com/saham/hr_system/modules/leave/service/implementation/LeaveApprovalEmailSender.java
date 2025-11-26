@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestEmailSender;
+import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,18 +10,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class LeaveApprovalEmailSender implements LeaveRequestEmailSender {
+
     @Override
-    public String generateEmployeeContent(LeaveRequest leaveRequest) {
-        return "";
+    public void sendLeaveApprovalEmail(LeaveRequest leaveRequest) throws MessagingException {
+
     }
 
     @Override
-    public String generateManagerContent(LeaveRequest leaveRequest) {
-        return "";
-    }
-
-    @Override
-    public void send() {
+    public void sendManagerNotificationEmail(LeaveRequest leaveRequest, String managerEmail) throws MessagingException {
 
     }
 }

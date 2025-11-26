@@ -2,7 +2,6 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestEmailSender;
-import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,57 +16,66 @@ import org.thymeleaf.context.Context;
 public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
 
     @Autowired
-    private JavaMailSender javaEmailSender;
+    private JavaMailSender javaMailSender;
 
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
     private String from;
 
+    /**
+     * Email de confirmation pour l'employé après approbation
+     */
     @Override
-    public String generateEmployeeContent(LeaveRequest leaveRequest) {
+    public void sendLeaveApprovalEmail(LeaveRequest leaveRequest) throws MessagingException {
+        String employeeEmail = leaveRequest.getEmployee().getEmail();
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setFrom(from);
+        helper.setTo("boucheriezenata@gmail.com");
+        helper.setSubject("Votre demande de congé est approuvée ✔");
+
+        // Template variables
         Context context = new Context();
-        return null;
-    }
+        context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
+        context.setVariable("startDate", leaveRequest.getStartDate());
+        context.setVariable("endDate", leaveRequest.getEndDate());
+        context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
 
-    @Override
-    public String generateManagerContent(LeaveRequest leaveRequest) {
-        return "";
+        // 🔥 Use your public URL for logo or CID if local
+        context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
+
+        String htmlContent = templateEngine.process("leave-requested-employee.html", context);
+        helper.setText(htmlContent, true);
+
+        javaMailSender.send(message);
+        System.out.println("Leave approval email sent to: " + employeeEmail);
     }
 
     /**
-     * This function will email the employee and manager.
-     * The employee will receive a message of submission.
-     * The manager will receive a message of notification.
+     * Email d'information au manager lors de la soumission
      */
     @Override
-    public void send() throws MessagingException {
-        String employeeEmail = "salaheddine.samid@medjoolstar.com";
-        String managerEmail = "";
-        MimeMessage message = javaEmailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, "UTF-8");
-        sendToEmployee(from, employeeEmail, "Leave Request Submitted", "Your leave request has been submitted.");
-        mimeMessageHelper.setTo(employeeEmail);
-        mimeMessageHelper.setFrom(from);
-        mimeMessageHelper.setSubject("Leave Request Submission");
+    public void sendManagerNotificationEmail(LeaveRequest leaveRequest, String managerEmail) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        javaEmailSender.send(message);
-    }
+        helper.setFrom(from);
+        helper.setTo("boucheriezenata@gmail.com");
+        helper.setSubject("Nouvelle demande de congé à valider");
 
-    /**
-     * Send email to employee
-     */
-    private void sendToEmployee(String from, String to, String subject, String body) {
+        Context context = new Context();
+        context.setVariable("employeeName", leaveRequest.getEmployee().getFullName());
+        context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
+        context.setVariable("startDate", leaveRequest.getStartDate());
+        context.setVariable("endDate", leaveRequest.getEndDate());
 
-    }
+        String htmlContent = templateEngine.process("leave-requested-employee.html", context);
+        helper.setText(htmlContent, true);
 
-    /**
-     *  Send email to manager
-     */
-    private void sendToManager(String from, String to, String subject, String body) {
-
-    }
-
-    private void sendHtml(String from, String to, String subject, String body) {
-
+        javaMailSender.send(message);
     }
 }
