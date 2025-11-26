@@ -39,10 +39,9 @@ public class LoanRequestQueryServiceImpl implements LoanRequestQueryService {
     }
 
     @Override
-    public List<LoanRequestResponseDto> getAllPendingRequests() {
+    public List<LoanRequestResponseDto> getAllRequests() {
         // fetch the requests from db:
-        List<LoanRequest> requests = loanRequestRepository
-                .findAllByStatus(LoanRequestStatus.IN_PROCESS);
+        List<LoanRequest> requests = loanRequestRepository.findAll();
 
         // map the loan requests:
         return

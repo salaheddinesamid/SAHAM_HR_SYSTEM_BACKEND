@@ -12,6 +12,7 @@ public class LoanRequestResponseDto {
     private String requestedBy;
     private double amount;
     private String type;
+    private String motif;
     private LocalDateTime issueDate;
     private boolean isApprovedByHr;
     private boolean isApprovedByFinanceDepartment;
@@ -24,6 +25,7 @@ public class LoanRequestResponseDto {
         this.requestedBy = loanRequest.getEmployee().getFullName();
         this.amount = loanRequest.getAmount();
         this.type = loanRequest.getType().toString();
+        this.motif = loanRequest.getMotif();
         this.isApprovedByHr = loanRequest.isApprovedByHrDepartment();
         this.isApprovedByFinanceDepartment = loanRequest.isApprovedByFinanceDepartment();
         this.status = loanRequest.getStatus().toString();

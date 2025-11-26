@@ -25,5 +25,5 @@ public interface LoanService {
      * This function fetches all the loan requests made by all employees
      * @return list of loan requests.
      */
-    List<LoanRequestResponseDto> getPendingLoanRequests();
+    List<LoanRequestResponseDto> getAllRequests();
 }
