@@ -7,7 +7,6 @@ import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
-import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
@@ -115,10 +114,8 @@ public class LeaveServiceImpl implements LeaveService {
 
         // Fetch leave requests (IN PROCESS ONLY):
         List<LeaveRequest> requests = subordinates.stream()
-                .flatMap(employee -> leaveRequestRepository.findAllByEmployeeAndStatusAndApprovedByManager(employee, LeaveRequestStatus.IN_PROCESS, false).stream())
+                .flatMap(employee -> leaveRequestRepository.findAllByEmployee(employee).stream())
                 .toList();
-
-
         return requests.isEmpty() ? List.of() : requests.stream()
                 .map(LeaveRequestResponse::new)
                 .collect(Collectors.toList());
