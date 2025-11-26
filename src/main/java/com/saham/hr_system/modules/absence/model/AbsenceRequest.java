@@ -45,4 +45,7 @@ public class AbsenceRequest {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private AbsenceRequestStatus status;
+
+    @Column(name = "medical_certificate_path", columnDefinition = "varchar(255) default ''")
+    private String medicalCertificatePath;
 }

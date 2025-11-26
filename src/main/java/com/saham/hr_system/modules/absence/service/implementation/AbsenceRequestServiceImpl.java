@@ -2,8 +2,6 @@ package com.saham.hr_system.modules.absence.service.implementation;
 
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDetails;
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDto;
-import com.saham.hr_system.modules.absence.dto.AbsenceResponseDto;
-import com.saham.hr_system.modules.absence.model.Absence;
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestProcessor;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestService;

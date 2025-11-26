@@ -18,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,6 +65,36 @@ public class AbsenceServiceUnitTest {
         requestDto.setStartDate(LocalDate.of(2025,4,10));
         requestDto.setEndDate(LocalDate.of(2025,4,19));
         requestDto.setType("REMOTE_WORK");
+
+        when(employeeRepository.findByEmail("test@saham.com")).thenReturn(Optional.of(employee));
+        when(absenceRequestMapper.mapToEntity(requestDto)).thenReturn(new AbsenceRequest());
+        // Act:
+        remoteWorkAbsenceRequestProcessor.processAbsenceRequest("test@saham.com",requestDto);
+        // verify:
+        verify(absenceRequestRepo, times(1)).save(any());
+    }
+
+    @Test
+    void testProcessSicknessAbsenceRequestSuccess() throws Exception {
+
+        // Mock Multipart file:
+        String fileName = "test-file.txt";
+        String originalFileName = "original-test-file.txt";
+        String contentType = "text/plain";
+        byte[] content = "This is the content of the mock file.".getBytes();
+
+        MockMultipartFile mockFile = new MockMultipartFile(
+                fileName,
+                originalFileName,
+                contentType,
+                content
+        );
+        // Arrange:
+        AbsenceRequestDto requestDto = new AbsenceRequestDto();
+        requestDto.setStartDate(LocalDate.of(2025,4,10));
+        requestDto.setEndDate(LocalDate.of(2025,4,19));
+        requestDto.setType("SICKNESS");
+        requestDto.setMedicalCertificate(mockFile);
 
         when(employeeRepository.findByEmail("test@saham.com")).thenReturn(Optional.of(employee));
         when(absenceRequestMapper.mapToEntity(requestDto)).thenReturn(new AbsenceRequest());
