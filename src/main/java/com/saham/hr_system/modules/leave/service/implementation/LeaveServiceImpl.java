@@ -9,6 +9,7 @@ import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 
+import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
@@ -125,7 +126,11 @@ public class LeaveServiceImpl implements LeaveService {
     public List<LeaveRequestResponse> getAllLeaveRequestsForHR() {
         // Fetch all leave requests for HR:
         List<LeaveRequest> requests =
-                leaveRequestRepository.findAll();
+                leaveRequestRepository.findAllByApprovedByManagerOrStatusOrStatus(
+                        true,
+                        LeaveRequestStatus.APPROVED,
+                        LeaveRequestStatus.REJECTED
+                );
 
         // return a response dto:
         return
