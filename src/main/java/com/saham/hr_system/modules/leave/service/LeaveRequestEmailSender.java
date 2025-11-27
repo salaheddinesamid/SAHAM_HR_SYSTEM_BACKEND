@@ -5,9 +5,17 @@ import jakarta.mail.MessagingException;
 
 public interface LeaveRequestEmailSender {
     /**
-     * This function send emails.
+     * This function notify the employee in case of new leave requests made.
+     * @param leaveRequest
+     * @throws MessagingException
      */
-    void sendLeaveApprovalEmail(LeaveRequest leaveRequest) throws MessagingException;
+    void sendEmployeeNotificationEmail(LeaveRequest leaveRequest) throws MessagingException;
 
+    /**
+     * This function notify the manager in case of new leave request made by their employee.
+     * @param leaveRequest
+     * @param managerEmail
+     * @throws MessagingException
+     */
     void sendManagerNotificationEmail(LeaveRequest leaveRequest, String managerEmail) throws MessagingException;
 }

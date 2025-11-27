@@ -4,7 +4,9 @@ import com.saham.hr_system.exception.LeaveRequestAlreadyApprovedException;
 import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorException;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.EmployeeBalance;
+import com.saham.hr_system.modules.employees.model.Role;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
+import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
@@ -12,8 +14,12 @@ import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class AnnualLeaveApproval implements LeaveApproval {
@@ -21,12 +27,16 @@ public class AnnualLeaveApproval implements LeaveApproval {
     private final LeaveRequestRepository leaveRequestRepository;
     private final LeaveRepository leaveRepository;
     private final EmployeeBalanceRepository employeeBalanceRepository;
+    private final EmployeeRepository employeeRepository;
+    private final LeaveRequestApprovalEmailSenderImpl leaveRequestApprovalEmailSender;
 
     @Autowired
-    public AnnualLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, EmployeeBalanceRepository employeeBalanceRepository) {
+    public AnnualLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, EmployeeBalanceRepository employeeBalanceRepository, EmployeeRepository employeeRepository, LeaveRequestApprovalEmailSenderImpl leaveRequestApprovalEmailSender) {
         this.leaveRequestRepository = leaveRequestRepository;
         this.leaveRepository = leaveRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
+        this.employeeRepository = employeeRepository;
+        this.leaveRequestApprovalEmailSender = leaveRequestApprovalEmailSender;
     }
 
     @Override
@@ -82,6 +92,10 @@ public class AnnualLeaveApproval implements LeaveApproval {
         leave.setToDate(leaveRequest.getEndDate());
         leave.setTotalDays(totalDays);
 
+        // notify the employee:
+
+        // notify the manager:
+
         return leaveRepository.save(leave);
     }
 
@@ -107,7 +121,17 @@ public class AnnualLeaveApproval implements LeaveApproval {
         leaveRequestRepository.save(leaveRequest);
 
         // notify the employee
-        // notify the HR
+        CompletableFuture.runAsync(()->{
+            try {
+                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest, employee.getEmail());
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        // notify the HR:
+        CompletableFuture.runAsync(()->{
+            leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
+        });
     }
 
     @Override

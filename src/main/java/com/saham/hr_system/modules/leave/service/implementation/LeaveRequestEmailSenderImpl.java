@@ -24,11 +24,8 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
     @Value("${spring.mail.username}")
     private String from;
 
-    /**
-     * Email de confirmation pour l'employé après approbation
-     */
     @Override
-    public void sendLeaveApprovalEmail(LeaveRequest leaveRequest) throws MessagingException {
+    public void sendEmployeeNotificationEmail(LeaveRequest leaveRequest) throws MessagingException {
         String employeeEmail = leaveRequest.getEmployee().getEmail();
 
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -43,9 +40,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
-        context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
 
-        // 🔥 Use your public URL for logo or CID if local
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("leave-requested-employee.html", context);
@@ -56,7 +51,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
     }
 
     /**
-     * Email d'information au manager lors de la soumission
+     * Email notification for the manager after submission of a leave request:
      */
     @Override
     public void sendManagerNotificationEmail(LeaveRequest leaveRequest, String managerEmail) throws MessagingException {
@@ -73,7 +68,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
 
-        String htmlContent = templateEngine.process("leave-requested-employee.html", context);
+        String htmlContent = templateEngine.process("leave-requested-manager.html", context);
         helper.setText(htmlContent, true);
 
         javaMailSender.send(message);

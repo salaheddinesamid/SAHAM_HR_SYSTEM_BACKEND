@@ -52,11 +52,15 @@
     </div>
 
     <div class="content">
-        <p>Bonjour <b th:text="${managerName}"></b>,
+        <p>
+            Bonjour,
             <br>
-            Vous avez une nouvelle demande de congé de votre collaborateur <b th:text="${employeeName}"></b>, en attente de validation sur My HR Saham. Merci de cliquer sur le lien ci-dessous pour la consulter.
-        <br>
-            Cordialement,</p>
+            Vous avez une nouvelle demande de congé, de <b th:text="${employeeName}"></b> validée par <b th:text="${managerName}"></b>, en attente de validation sur My HR Saham.
+            Merci de cliquer sur le lien ci-dessous pour la consulter.
+            <br>
+            Cordialement,
+        </p>
+
 
         <p><strong>Type :</strong> <span th:text="${type}"></span></p>
         <p><strong>Du :</strong> <span th:text="${startDate}"></span></p>
