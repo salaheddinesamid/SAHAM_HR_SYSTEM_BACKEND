@@ -33,13 +33,14 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
 
     @Override
     public void sendHRApprovalEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException{
+        String employeeEmail = leaveRequest.getEmployee().getEmail();
         // Create mime message:
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message); // message helper:
 
         // set information:
         helper.setFrom(from);
-        helper.setTo("boucheriezenata@gmail.com");
+        helper.setTo(employeeEmail);
         helper.setSubject("Votre congé a été accepter");
 
         // Template engine variables:
