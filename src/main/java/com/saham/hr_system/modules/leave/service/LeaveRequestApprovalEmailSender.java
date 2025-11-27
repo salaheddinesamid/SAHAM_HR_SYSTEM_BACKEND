@@ -18,9 +18,4 @@ public interface LeaveRequestApprovalEmailSender {
      */
     void sendSubordinateApprovalEmailToHR(LeaveRequest leaveRequest);
 
-    /**
-     * Notify the employee via email when their leave request is approved by HR.
-     * @param leaveRequest
-     */
-    void sendHRApprovalEmailToEmployee(LeaveRequest leaveRequest, String email);
 }
