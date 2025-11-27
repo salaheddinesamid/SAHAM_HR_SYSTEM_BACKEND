@@ -55,95 +55,101 @@ public class Initializer implements CommandLineRunner {
         Role managerRole = roleRepository.findByRoleName(RoleName.MANAGER.name()).orElseThrow();
         Role hrRole = roleRepository.findByRoleName(RoleName.HR.name()).orElseThrow();
 
-        Employee savedManager = null;
-        Employee savedEmployee = null;
-        Employee savedHR = null;
+        Employee ciryane = null;
+        Employee wijdane = null;
+        Employee myriam = null;
 
-        // Manager
-
+        // Ciryane EL KHIATI - Manager
         if (employeeRepository.findByEmail("Ciryane@saham.com").isEmpty()) {
 
             // Default manager
             Employee manager = new Employee();
-            manager.setFirstName("Ciryane");
-            manager.setLastName("El Khiati");
-            manager.setEmail("Ciryane@saham.com");
-            manager.setMatriculation("SAHAMEMP006");
+            manager.setFirstName("Ciryane"); // first name
+            manager.setLastName("EL KHIATI"); // last name
+            manager.setEmail("Ciryane@saham.com"); // email
+            manager.setMatriculation("SAHAMEMP006"); // Matriculation:
             manager.setPassword(passwordEncoder.encode("cyriane2025"));
-            manager.setRoles(List.of(employeeRole, managerRole, hrRole));
-            manager.setEntity("Saham Horiwzon");
-            manager.setJoinDate(LocalDate.of(2017, 7, 1));
+            manager.setRoles(List.of(employeeRole, managerRole)); // employee and manager role
+            manager.setEntity("Saham Horizon"); // Entity
+            manager.setOccupation("Directrice du Capital Humain"); // Occupation
+            manager.setJoinDate(LocalDate.of(2025, 4, 7)); // join date
             manager.setManager(null);
-            savedManager = employeeRepository.save(manager);
+            ciryane = employeeRepository.save(manager);
 
             // Default Balance:
             EmployeeBalance managerBalance = new EmployeeBalance();
-            managerBalance.setInitialBalance(30);
-            managerBalance.setMonthlyBalance(2);
-            managerBalance.setAccumulatedBalance(10);
-            managerBalance.setYear(2025);
+            managerBalance.setInitialBalance(22); // Droit Annuel
+            managerBalance.setMonthlyBalance(2); // Droit Mensuel*
+            managerBalance.setDaysLeft(0); // Solde 2024
+            managerBalance.setAccumulatedBalance(10); // Jours Accumulés
+            managerBalance.setYear(2024); // Année
             managerBalance.setLastUpdated(LocalDateTime.now());
-            managerBalance.setUsedBalance(0);
-            managerBalance.setEmployee(savedManager);
+            managerBalance.setUsedBalance(21); // Pris
+            managerBalance.setEmployee(ciryane); // set the employee
 
-            employeeBalanceRepository.save(managerBalance);
-        }
-        if (employeeRepository.findByEmail("samid@saham.com").isEmpty()) {
-
-            // Default employee
-            Employee manager = new Employee();
-            manager.setFirstName("Salaheddine");
-            manager.setLastName("Samid");
-            manager.setEmail("samid@saham.com");
-            manager.setMatriculation("SAHAMEMP001");
-            manager.setPassword(passwordEncoder.encode("salaheddine2025"));
-            manager.setRoles(List.of(employeeRole));
-            manager.setEntity("Saham Group");
-            manager.setJoinDate(LocalDate.of(2025, 11, 1));
-            manager.setManager(savedManager);
-            savedEmployee = employeeRepository.save(manager);
-
-            // Default Balance:
-            EmployeeBalance managerBalance = new EmployeeBalance();
-            managerBalance.setInitialBalance(30);
-            managerBalance.setMonthlyBalance(2);
-            managerBalance.setAccumulatedBalance(10);
-            managerBalance.setYear(2025);
-            managerBalance.setLastUpdated(LocalDateTime.now());
-            managerBalance.setUsedBalance(0);
-            managerBalance.setEmployee(manager);
-
-            employeeBalanceRepository.save(managerBalance);
+            employeeBalanceRepository.save(managerBalance); // save the employee balance:
         }
 
-
-        // HR:
-        if (employeeRepository.findByEmail("myriam@saham.com").isEmpty()) {
+        // Miryam WARGANE - HR:
+        if (employeeRepository.findByEmail("myriam.wargane@Saham.com").isEmpty()) {
 
             // Default HR
             Employee hr = new Employee();
             hr.setFirstName("Myriam");
             hr.setLastName("Wargane");
-            hr.setEmail("myriam@saham.com");
+            hr.setEmail("myriam.wargane@Saham.com");
             hr.setMatriculation("EMP001");
             hr.setPassword(passwordEncoder.encode("myriam2025"));
-            hr.setRoles(List.of(employeeRole, hrRole));
-            hr.setEntity("Saham Group");
-            hr.setJoinDate(LocalDate.of(2018, 3, 12));
-            hr.setManager(savedManager);
-            savedHR =  employeeRepository.save(hr);
+            hr.setRoles(List.of(employeeRole, hrRole, managerRole));
+            hr.setEntity("SAHAM Horizon"); // set the entity
+            hr.setOccupation("Responsable des Ressources Humaines ");
+            hr.setJoinDate(LocalDate.of(2014, 3, 3)); // join date
+            hr.setManager(ciryane);
+            myriam =  employeeRepository.save(hr);
 
             // Default Balance:
-            EmployeeBalance managerBalance = new EmployeeBalance();
-            managerBalance.setInitialBalance(30);
-            managerBalance.setMonthlyBalance(2);
-            managerBalance.setAccumulatedBalance(10);
-            managerBalance.setYear(2025);
-            managerBalance.setLastUpdated(LocalDateTime.now());
-            managerBalance.setUsedBalance(0);
-            managerBalance.setEmployee(savedHR);
+            EmployeeBalance balance = new EmployeeBalance();
+            balance.setInitialBalance(29); // Droit Annuel
+            balance.setMonthlyBalance(2); // Droit Mensuel
+            balance.setAccumulatedBalance(14); // Jours Accumulés
+            balance.setYear(2024); // Année
+            balance.setDaysLeft(48); // Solde 2024
+            balance.setLastUpdated(LocalDateTime.now());
+            balance.setUsedBalance(21); // pris
+            balance.setEmployee(myriam);
 
-            employeeBalanceRepository.save(managerBalance);
+            employeeBalanceRepository.save(balance);
+        }
+
+        // Wijdane Sabir - HR:
+        if (employeeRepository.findByEmail("wijdane.sabir@Saham.com").isEmpty()) {
+
+            // Default HR
+            Employee hr = new Employee();
+            hr.setFirstName("Wijdane");
+            hr.setLastName("Sabir");
+            hr.setEmail("wijdane.sabir@Saham.com");
+            hr.setMatriculation("EMP001");
+            hr.setPassword(passwordEncoder.encode("wijdane2025"));
+            hr.setRoles(List.of(employeeRole, hrRole));
+            hr.setEntity("SAHAM Horizon"); // set the entity
+            hr.setOccupation("HR Generalist"); // set the occupation
+            hr.setJoinDate(LocalDate.of(2022, 4, 1)); // join date
+            hr.setManager(myriam);
+            wijdane =  employeeRepository.save(hr);
+
+            // Default Balance:
+            EmployeeBalance balance = new EmployeeBalance();
+            balance.setInitialBalance(26); // Droit Annuel
+            balance.setMonthlyBalance(3); // Droit Mensuel
+            balance.setAccumulatedBalance(23); // Jours Accumulés
+            balance.setYear(2024); // Année
+            balance.setDaysLeft(2); // Solde 2024
+            balance.setLastUpdated(LocalDateTime.now());
+            balance.setUsedBalance(25); // pris
+            balance.setEmployee(wijdane);
+
+            employeeBalanceRepository.save(balance);
         }
     }
 }
