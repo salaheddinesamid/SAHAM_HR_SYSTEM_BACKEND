@@ -5,6 +5,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      */
     List<LeaveRequest> findAllByStatusAndApprovedByManager(LeaveRequestStatus status, boolean approvedByManager);
 
-
+    long countByRequestDateBetween(LocalDateTime start, LocalDateTime end);
     List<LeaveRequest> findAllByEmployee(Employee employee);
 
     Optional<LeaveRequest> findByEmployee(Employee employee);

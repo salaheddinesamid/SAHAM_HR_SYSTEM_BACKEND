@@ -16,7 +16,7 @@ import org.thymeleaf.context.Context;
 import java.util.List;
 
 /**
- * This class implements EmailSender interface to send email.
+ * This class implements EmailSender interface to send email to (Employee, and HR) when a leave request is approved by the manager.
  */
 @Component
 public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApprovalEmailSender {
@@ -113,11 +113,5 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
             javaMailSender.send(message);
             System.out.println("Leave approval email sent to: " + email);
         });
-    }
-
-    @Override
-    public void sendHRApprovalEmailToEmployee(LeaveRequest leaveRequest, String email) {
-
-
     }
 }
