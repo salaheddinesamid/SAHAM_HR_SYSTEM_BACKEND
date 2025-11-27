@@ -7,6 +7,7 @@ import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
+import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class DefaultLeaveRequestProcessor implements LeaveProcessor {
@@ -69,9 +71,31 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
 
-        leaveRequestEmailSender.sendLeaveApprovalEmail(leaveRequest);
+        LeaveRequest savedRequest = leaveRequestRepository.save(leaveRequest); // save the leave request before sending the emails
 
-        // save the request:
-        return leaveRequestRepository.save(leaveRequest);
+        // notify the employee:
+        CompletableFuture.runAsync(() ->
+                {
+                    try {
+                        leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+
+        // notify the manager:
+        CompletableFuture.runAsync(() ->
+                {
+                    try {
+                        leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest, leaveRequest.getEmployee().getManager().getEmail());
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+
+        // return the saved request:
+        return savedRequest;
     }
 }
