@@ -47,7 +47,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         helper.setText(htmlContent, true);
 
         javaMailSender.send(message);
-        System.out.println("Leave approval email sent to: " + employeeEmail);
+        System.out.println("Leave request email sent to: " + employeeEmail);
     }
 
     /**
@@ -72,5 +72,6 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         helper.setText(htmlContent, true);
 
         javaMailSender.send(message);
+        System.out.println("Leave request email sent to: " + managerEmail);
     }
 }
