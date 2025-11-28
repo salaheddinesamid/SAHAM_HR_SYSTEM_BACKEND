@@ -32,7 +32,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setFrom(from);
-        helper.setTo("boucheriezenata@gmail.com");
+        helper.setTo("salaheddine.samid@Saham.com");
         helper.setSubject("Votre demande de congé est approuvée ✔");
 
         // Template variables
