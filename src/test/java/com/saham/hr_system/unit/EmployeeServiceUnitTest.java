@@ -9,6 +9,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 public class EmployeeServiceUnitTest {
@@ -43,6 +45,8 @@ public class EmployeeServiceUnitTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.ofNullable(employee));
         Optional<Employee> fetchedEmployee = employeeRepository.findById(1L);
         assert fetchedEmployee.isPresent();
+        assertNotNull(fetchedEmployee.get().getManager());
+        assertEquals("jane.doe@gmail.com", fetchedEmployee.get().getManager().getEmail());
 
     }
 }
