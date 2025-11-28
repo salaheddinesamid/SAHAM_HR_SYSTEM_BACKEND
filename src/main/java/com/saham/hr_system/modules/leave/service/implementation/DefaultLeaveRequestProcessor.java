@@ -78,16 +78,6 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
                 {
                     try {
                         leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
-                    } catch (MessagingException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        );
-
-        // notify the manager:
-        CompletableFuture.runAsync(() ->
-                {
-                    try {
                         leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest, leaveRequest.getEmployee().getManager().getEmail());
                     } catch (MessagingException e) {
                         throw new RuntimeException(e);
