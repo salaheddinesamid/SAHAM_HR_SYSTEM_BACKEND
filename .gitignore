@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 
 # Ignode the build package:
-/target/*
+target
 
 ### STS ###
 .apt_generated

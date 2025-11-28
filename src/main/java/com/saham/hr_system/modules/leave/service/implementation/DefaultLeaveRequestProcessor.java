@@ -78,7 +78,7 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
                 {
                     try {
                         leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
-                        leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest, leaveRequest.getEmployee().getManager().getEmail());
+                        leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest);
                     } catch (MessagingException e) {
                         throw new RuntimeException(e);
                     }
