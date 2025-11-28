@@ -66,37 +66,52 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
     }
 
     @Override
-    public void sendSubordinateApprovalEmailToHR(LeaveRequest leaveRequest) throws MessagingException{
+    public void sendSubordinateApprovalEmailToHR(LeaveRequest leaveRequest) {
         // fetch all HR emails:
         List<String> emails = hrFetcherUtils.fetchHREmail();
         emails.forEach(email -> {
-            try{
-                MimeMessage message = javaMailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-                helper.setFrom(from);
-                helper.setTo(email);
-                helper.setSubject("Votre demande de congé est approuvée par le manager ✔");
-
-
-                // Template variables
-                Context context = new Context();
-                context.setVariable("manager", leaveRequest.getEmployee().getManager().getFullName());
-                context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
-                context.setVariable("startDate", leaveRequest.getStartDate());
-                context.setVariable("endDate", leaveRequest.getEndDate());
-
-                context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
-
-                String htmlContent = templateEngine.process("leave-request-approved-hr.html", context);
-                helper.setText(htmlContent, true);
-
-
-                javaMailSender.send(message);
-                System.out.println("Leave approval email sent to: " + email);
-            }catch (MessagingException e){
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = null;
+            try {
+                helper = new MimeMessageHelper(message, true, "UTF-8");
+            } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
+
+            try {
+                helper.setFrom(from);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                helper.setTo(email);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                helper.setSubject("Nouvelle demande de congé à valider");
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+
+            // Template variables
+            Context context = new Context();
+            context.setVariable("manager", leaveRequest.getEmployee().getManager().getFullName());
+            context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
+            context.setVariable("startDate", leaveRequest.getStartDate());
+            context.setVariable("endDate", leaveRequest.getEndDate());
+
+            context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
+
+            String htmlContent = templateEngine.process("leave-request-approved-hr.html", context);
+            try {
+                helper.setText(htmlContent, true);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+
+            javaMailSender.send(message);
+            System.out.println("Leave approval email sent to: " + email);
         });
     }
 }
