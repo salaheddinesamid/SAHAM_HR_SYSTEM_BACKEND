@@ -60,13 +60,13 @@ public class Initializer implements CommandLineRunner {
         Employee myriam = null;
 
         // Ciryane EL KHIATI - Manager
-        if (employeeRepository.findByEmail("Ciryane@saham.com").isEmpty()) {
+        if (employeeRepository.findByEmail("cyriane.elkhiati@Saham.com").isEmpty()) {
 
             // Default manager
             Employee manager = new Employee();
             manager.setFirstName("Ciryane"); // first name
             manager.setLastName("EL KHIATI"); // last name
-            manager.setEmail("Ciryane@saham.com"); // email
+            manager.setEmail("cyriane.elkhiati@Saham.com"); // email
             manager.setMatriculation("SAHAMEMP006"); // Matriculation:
             manager.setPassword(passwordEncoder.encode("cyriane2025"));
             manager.setRoles(List.of(employeeRole, managerRole)); // employee and manager role
