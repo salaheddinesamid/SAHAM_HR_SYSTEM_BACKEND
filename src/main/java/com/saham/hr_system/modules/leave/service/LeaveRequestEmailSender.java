@@ -13,8 +13,7 @@ public interface LeaveRequestEmailSender {
     /**
      * This function notify the manager in case of new leave request made by their employee.
      * @param leaveRequest
-     * @param managerEmail
      * @throws MessagingException
      */
-    void sendManagerNotificationEmail(LeaveRequest leaveRequest, String managerEmail) throws MessagingException;
+    void sendManagerNotificationEmail(LeaveRequest leaveRequest) throws MessagingException;
 }

@@ -54,7 +54,10 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
      * Email notification for the manager after submission of a leave request:
      */
     @Override
-    public void sendManagerNotificationEmail(LeaveRequest leaveRequest, String managerEmail) throws MessagingException {
+    public void sendManagerNotificationEmail(LeaveRequest leaveRequest) throws MessagingException {
+
+        String managerEmail = leaveRequest.getEmployee().getManager().getEmail();
+        assert managerEmail != null;
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
