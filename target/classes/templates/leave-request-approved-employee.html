@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f7f7f7;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ddd;
+        }
+
+        .header {
+            background: #004170;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .content {
+            padding: 20px;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .badge {
+            background: #28a745;
+            padding: 8px 16px;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="../static/logo.png">
+    </div>
+
+    <div class="content">
+        <p>
+            Bonjour,<br><br>
+            Nous vous informons que votre nouvelle demande de congé, saisie par vos soins,
+            a été <b>approuvée par <span th:text="${manager}"></span></b> et est actuellement
+            <b>en attente de validation par le service RH</b>.<br><br>
+
+            La demande sera enregistrée définitivement dans le système My HR Saham une fois validée par la RH.<br>
+            Vous pouvez suivre l’état de votre demande directement sur la plateforme.<br><br>
+
+            Cordialement,<br>
+            <span th:text="${sender}"></span>
+        </p>
+
+
+        <p><strong>Type :</strong> <span th:text="${type}"></span></p>
+        <p><strong>Du :</strong> <span th:text="${startDate}"></span></p>
+        <p><strong>Au :</strong> <span th:text="${endDate}"></span></p>
+    </div>
+
+    <div class="footer">
+        Saham HR System © 2025 — Tous droits réservés.
+    </div>
+</div>
+</body>
+</html>
