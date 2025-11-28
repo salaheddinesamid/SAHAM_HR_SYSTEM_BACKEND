@@ -46,7 +46,7 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setFrom(from);
-        helper.setTo("boucheriezenata@gmail.com");
+        helper.setTo(employeeEmail);
         helper.setSubject("Votre demande de congé est approuvée par le manager ✔");
 
         // Template variables
@@ -84,12 +84,12 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
                 throw new RuntimeException(e);
             }
             try {
-                helper.setTo("boucheriezenata@gmail.com");
+                helper.setTo(email);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
             try {
-                helper.setSubject("Votre demande de congé est approuvée par le manager ✔");
+                helper.setSubject("Nouvelle demande de congé à valider");
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }

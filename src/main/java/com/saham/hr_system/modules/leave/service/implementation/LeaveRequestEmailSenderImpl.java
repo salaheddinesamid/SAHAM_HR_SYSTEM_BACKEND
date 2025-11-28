@@ -32,8 +32,8 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setFrom(from);
-        helper.setTo("salaheddine.samid@Saham.com");
-        helper.setSubject("Votre demande de congé est approuvée ✔");
+        helper.setTo(employeeEmail);
+        helper.setSubject("Votre demande de congé a été enregistré");
 
         // Template variables
         Context context = new Context();
@@ -59,7 +59,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setFrom(from);
-        helper.setTo("boucheriezenata@gmail.com");
+        helper.setTo(managerEmail);
         helper.setSubject("Nouvelle demande de congé à valider");
 
         Context context = new Context();
