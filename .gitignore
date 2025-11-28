@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Ignode the build package:
+/target/*
+
 ### STS ###
 .apt_generated
 .classpath
