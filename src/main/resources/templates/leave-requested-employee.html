@@ -13,18 +13,16 @@
         .container {
             max-width: 600px;
             margin: 30px auto;
-            padding: 0;
-            border-radius: 12px;
             background: #ffffff;
+            border-radius: 12px;
             border: 1px solid #ddd;
             overflow: hidden;
         }
 
         .header {
-            background: #003e6b;
-            color: white;
-            padding: 20px;
+            background: #004170;
             text-align: center;
+            padding: 20px;
         }
 
         .header img {
@@ -35,7 +33,7 @@
             padding: 25px;
             font-size: 15px;
             line-height: 1.6;
-            color: #444;
+            color: #333;
         }
 
         .details {
@@ -51,7 +49,22 @@
 
         .label {
             font-weight: bold;
-            color: #003e6b;
+            color: #004170;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            margin-top: 15px;
+            background: #004170;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #003258;
         }
 
         .footer {
@@ -72,31 +85,41 @@
 <body>
 <div class="container">
     <div class="header">
-        <img src="../static/logo.png" alt="Logo">
+        <!-- Absolute URL for logo -->
+        <img src="https://saham.com/app/uploads/2025/05/cropped-favicon-32x32.png" alt="Logo">
     </div>
 
     <div class="content">
-        <p>Bonjour,</p>
+        <p>Bonjour <strong th:text="${employeeName}"></strong>,</p>
+
         <p>
-            Nous vous informons que votre demande de congé, saisie sur la plateforme <strong>My HR Saham</strong>,
-            a été <span class="highlight">enregistrée avec succès</span>.
-            Elle est actuellement <strong>en cours de validation</strong> par votre manager, puis sera transmise au
-            service RH pour traitement.
+            Votre demande de congé a été <span class="highlight">enregistrée avec succès</span> sur la plateforme
+            <strong>My HR Saham</strong>. Elle est actuellement <strong>en cours de validation par votre manager</strong>,
+            puis sera transmise aux <strong>RH</strong> si celle-ci est approuvée.
         </p>
+
         <p>
             Vous pourrez suivre l’évolution de votre demande directement depuis la plateforme.
         </p>
-        <p>Cordialement,</p>
 
         <div class="details">
-            <p><span class="label">Type :</span> <span th:text="${type}"></span>(<span th:text="${typeDetails}"></span>)</p>
+            <p><span class="label">Type :</span> <span th:text="${type}"></span> (<span th:text="${typeDetails}"></span>)</p>
             <p><span class="label">Du :</span> <span th:text="${startDate}"></span></p>
             <p><span class="label">Au :</span> <span th:text="${endDate}"></span></p>
+            <p><span class="label">Durée :</span> <span th:text="${totalDays}"></span></p>
         </div>
+
+        <a th:href="${requestLink}" class="btn">Voir ma demande</a>
+
+        <p style="margin-top: 20px;">
+            Cordialement,<br>
+            <strong>L’équipe My HR Saham</strong>
+        </p>
     </div>
 
     <div class="footer">
-        Saham HR System © 2025 — Tous droits réservés.
+        Saham HR System © 2025 — Tous droits réservés.<br>
+        Cet email a été généré automatiquement, merci de ne pas y répondre.
     </div>
 </div>
 </body>

@@ -27,8 +27,6 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
     @Override
     public void sendHRApprovalEmailToManager(LeaveRequest leaveRequest, String email) throws MessagingException {
 
-
-
     }
 
     @Override

@@ -49,9 +49,10 @@ public class EmployeeDetailsDto {
 class BalanceDetails{
     int year;
     double initialBalance;
+    double monthlyBalance;
+    double daysLeft;
     double accumulatedBalance;
     double usedBalance;
-    double leftBalance;
     LocalDateTime lastUpdated;
 
     public BalanceDetails(
@@ -61,7 +62,7 @@ class BalanceDetails{
         this.accumulatedBalance = employeeBalance.getAccumulatedBalance();
         this.initialBalance = employeeBalance.getInitialBalance();
         this.usedBalance = employeeBalance.getUsedBalance();
-        this.leftBalance = employeeBalance.getDaysLeft();
+        this.daysLeft = employeeBalance.getDaysLeft();
         this.lastUpdated = employeeBalance.getLastUpdated();
     }
 }

@@ -15,12 +15,14 @@ import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
 import com.saham.hr_system.modules.leave.service.LeaveApprovalEmailSender;
 import jakarta.mail.MessagingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@Slf4j
 public class AnnualLeaveApproval implements LeaveApproval {
 
     private final LeaveRequestRepository leaveRequestRepository;
@@ -78,10 +80,14 @@ public class AnnualLeaveApproval implements LeaveApproval {
 
         double totalDays =
                 leaveRequest.getTotalDays();
+        log.info("Total days requested: {}", totalDays);
+        log.info("Employee balance days left: {}", employeeBalance.getDaysLeft());
 
         // subtract total days from the balance
         employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() - totalDays);
         employeeBalance.setUsedBalance(employeeBalance.getUsedBalance() + totalDays);
+        log.info("Employee balance days left after deduction: {}", employeeBalance.getDaysLeft());
+
         // save the balance:
         employeeBalanceRepository.save(employeeBalance);
 
@@ -98,6 +104,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         leave.setTotalDays(totalDays);
 
         // notify the employee:
+        /*
         CompletableFuture.runAsync(()->{
             try {
                 leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
@@ -105,6 +112,8 @@ public class AnnualLeaveApproval implements LeaveApproval {
                 throw new RuntimeException(e);
             }
         });
+
+         */
 
         // notify the manager:
 
@@ -131,6 +140,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
 
         // save the request:
         leaveRequestRepository.save(leaveRequest);
+
 
         // notify the employee
         CompletableFuture.runAsync(()->{
