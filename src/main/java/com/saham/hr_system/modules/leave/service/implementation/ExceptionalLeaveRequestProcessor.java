@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
@@ -66,19 +67,21 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
         leaveRequest.setTypeOfLeave(LeaveType.valueOf(requestDto.getType()));
         leaveRequest.setTypeDetails(requestDto.getTypeDetails());
         leaveRequest.setRequestDate(LocalDateTime.now());
+        leaveRequest.setComment(requestDto.getComment());
         leaveRequest.setApprovedByManager(false);
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
 
-        // If the leave type is sickness, the employee must pose a medical certificate
-        if(leaveRequest.getTypeDetails().equals("SICKNESS")){
-            // saving the certificate on the system
-            String filePath = leaveDocumentStorageService.upload(employee.getId(),file);
-            leaveRequest.setMedicalCertificatePath(filePath);
-        }
-
-        // send email:
-        //leaveRequestEmailSender.send();
+        // notify the employee:
+        CompletableFuture.runAsync(()->{
+                    try {
+                        leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
+                        leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
 
         // save the request:
         return leaveRequestRepository.save(leaveRequest);
