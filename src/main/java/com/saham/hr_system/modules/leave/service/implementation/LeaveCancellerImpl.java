@@ -7,11 +7,13 @@ import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.service.LeaveRequestCanceller;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Slf4j
 public class LeaveCancellerImpl implements LeaveRequestCanceller {
 
     private final LeaveRepository leaveRepository;
@@ -42,14 +44,18 @@ public class LeaveCancellerImpl implements LeaveRequestCanceller {
         Employee employee = leave.getEmployee();
         EmployeeBalance employeeBalance = employeeBalanceRepository.findByEmployee(employee).orElseThrow();
 
+        log.info("Employee total balance before cancellation is: {}", employeeBalance.getDaysLeft());
         // get the total days of the leave:
         double totalDays = leave.getTotalDays();
+        log.info("Leave cancelled by " + employee.getFullName());
         // delete the leave:
         leaveRepository.delete(leave);
 
         // update the balance:
         employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() + totalDays);
         employeeBalance.setUsedBalance(employeeBalance.getUsedBalance() - totalDays);
+
+        log.info("Employee total balance after cancellation is: {}", employeeBalance.getDaysLeft());
 
         // save the balance:
         employeeBalanceRepository.save(employeeBalance);

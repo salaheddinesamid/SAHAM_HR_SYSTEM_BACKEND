@@ -3,71 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <style>
+        body {
+            background: #eeeeee;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
         .container {
             max-width: 600px;
-            margin: auto;
-            padding: 20px;
+            margin: 30px auto;
+            background: #ffffff;
             border-radius: 12px;
-            background: #f7f7f7;
-            font-family: Arial, sans-serif;
             border: 1px solid #ddd;
+            overflow: hidden;
         }
 
         .header {
             background: #004170;
-            color: white;
             padding: 20px;
             text-align: center;
-            border-radius: 12px 12px 0 0;
+        }
+
+        .header img {
+            max-width: 150px;
         }
 
         .content {
-            padding: 20px;
+            padding: 25px;
             font-size: 15px;
+            line-height: 1.6;
             color: #333;
         }
 
-        .badge {
-            background: #28a745;
-            padding: 8px 16px;
-            color: white;
-            border-radius: 20px;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 15px;
+        .details {
+            background: #f4f7fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .details p {
+            margin: 5px 0;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #004170;
         }
 
         .footer {
             text-align: center;
             font-size: 12px;
             color: #777;
-            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            background: #fafafa;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <img src="../static/logo.png">
+        <!-- Replace by absolute URL for production or base64 -->
+        <img src="https://saham.com/app/uploads/2025/05/cropped-favicon-32x32.png" alt="Logo">
     </div>
 
     <div class="content">
+        <p>Bonjour <strong th:text="${employeeName}"></strong>,</p>
+
         <p>
-            Bonjour,<br><br>
-            Nous vous informons que votre nouvelle demande de congé, saisie par vos soins,
-            a été <b>rejeté par <span th:text="${manager}"></span></b>
+            Nous vous informons que votre demande de congé, saisie le
+            <span th:text="${requestDate}"></span>, a été
+            <strong style="color:#d9534f;">rejetée</strong> par votre responsable
+            <strong th:text="${manager}"></strong>.
+        </p>
 
-            La demande sera enregistrée définitivement dans le système My HR Saham une fois validée par la RH.<br>
-            Vous pouvez suivre l’état de votre demande directement sur la plateforme.<br><br>
+        <p>
+            Si vous souhaitez apporter des modifications ou soumettre une nouvelle demande,
+            vous pouvez le faire directement depuis la plateforme <strong>My HR Saham</strong>.
+        </p>
 
+        <div class="details">
+            <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
+            <p><span class="label">Du :</span> <span th:text="${startDate}"></span></p>
+            <p><span class="label">Au :</span> <span th:text="${endDate}"></span></p>
+        </div>
+
+        <p style="margin-top: 20px;">
             Cordialement,<br>
             <span th:text="${sender}"></span>
         </p>
-
-
-        <p><strong>Type :</strong> <span th:text="${type}"></span></p>
-        <p><strong>Du :</strong> <span th:text="${startDate}"></span></p>
-        <p><strong>Au :</strong> <span th:text="${endDate}"></span></p>
     </div>
 
     <div class="footer">
