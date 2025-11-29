@@ -25,8 +25,34 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
     private TemplateEngine templateEngine;
 
     @Override
-    public void sendHRApprovalEmailToManager(LeaveRequest leaveRequest, String email) throws MessagingException {
+    public void sendHRApprovalEmailToManager(LeaveRequest leaveRequest) throws MessagingException {
+        String managerEmail = leaveRequest.getEmployee().getManager().getEmail();
+        // Create mime message:
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message); // message helper:
 
+        // set information:
+        helper.setFrom(from);
+        //helper.setTo(managerEmail);
+        helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
+        helper.setSubject("Le congé de votre collaborateur a été accepter");
+
+        // Template engine variables:
+        Context context = new Context();
+        context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
+        context.setVariable("employeeName", leaveRequest.getTypeOfLeave().toString());
+        context.setVariable("type", leaveRequest.getStartDate());
+        context.setVariable("startDate", leaveRequest.getStartDate());
+        context.setVariable("endDate", leaveRequest.getEndDate());
+        context.setVariable("totalDays", leaveRequest.getTotalDays());
+
+
+        context.setVariable("logoUrl","");
+        // generate HTML content:
+        String htmlContent = templateEngine.process("leave-approved-manager.html", context);
+        helper.setText(htmlContent, true);
+        mailSender.send(message);
+        System.out.println("Leave approval email sent to:" + leaveRequest.getEmployee().getEmail());
     }
 
     @Override

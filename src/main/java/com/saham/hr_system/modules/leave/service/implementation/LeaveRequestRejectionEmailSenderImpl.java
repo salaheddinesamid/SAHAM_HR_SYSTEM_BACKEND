@@ -48,6 +48,6 @@ public class LeaveRequestRejectionEmailSenderImpl implements LeaveRequestRejecti
         helper.setText(htmlContent, true);
 
         javamailSender.send(message);
-        System.out.println("Leave approval email sent to: " + employeeEmail);
+        System.out.println("Leave rejection email sent to: " + employeeEmail);
     }
 }

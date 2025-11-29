@@ -63,11 +63,11 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
         helper.setText(htmlContent, true);
 
         javaMailSender.send(message);
-        System.out.println("Leave approval email sent to: " + employeeEmail);
+        System.out.println("Leave request approval email sent to: " + employeeEmail);
     }
 
     @Override
-    public void sendSubordinateApprovalEmailToHR(LeaveRequest leaveRequest) {
+    public void sendSubordinateApprovalEmailToHR(LeaveRequest leaveRequest){
         // fetch all HR emails:
         List<String> emails = hrFetcherUtils.fetchHREmail();
         emails.forEach(email -> {
@@ -113,7 +113,7 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
             }
 
             javaMailSender.send(message);
-            System.out.println("Leave approval email sent to: " + email);
+            System.out.println("Leave request approval email sent to: " + email);
         });
     }
 }

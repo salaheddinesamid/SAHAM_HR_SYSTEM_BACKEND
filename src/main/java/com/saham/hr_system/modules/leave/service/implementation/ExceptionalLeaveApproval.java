@@ -11,15 +11,19 @@ import com.saham.hr_system.modules.leave.service.LeaveApproval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+
 @Service
 public class ExceptionalLeaveApproval implements LeaveApproval {
 
     private final LeaveRequestRepository leaveRequestRepository;
     private final LeaveRepository leaveRepository;
+    private final LeaveApprovalEmailSenderImpl leaveApprovalEmailSender;
     @Autowired
-    public ExceptionalLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository) {
+    public ExceptionalLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, LeaveApprovalEmailSenderImpl leaveApprovalEmailSender) {
         this.leaveRequestRepository = leaveRequestRepository;
         this.leaveRepository = leaveRepository;
+        this.leaveApprovalEmailSender = leaveApprovalEmailSender;
     }
 
     @Override
@@ -53,6 +57,23 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         leave.setTotalDays(totalDays);
 
         return leaveRepository.save(leave);
+
+        // notify the employee:
+        CompletableFuture.runAsync(()->{
+            try {
+                leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        // notify the manager:
+        CompletableFuture.runAsync(()->{
+            try {
+                leaveApprovalEmailSender.sendHRApprovalEmailToManager(leaveRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override

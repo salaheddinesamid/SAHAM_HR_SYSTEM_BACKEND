@@ -76,6 +76,15 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
         CompletableFuture.runAsync(()->{
                     try {
                         leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+
+        // notify the manager:
+        CompletableFuture.runAsync(()->{
+                    try {
                         leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest);
                     } catch (MessagingException e) {
                         throw new RuntimeException(e);

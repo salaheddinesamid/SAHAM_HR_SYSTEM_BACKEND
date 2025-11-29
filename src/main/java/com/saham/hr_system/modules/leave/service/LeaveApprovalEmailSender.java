@@ -9,7 +9,7 @@ public interface LeaveApprovalEmailSender {
      * Notify the manager via email when their subordinate's leave request is approved by HR.
      * @param leaveRequest
      */
-    void sendHRApprovalEmailToManager(LeaveRequest leaveRequest, String email) throws MessagingException;
+    void sendHRApprovalEmailToManager(LeaveRequest leaveRequest) throws MessagingException;
 
     /**
      * Notify the employee via email when their leave request is approved by HR.
