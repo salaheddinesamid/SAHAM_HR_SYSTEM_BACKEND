@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestEmailSender;
+import com.saham.hr_system.modules.leave.utils.LeaveTypeMapper;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Autowired
+    private LeaveTypeMapper leaveTypeMapper;
+
     @Value("${spring.mail.username}")
     private String from;
 
@@ -32,12 +36,14 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setFrom(from);
-        helper.setTo(employeeEmail);
+        //helper.setTo(employeeEmail);
+        helper.setTo("salaheddine.samid@medjoolstar.com"); // For testing purposes
         helper.setSubject("Votre demande de congé a été enregistré");
 
         // Template variables
         Context context = new Context();
-        context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
+        String typeMapped = leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString());
+        context.setVariable("type", typeMapped);
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
 
@@ -62,12 +68,17 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setFrom(from);
-        helper.setTo(managerEmail);
+        //helper.setTo(managerEmail);
+        helper.setTo("salaheddine.samid@medjoolstar.com"); // For testing purposes
         helper.setSubject("Nouvelle demande de congé à valider");
 
         Context context = new Context();
+        String typeMapped = leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString());
+        context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
         context.setVariable("employeeName", leaveRequest.getEmployee().getFullName());
-        context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
+        context.setVariable("requestLink", "");
+        context.setVariable("type", typeMapped);
+        context.setVariable("typeDetails", leaveRequest.getTypeDetails());
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
 

@@ -65,6 +65,7 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
         leaveRequest.setTypeOfLeave(LeaveType.valueOf(requestDto.getType()));
         leaveRequest.setTypeDetails(requestDto.getTypeDetails());
         leaveRequest.setRequestDate(LocalDateTime.now());
+        leaveRequest.setComment(requestDto.getComment());
         leaveRequest.setApprovedByManager(false);
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);

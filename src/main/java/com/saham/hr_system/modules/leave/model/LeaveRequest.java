@@ -55,6 +55,9 @@ public class LeaveRequest {
     @Column(name = "medical_certificate_path")
     private String medicalCertificatePath;
 
+    @Column(name = "comment", columnDefinition = "VARCHAR(255) default ''")
+    private String comment;
+
     public double getTotalDays() {
         return totalDays != null ? totalDays : 0.0;
     }
