@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.absence.service;
 
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,5 +19,5 @@ public interface DocumentStorageService {
      *
      * @return
      */
-    byte[] download(String filePath);
+    Resource download(String filePath) throws IOException;
 }

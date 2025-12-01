@@ -3,6 +3,8 @@ package com.saham.hr_system.modules.absence.service.implementation;
 import com.saham.hr_system.modules.absence.service.DocumentStorageService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,7 +79,13 @@ public class SicknessAbsenceDocumentStorageService implements DocumentStorageSer
     }
 
     @Override
-    public byte[] download(String filePath) {
-        return new byte[0];
+    public Resource download(String filePath) throws IOException {
+        try{
+            // resolve the file:
+            Path targetPath = uploadPath.resolve(filePath).normalize();
+            return new UrlResource(targetPath.toUri());
+        }catch (IOException exception){
+            throw new IOException("File not found: " + filePath);
+        }
     }
 }
