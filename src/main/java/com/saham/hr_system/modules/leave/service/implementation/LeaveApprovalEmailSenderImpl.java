@@ -64,7 +64,8 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
 
         // set information:
         helper.setFrom(from);
-        helper.setTo(employeeEmail);
+        //helper.setTo(employeeEmail);
+        helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
         helper.setSubject("Votre congé a été accepter");
 
         // Template engine variables:

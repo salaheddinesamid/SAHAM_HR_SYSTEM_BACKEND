@@ -18,6 +18,8 @@ public class LeaveRequestResponse {
     private String type;
     private String document;
     private String status;
+    private boolean isApprovedByManager;
+    private boolean isApprovedByHr;
 
     public LeaveRequestResponse(
             LeaveRequest request
@@ -31,6 +33,8 @@ public class LeaveRequestResponse {
         this.status = request.getStatus().name();
         this.document = request.getMedicalCertificatePath();
         this.totalDays = request.getTotalDays();
+        this.isApprovedByManager = request.isApprovedByManager();
+        this.isApprovedByHr = request.isApprovedByHr();
     }
 
 }

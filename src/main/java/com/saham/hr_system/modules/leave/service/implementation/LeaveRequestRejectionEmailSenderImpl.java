@@ -32,7 +32,7 @@ public class LeaveRequestRejectionEmailSenderImpl implements LeaveRequestRejecti
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setFrom(from);
-        helper.setTo("boucheriezenata@gmail.com");
+        helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
         helper.setSubject("Votre demande de congé est rejeté par le manager");
 
         // Template variables
