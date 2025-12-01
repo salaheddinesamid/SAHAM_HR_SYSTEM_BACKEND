@@ -12,6 +12,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
+import com.saham.hr_system.modules.leave.utils.LeaveDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,13 +28,15 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     private final EmployeeBalanceRepository employeeBalanceRepository;
     private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveRequestRepository leaveRequestRepository;
+    private final LeaveDaysCalculator leaveDaysCalculator;
 
     @Autowired
-    public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRepository leaveRequestRepository) {
+    public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRepository leaveRequestRepository, LeaveDaysCalculator leaveDaysCalculator) {
         this.employeeRepository = employeeRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
         this.leaveRequestEmailSender = leaveRequestEmailSender;
         this.leaveRequestRepository = leaveRequestRepository;
+        this.leaveDaysCalculator = leaveDaysCalculator;
     }
 
     @Override
@@ -50,7 +53,9 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
         EmployeeBalance balance = employeeBalanceRepository
                 .findByEmployee(employee).orElseThrow();
 
-        double totalDays = requestDto.getStartDate().until(requestDto.getEndDate()).getDays() + 1;
+        // calculate the total days excluding the weekends and holidays
+        double totalDays =
+                leaveDaysCalculator.calculateTotalDays(requestDto.getStartDate(), requestDto.getEndDate());
 
         if(balance.getDaysLeft() == 0){
             throw new InsufficientBalanceException();
