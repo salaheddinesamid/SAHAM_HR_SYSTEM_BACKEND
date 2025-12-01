@@ -104,16 +104,17 @@ public class AnnualLeaveApproval implements LeaveApproval {
         leave.setTotalDays(totalDays);
 
         // notify the employee:
-        /*
         CompletableFuture.runAsync(()->{
             try {
-                leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
+                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest, employee.getEmail());
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
         });
-
-         */
+        // notify the Manager:
+        CompletableFuture.runAsync(()->{
+            leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
+        });
 
         // notify the manager:
 
@@ -145,14 +146,18 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // notify the employee
         CompletableFuture.runAsync(()->{
             try {
-                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest, employee.getEmail());
+                leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
         });
         // notify the HR:
         CompletableFuture.runAsync(()->{
-            leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
+            try {
+                leaveApprovalEmailSender.sendHRApprovalEmailToManager(leaveRequest);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
@@ -208,5 +213,22 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // Otherwise:
         leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
         leaveRequestRepository.save(leaveRequest);
+
+        // notify the employee:
+        CompletableFuture.runAsync(()->{
+            try {
+                leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        // notify the manager:
+        CompletableFuture.runAsync(()->{
+            try {
+                leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
