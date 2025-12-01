@@ -56,8 +56,6 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         leave.setToDate(leaveRequest.getEndDate());
         leave.setTotalDays(totalDays);
 
-        return leaveRepository.save(leave);
-
         // notify the employee:
         CompletableFuture.runAsync(()->{
             try {
@@ -74,6 +72,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
                 throw new RuntimeException(e);
             }
         });
+        return leaveRepository.save(leave);
     }
 
     @Override
