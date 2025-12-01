@@ -11,6 +11,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
+import com.saham.hr_system.modules.leave.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,14 +29,16 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
     private final EmployeeBalanceRepository employeeBalanceRepository;
     private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveDocumentStorageServiceImpl leaveDocumentStorageService;
+    private final TotalDaysCalculator leaveDaysCalculator;
 
     @Autowired
-    public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveDocumentStorageServiceImpl leaveDocumentStorageService) {
+    public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveDocumentStorageServiceImpl leaveDocumentStorageService, TotalDaysCalculator leaveDaysCalculator) {
         this.employeeRepository = employeeRepository;
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
         this.leaveRequestEmailSender = leaveRequestEmailSender;
         this.leaveDocumentStorageService = leaveDocumentStorageService;
+        this.leaveDaysCalculator = leaveDaysCalculator;
     }
 
     @Override
@@ -52,7 +55,9 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
         EmployeeBalance balance = employeeBalanceRepository
                 .findByEmployee(employee).orElseThrow();
 
-        double totalDays = requestDto.getStartDate().until(requestDto.getEndDate()).getDays() + 1;
+        // calculate the total leave days excluding the weekends and holidays
+        double totalDays =
+                leaveDaysCalculator.calculateTotalDays(requestDto.getStartDate(), requestDto.getEndDate());
 
         if(balance.getDaysLeft() == 0){
             throw new InsufficientBalanceException();

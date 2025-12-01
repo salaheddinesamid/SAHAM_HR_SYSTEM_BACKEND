@@ -12,7 +12,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
-import com.saham.hr_system.modules.leave.utils.LeaveDaysCalculator;
+import com.saham.hr_system.modules.leave.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,10 +28,10 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     private final EmployeeBalanceRepository employeeBalanceRepository;
     private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveRequestRepository leaveRequestRepository;
-    private final LeaveDaysCalculator leaveDaysCalculator;
+    private final TotalDaysCalculator leaveDaysCalculator;
 
     @Autowired
-    public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRepository leaveRequestRepository, LeaveDaysCalculator leaveDaysCalculator) {
+    public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRepository leaveRequestRepository, TotalDaysCalculator leaveDaysCalculator) {
         this.employeeRepository = employeeRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
         this.leaveRequestEmailSender = leaveRequestEmailSender;

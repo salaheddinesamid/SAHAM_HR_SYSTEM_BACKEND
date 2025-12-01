@@ -8,6 +8,7 @@ import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestProcessor;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.leave.utils.TotalDaysCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +19,15 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
     private final AbsenceRequestValidatorImpl absenceRequestValidator;
     private final AbsenceRequestMapperImpl absenceMapper;
     private final AbsenceRequestRepo absenceRequestRepository;
+    private final TotalDaysCalculator absenceTotalDaysCalculator;
 
     @Autowired
-    public RemoteWorkAbsenceRequestProcessor(EmployeeRepository employeeRepository, AbsenceRequestValidatorImpl absenceRequestValidator, AbsenceRequestMapperImpl absenceMapper, AbsenceRequestRepo absenceRequestRepository) {
+    public RemoteWorkAbsenceRequestProcessor(EmployeeRepository employeeRepository, AbsenceRequestValidatorImpl absenceRequestValidator, AbsenceRequestMapperImpl absenceMapper, AbsenceRequestRepo absenceRequestRepository, TotalDaysCalculator absenceTotalDaysCalculator) {
         this.employeeRepository = employeeRepository;
         this.absenceRequestValidator = absenceRequestValidator;
         this.absenceMapper = absenceMapper;
         this.absenceRequestRepository = absenceRequestRepository;
+        this.absenceTotalDaysCalculator = absenceTotalDaysCalculator;
     }
 
     @Override
@@ -43,7 +46,12 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
 
         // create new absence:
         AbsenceRequest absenceRequest = absenceMapper.mapToEntity(requestDto);
+        // calculate the total days:
+        long totalDays = absenceTotalDaysCalculator.calculateTotalDays(
+                requestDto.getStartDate(), requestDto.getEndDate()
+        );
         assert absenceRequest != null;
+        absenceRequest.setTotalDays(totalDays); // set the total days
         absenceRequest.setEmployee(employee);
 
         // save the absence to db:
