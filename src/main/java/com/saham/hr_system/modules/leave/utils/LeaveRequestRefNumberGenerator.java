@@ -1,8 +1,9 @@
 package com.saham.hr_system.modules.leave.utils;
 
+import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,16 +15,17 @@ public class LeaveRequestRefNumberGenerator {
     public LeaveRequestRefNumberGenerator(LeaveRequestRepository leaveRequestRepository) {
         this.leaveRequestRepository = leaveRequestRepository;
     }
-    public String generate(){
-        String prefix = "SHCO";
-        String todayPart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    public String generate(LeaveRequest leaveRequest) {
+        Employee employee = leaveRequest.getEmployee();
+        String prefix = "SHDC"; // SAHAM HR LEAVE REQUEST Abbreviation
+        String employeeMatriculationNumber = employee.getMatriculation(); // Employee's Matriculation Number
+        String todayPart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")); // the date of the today
 
-        LocalDateTime startDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endDay = startDay.plusDays(1);
+        long employeeRequestCount = leaveRequestRepository.countLeaveRequestByEmployee(
+                employee
+        );
 
-        long count = leaveRequestRepository
-                .countByRequestDateBetween(startDay, endDay) + 1;
-
-        return prefix + "-" + todayPart + "-" + String.format("%04d", count);
+        return
+                String.format("%s-%s-%s-%04d",prefix,employeeMatriculationNumber,todayPart,employeeRequestCount);
     }
 }
