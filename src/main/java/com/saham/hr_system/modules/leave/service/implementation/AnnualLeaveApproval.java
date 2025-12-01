@@ -106,18 +106,20 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // notify the employee:
         CompletableFuture.runAsync(()->{
             try {
-                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest, employee.getEmail());
+                leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
         });
         // notify the Manager:
         CompletableFuture.runAsync(()->{
-            leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
+            try {
+                leaveApprovalEmailSender.sendHRApprovalEmailToManager(leaveRequest);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
         });
-
-        // notify the manager:
-
+        // save the leave in the database
         return leaveRepository.save(leave);
     }
 
@@ -142,11 +144,10 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // save the request:
         leaveRequestRepository.save(leaveRequest);
 
-
         // notify the employee
         CompletableFuture.runAsync(()->{
             try {
-                leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
+                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
@@ -154,7 +155,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // notify the HR:
         CompletableFuture.runAsync(()->{
             try {
-                leaveApprovalEmailSender.sendHRApprovalEmailToManager(leaveRequest);
+                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
