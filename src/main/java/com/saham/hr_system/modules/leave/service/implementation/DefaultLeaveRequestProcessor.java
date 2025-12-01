@@ -12,6 +12,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
+import com.saham.hr_system.modules.leave.utils.LeaveRequestRefNumberGenerator;
 import com.saham.hr_system.modules.leave.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,16 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveRequestRepository leaveRequestRepository;
     private final TotalDaysCalculator leaveDaysCalculator;
+    private final LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator;
 
     @Autowired
-    public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRepository leaveRequestRepository, TotalDaysCalculator leaveDaysCalculator) {
+    public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRepository leaveRequestRepository, TotalDaysCalculator leaveDaysCalculator, LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator) {
         this.employeeRepository = employeeRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
         this.leaveRequestEmailSender = leaveRequestEmailSender;
         this.leaveRequestRepository = leaveRequestRepository;
         this.leaveDaysCalculator = leaveDaysCalculator;
+        this.leaveRequestRefNumberGenerator = leaveRequestRefNumberGenerator;
     }
 
     @Override
@@ -75,7 +78,11 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
 
+        String refNumber = leaveRequestRefNumberGenerator.generate(leaveRequest);
+        // set the leave request Ref Number:
+        leaveRequest.setReferenceNumber(refNumber);
         LeaveRequest savedRequest = leaveRequestRepository.save(leaveRequest); // save the leave request before sending the emails
+
 
         // notify the employee:
         CompletableFuture.runAsync(() ->

@@ -4,8 +4,6 @@ import com.saham.hr_system.modules.employees.model.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -18,6 +16,9 @@ public class LeaveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long leaveRequestId;
+
+    @Column(name = "reference_number", columnDefinition = "VARCHAR(255) default ''", unique = true, nullable = false)
+    private String referenceNumber;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
