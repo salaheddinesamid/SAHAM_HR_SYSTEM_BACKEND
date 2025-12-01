@@ -19,6 +19,7 @@ public class AbsenceRequestDetails {
     private boolean approvedByManager;
     private boolean approvedByHr;
     private String status;
+    private String documentPath;
     public AbsenceRequestDetails(AbsenceRequest absenceRequest) {
         this.absenceRequestId = absenceRequest.getAbsenceRequestId();
         this.requestedBy = absenceRequest.getEmployee().getFullName();
@@ -30,5 +31,6 @@ public class AbsenceRequestDetails {
         this.approvedByManager = absenceRequest.isApprovedByManager();
         this.approvedByHr = absenceRequest.isApprovedByHr();
         this.status = absenceRequest.getStatus().toString();
+        this.documentPath = absenceRequest.getMedicalCertificatePath();
     }
 }
