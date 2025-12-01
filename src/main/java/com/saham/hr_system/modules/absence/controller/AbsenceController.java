@@ -5,11 +5,15 @@ import com.saham.hr_system.modules.absence.dto.AbsenceRequestDto;
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestQueryImpl;
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestServiceImpl;
 import com.saham.hr_system.modules.absence.service.implementation.SicknessAbsenceDocumentStorageService;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -59,13 +63,22 @@ public class AbsenceController {
     }
 
     @GetMapping("/medical-certificates/download")
-    public Resource downloadMedicalCertificate(
+    public ResponseEntity<Resource> downloadMedicalCertificate(
             @RequestParam String path
     ) throws IOException {
-        try{
-            return sicknessAbsenceDocumentStorageService.download(path);
-        }catch (IOException e){
-            throw new IOException();
-        }
+
+        File file = sicknessAbsenceDocumentStorageService.download(path);
+        // create HTTP headers:
+        HttpHeaders headers  = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"");
+
+        // Return input stream resource
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 }
