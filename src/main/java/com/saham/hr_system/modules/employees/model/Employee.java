@@ -59,8 +59,7 @@ public class Employee implements UserDetails {
     )
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Leave> leaves = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
