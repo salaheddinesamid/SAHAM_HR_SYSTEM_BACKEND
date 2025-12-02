@@ -281,10 +281,11 @@ public class LeaveServiceUnitTest {
     @Test
     void testCancelLeaveRequestSuccess(){
         Long requestId = 2L;
+        String refNumber = "SHDC-SAHAMEMP20241202-0001";
         // Arrange:
         when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act:
-        leaveRequestCanceler.cancel(requestId);
+        leaveRequestCanceler.cancel(refNumber);
         // verify:
         verify(leaveRequestRepository, times(1)).save(any());
     }

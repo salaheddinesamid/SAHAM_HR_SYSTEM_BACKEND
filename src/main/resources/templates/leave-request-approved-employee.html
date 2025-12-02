@@ -82,27 +82,26 @@
         <p>Bonjour <strong th:text="${employeeName}"></strong>,</p>
         <p>
             Votre demande de congé a été <strong>approuvée par votre manager <span th:text="${manager}"></span></strong>.
-            Elle est désormais <strong>en attente de validation par le service RH</strong> via la plateforme
-            <strong>My HR Saham</strong>.
+            Elle est désormais <strong>en attente de validation par le service RH.</strong>
         </p>
 
         <p>
-            La demande sera définitivement enregistrée dans le système une fois validée par la RH.
+            La demande sera définitivement enregistrée dans le système une fois validée par le service RH.
             Vous pouvez suivre son état à tout moment depuis la plateforme.
         </p>
 
         <div class="details">
             <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
             <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
-            <p><span class="label">Du :</span> <span th:text="${startDate}"></span></p>
-            <p><span class="label">Au :</span> <span th:text="${endDate}"></span></p>
-            <p><span class="label">Durée :</span> <span th:text="${duration}"></span> jour(s)</p>
+            <p><span class="label">Date de départ :</span> <span th:text="${startDate}"></span></p>
+            <p><span class="label">Date de retour :</span> <span th:text="${endDate}"></span></p>
+            <p><span class="label">Nombre de jours demandés :</span> <span th:text="${totalDays}"></span> jour(s)</p>
 
         </div>
 
         <p style="margin-top: 20px;">
             Cordialement,<br>
-            <strong th:text="${sender}"></strong>
+            <strong>Support RH</strong>
         </p>
     </div>
 
