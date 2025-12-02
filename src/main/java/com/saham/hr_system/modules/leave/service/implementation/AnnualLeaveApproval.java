@@ -102,6 +102,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         leave.setFromDate(leaveRequest.getStartDate());
         leave.setToDate(leaveRequest.getEndDate());
         leave.setTotalDays(totalDays);
+        leave.setReferenceNumber(leaveRequest.getReferenceNumber());
 
         // notify the employee:
         CompletableFuture.runAsync(()->{

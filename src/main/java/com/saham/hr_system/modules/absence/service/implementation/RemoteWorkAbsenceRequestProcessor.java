@@ -6,6 +6,7 @@ import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.model.AbsenceType;
 import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestProcessor;
+import com.saham.hr_system.modules.absence.utils.AbsenceReferenceNumberGenerator;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.leave.utils.TotalDaysCalculator;
@@ -20,14 +21,16 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
     private final AbsenceRequestMapperImpl absenceMapper;
     private final AbsenceRequestRepo absenceRequestRepository;
     private final TotalDaysCalculator absenceTotalDaysCalculator;
+    private final AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;;
 
     @Autowired
-    public RemoteWorkAbsenceRequestProcessor(EmployeeRepository employeeRepository, AbsenceRequestValidatorImpl absenceRequestValidator, AbsenceRequestMapperImpl absenceMapper, AbsenceRequestRepo absenceRequestRepository, TotalDaysCalculator absenceTotalDaysCalculator) {
+    public RemoteWorkAbsenceRequestProcessor(EmployeeRepository employeeRepository, AbsenceRequestValidatorImpl absenceRequestValidator, AbsenceRequestMapperImpl absenceMapper, AbsenceRequestRepo absenceRequestRepository, TotalDaysCalculator absenceTotalDaysCalculator, AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator) {
         this.employeeRepository = employeeRepository;
         this.absenceRequestValidator = absenceRequestValidator;
         this.absenceMapper = absenceMapper;
         this.absenceRequestRepository = absenceRequestRepository;
         this.absenceTotalDaysCalculator = absenceTotalDaysCalculator;
+        this.absenceReferenceNumberGenerator = absenceReferenceNumberGenerator;
     }
 
     @Override
@@ -53,6 +56,8 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
         assert absenceRequest != null;
         absenceRequest.setTotalDays(totalDays); // set the total days
         absenceRequest.setEmployee(employee);
+        String refNumber = absenceReferenceNumberGenerator.generate(absenceRequest);
+        absenceRequest.setReferenceNumber(refNumber); // set the reference number
 
         // save the absence to db:
         return absenceRequestRepository.save(absenceRequest);

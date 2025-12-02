@@ -1,9 +1,6 @@
 package com.saham.hr_system.initializer;
 
-import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.model.EmployeeBalance;
-import com.saham.hr_system.modules.employees.model.Role;
-import com.saham.hr_system.modules.employees.model.RoleName;
+import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
@@ -74,6 +71,7 @@ public class Initializer implements CommandLineRunner {
             manager.setOccupation("Directrice du Capital Humain"); // Occupation
             manager.setJoinDate(LocalDate.of(2025, 4, 7)); // join date
             manager.setManager(null);
+            manager.setStatus(EmployeeStatus.AVAILABLE);
             ciryane = employeeRepository.save(manager);
 
             // Default Balance:
@@ -98,13 +96,14 @@ public class Initializer implements CommandLineRunner {
             hr.setFirstName("Myriam");
             hr.setLastName("Wargane");
             hr.setEmail("myriam.wargane@Saham.com");
-            hr.setMatriculation("EMP001");
+            hr.setMatriculation("SAHAMEMP005");
             hr.setPassword(passwordEncoder.encode("myriam2025"));
             hr.setRoles(List.of(employeeRole, hrRole, managerRole));
             hr.setEntity("SAHAM Horizon"); // set the entity
             hr.setOccupation("Responsable des Ressources Humaines ");
             hr.setJoinDate(LocalDate.of(2014, 3, 3)); // join date
             hr.setManager(ciryane);
+            hr.setStatus(EmployeeStatus.AVAILABLE);
             myriam =  employeeRepository.save(hr);
 
             // Default Balance:
@@ -129,13 +128,14 @@ public class Initializer implements CommandLineRunner {
             hr.setFirstName("Wijdane");
             hr.setLastName("Sabir");
             hr.setEmail("wijdane.sabir@Saham.com");
-            hr.setMatriculation("EMP001");
+            hr.setMatriculation("SAHAMEMP023");
             hr.setPassword(passwordEncoder.encode("wijdane2025"));
             hr.setRoles(List.of(employeeRole, hrRole));
             hr.setEntity("SAHAM Horizon"); // set the entity
             hr.setOccupation("HR Generalist"); // set the occupation
             hr.setJoinDate(LocalDate.of(2022, 4, 1)); // join date
             hr.setManager(myriam);
+            hr.setStatus(EmployeeStatus.AVAILABLE);
             wijdane =  employeeRepository.save(hr);
 
             // Default Balance:

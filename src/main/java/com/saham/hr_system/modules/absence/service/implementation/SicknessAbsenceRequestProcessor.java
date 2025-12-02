@@ -7,6 +7,7 @@ import com.saham.hr_system.modules.absence.model.AbsenceRequestStatus;
 import com.saham.hr_system.modules.absence.model.AbsenceType;
 import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestProcessor;
+import com.saham.hr_system.modules.absence.utils.AbsenceReferenceNumberGenerator;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.leave.utils.TotalDaysCalculator;
@@ -22,14 +23,16 @@ public class SicknessAbsenceRequestProcessor implements AbsenceRequestProcessor 
     private final SicknessAbsenceDocumentStorageService sicknessAbsenceDocumentStorageService;
     private final AbsenceRequestRepo absenceRequestRepo;
     private final TotalDaysCalculator totalDaysCalculator;
+    private final AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;
 
     @Autowired
-    public SicknessAbsenceRequestProcessor(AbsenceRequestValidatorImpl absenceRequestValidator, EmployeeRepository employeeRepository, SicknessAbsenceDocumentStorageService sicknessAbsenceDocumentStorageService, AbsenceRequestRepo absenceRequestRepo, TotalDaysCalculator totalDaysCalculator) {
+    public SicknessAbsenceRequestProcessor(AbsenceRequestValidatorImpl absenceRequestValidator, EmployeeRepository employeeRepository, SicknessAbsenceDocumentStorageService sicknessAbsenceDocumentStorageService, AbsenceRequestRepo absenceRequestRepo, TotalDaysCalculator totalDaysCalculator, AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator) {
         this.absenceRequestValidator = absenceRequestValidator;
         this.employeeRepository = employeeRepository;
         this.sicknessAbsenceDocumentStorageService = sicknessAbsenceDocumentStorageService;
         this.absenceRequestRepo = absenceRequestRepo;
         this.totalDaysCalculator = totalDaysCalculator;
+        this.absenceReferenceNumberGenerator = absenceReferenceNumberGenerator;
     }
 
     @Override
@@ -62,6 +65,8 @@ public class SicknessAbsenceRequestProcessor implements AbsenceRequestProcessor 
         absenceRequest.setApprovedByManager(false);
         absenceRequest.setApprovedByHr(false);
         absenceRequest.setTotalDays(totalDays);
+        String referenceNumber = absenceReferenceNumberGenerator.generate(absenceRequest);
+        absenceRequest.setReferenceNumber(referenceNumber); // set the generated reference number
 
         // upload the medical document and save the PATH in the database:
         String medicalCertificatePath =  sicknessAbsenceDocumentStorageService.upload(employee.getFullName(), requestDto.getMedicalCertificate());

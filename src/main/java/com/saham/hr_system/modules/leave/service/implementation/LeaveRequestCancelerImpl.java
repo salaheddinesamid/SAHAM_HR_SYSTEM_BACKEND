@@ -47,12 +47,13 @@ public class LeaveRequestCancelerImpl implements LeaveRequestCanceller {
         if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){
             // set the request to cancel:
             leaveRequest.setStatus(LeaveRequestStatus.CANCELED);
-            // save the request:
-            leaveRequestRepository.save(leaveRequest);
             // call the leave canceler:
             leaveCancellerImpl.cancel(leaveRequest.getReferenceNumber());
         }
 
+        leaveRequest.setStatus(LeaveRequestStatus.CANCELED);
+        // save the request:
+        leaveRequestRepository.save(leaveRequest);
 
     }
 }

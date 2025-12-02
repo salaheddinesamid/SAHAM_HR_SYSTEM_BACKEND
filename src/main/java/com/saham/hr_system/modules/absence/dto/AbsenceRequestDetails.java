@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class AbsenceRequestDetails {
 
     private Long absenceRequestId;
+    private String referenceNumber;
     private String requestedBy;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -22,6 +23,7 @@ public class AbsenceRequestDetails {
     private String documentPath;
     public AbsenceRequestDetails(AbsenceRequest absenceRequest) {
         this.absenceRequestId = absenceRequest.getAbsenceRequestId();
+        this.referenceNumber = absenceRequest.getReferenceNumber();
         this.requestedBy = absenceRequest.getEmployee().getFullName();
         this.startDate = absenceRequest.getStartDate();
         this.endDate = absenceRequest.getEndDate();

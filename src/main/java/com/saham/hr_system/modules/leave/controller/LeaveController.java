@@ -72,7 +72,7 @@ public class LeaveController {
     }
 
     /**
-     * This endpoint allows an employee to cancel a leave by its ID.
+     * This endpoint allows an employee to cancel a leave by Ref N°.
      * @param refNumber
      * @return
      */
