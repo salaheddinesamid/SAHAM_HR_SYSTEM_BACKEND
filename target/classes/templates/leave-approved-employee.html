@@ -11,7 +11,6 @@
         }
 
         .container {
-            max-width: 600px;
             margin: 30px auto;
             background: #ffffff;
             border-radius: 12px;
@@ -87,12 +86,12 @@
     <div class="content">
         <p>
             Bonjour <strong th:text="${employeeName}"></strong>,<br><br>
-            Nous vous informons que votre congé de type
-            <strong th:text="${type}"></strong>, saisie par vos soins, a été
+            Nous vous informons que votre congé, saisie par vos soins, a été
             <strong>approuvée<span th:text="${managerName}"></span></strong>.
         </p>
 
         <div class="details">
+            <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
             <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
             <p><span class="label">Du :</span> <span th:text="${startDate}"></span></p>
             <p><span class="label">Au :</span> <span th:text="${endDate}"></span></p>

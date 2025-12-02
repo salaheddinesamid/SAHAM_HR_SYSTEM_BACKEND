@@ -83,8 +83,6 @@ public class LeaveController {
         return ResponseEntity.status(200)
                 .body(Map.of("message","Leave has been cancelled successfully"));
     }
-
-
     /**
      * Get the leave requests of an employee
      * @param email
@@ -96,7 +94,6 @@ public class LeaveController {
                 .status(200)
                 .body(leaveService.getAllLeaveRequests(email));
     }
-
     /**
      *
      * @return
@@ -153,7 +150,6 @@ public class LeaveController {
                         .status(200)
                         .body(Map.of("message","Leave request has been finally approved"));
     }
-
     /**
      *
      * @param requestId
@@ -167,7 +163,6 @@ public class LeaveController {
                         .status(200)
                         .body(Map.of("message","Leave request has been finally rejected"));
     }
-
     /**
      *
      * @param email

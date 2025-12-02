@@ -46,7 +46,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         context.setVariable("type", typeMapped);
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
-
+        context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("leave-requested-employee.html", context);
@@ -79,6 +79,7 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         context.setVariable("requestLink", "");
         context.setVariable("type", typeMapped);
         context.setVariable("typeDetails", leaveRequest.getTypeDetails());
+        context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
 

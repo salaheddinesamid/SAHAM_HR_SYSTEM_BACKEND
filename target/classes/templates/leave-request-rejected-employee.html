@@ -11,7 +11,6 @@
         }
 
         .container {
-            max-width: 600px;
             margin: 30px auto;
             background: #ffffff;
             border-radius: 12px;
@@ -85,6 +84,7 @@
         </p>
 
         <div class="details">
+            <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
             <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
             <p><span class="label">Du :</span> <span th:text="${startDate}"></span></p>
             <p><span class="label">Au :</span> <span th:text="${endDate}"></span></p>

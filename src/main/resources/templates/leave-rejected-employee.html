@@ -11,7 +11,6 @@
         }
 
         .container {
-            max-width: 600px;
             margin: 30px auto;
             background: #ffffff;
             border-radius: 12px;
@@ -77,8 +76,7 @@
         <p>Bonjour <strong th:text="${employeeName}"></strong>,</p>
 
         <p>
-            Nous vous informons que votre demande de congé
-            <strong th:text="${employeeName}"></strong> a été
+            Nous vous informons que votre demande de congé a été
             <span class="highlight">rejetée définitivement</span> par le service RH.
         </p>
 
@@ -88,6 +86,7 @@
         </p>
 
         <div class="details">
+            <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
             <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
             <p><span class="label">Du :</span> <span th:text="${startDate}"></span></p>
             <p><span class="label">Au :</span> <span th:text="${endDate}"></span></p>

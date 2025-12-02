@@ -41,7 +41,7 @@ public class LeaveRequestRejectionEmailSenderImpl implements LeaveRequestRejecti
         context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
-
+        context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("leave-request-rejected-employee.html", context);
