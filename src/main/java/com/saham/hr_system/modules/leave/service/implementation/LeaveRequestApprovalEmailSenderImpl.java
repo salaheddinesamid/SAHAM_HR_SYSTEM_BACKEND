@@ -56,7 +56,7 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
         context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
-
+        context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("leave-request-approved-employee.html", context);
@@ -82,11 +82,11 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
                 // Template variables
                 Context context = new Context();
                 context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
-                context.setVariable("employeeName", leaveRequest.getEmployee().getManager().getFullName());
+                context.setVariable("employeeName", leaveRequest.getEmployee().getFullName());
                 context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
                 context.setVariable("startDate", leaveRequest.getStartDate());
                 context.setVariable("endDate", leaveRequest.getEndDate());
-
+                context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
                 context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
                 String htmlContent = templateEngine.process("leave-request-approved-hr.html", context);

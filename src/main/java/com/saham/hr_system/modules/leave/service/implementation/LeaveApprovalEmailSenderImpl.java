@@ -45,7 +45,7 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
         context.setVariable("totalDays", leaveRequest.getTotalDays());
-
+        context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
 
         context.setVariable("logoUrl","");
         // generate HTML content:
@@ -74,6 +74,7 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
         context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
+        context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
 
         context.setVariable("logoUrl","");
         // generate HTML content:
