@@ -65,20 +65,20 @@ public class LeaveServiceImpl implements LeaveService {
 
     /**
      * This method handles endpoint request to cancel a leave request.
-     * @param leaveRequestId
+     * @param refNumber
      */
     @Override
-    public void cancelRequest(Long leaveRequestId) {
-        leaveRequestCanceler.cancel(leaveRequestId);
+    public void cancelRequest(String refNumber) {
+        leaveRequestCanceler.cancel(refNumber);
     }
 
     /**
      * This method handles endpoint request to cancel a leave.
-     * @param leaveId
+     * @param refNumber
      */
     @Override
-    public void cancelLeave(Long leaveId) {
-        leaveCanceller.cancel(leaveId);
+    public void cancelLeave(String refNumber) {
+        leaveCanceller.cancel(refNumber);
     }
 
     @Override

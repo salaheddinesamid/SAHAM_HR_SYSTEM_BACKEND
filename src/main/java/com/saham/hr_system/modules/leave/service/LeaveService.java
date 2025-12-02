@@ -68,15 +68,15 @@ public interface LeaveService {
 
     /**
      * This function allows an employee to cancel a leave request by its ID.
-     * @param leaveRequestId
+     * @param refNumber
      */
-    void cancelRequest(Long leaveRequestId);
+    void cancelRequest(String refNumber);
 
     /**
      * This function allows an employee to cancel a leave by its ID.
-     * @param leaveId
+     * @param refNumber
      */
-    void cancelLeave(Long leaveId);
+    void cancelLeave(String refNumber);
 
     /**
      * Get all the leaves of an employee

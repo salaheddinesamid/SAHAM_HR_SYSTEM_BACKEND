@@ -17,6 +17,9 @@ public class Leave {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long leaveId;
 
+    @Column(name = "reference_number", unique = true, nullable = false, columnDefinition = "VARCHAR(255) default ''")
+    private String referenceNumber;
+
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;

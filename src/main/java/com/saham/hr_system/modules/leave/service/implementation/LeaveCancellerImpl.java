@@ -32,13 +32,13 @@ public class LeaveCancellerImpl implements LeaveRequestCanceller {
 
     /**
      * This function implements the cancellation of an approved leave request
-     * @param id
+     * @param refNumber
      */
     @Override
     @Transactional
-    public void cancel(Long id) {
+    public void cancel(String refNumber) {
         // fetch the leave from db:
-        Leave leave = leaveRepository.findById(id).orElseThrow();
+        Leave leave = leaveRepository.findByReferenceNumber(refNumber).orElseThrow();
 
         // fetch the employee balance and update it
         Employee employee = leave.getEmployee();

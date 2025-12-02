@@ -12,6 +12,13 @@ import java.util.Optional;
 public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long> {
 
     /**
+     *
+     * @param referenceNumber
+     * @return
+     */
+    Optional<LeaveRequest> findByReferenceNumber(String referenceNumber);
+
+    /**
      * This method returns all the requests made by subordinates of a manager that are in process and not yet approved by the manager.
      * @param employee
      * @param status
@@ -20,8 +27,21 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      */
     List<LeaveRequest> findAllByEmployeeAndStatusAndApprovedByManager(Employee employee, LeaveRequestStatus status, boolean approvedByManager);
 
+    /**
+     *
+     * @param approvedByManager
+     * @param status
+     * @param status1
+     * @return
+     */
     List<LeaveRequest> findAllByApprovedByManagerOrStatusOrStatus(boolean approvedByManager, LeaveRequestStatus status, LeaveRequestStatus status1);
 
+    /**
+     *
+     * @param start
+     * @param end
+     * @return
+     */
     long countByRequestDateBetween(LocalDateTime start, LocalDateTime end);
 
     /**
