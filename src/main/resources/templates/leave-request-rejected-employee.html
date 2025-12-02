@@ -72,27 +72,28 @@
         <p>Bonjour <strong th:text="${employeeName}"></strong>,</p>
 
         <p>
-            Nous vous informons que votre demande de congé, saisie le
+            Nous vous informons que votre demande de congé
             <span th:text="${requestDate}"></span>, a été
             <strong style="color:#d9534f;">rejetée</strong> par votre responsable
             <strong th:text="${manager}"></strong>.
         </p>
 
         <p>
-            Si vous souhaitez apporter des modifications ou soumettre une nouvelle demande,
+            Si vous souhaitez soumettre une nouvelle demande,
             vous pouvez le faire directement depuis la plateforme <strong>My HR Saham</strong>.
         </p>
 
         <div class="details">
             <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
             <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
-            <p><span class="label">Du :</span> <span th:text="${startDate}"></span></p>
-            <p><span class="label">Au :</span> <span th:text="${endDate}"></span></p>
+            <p><span class="label">Date de départ :</span> <span th:text="${startDate}"></span></p>
+            <p><span class="label">Date de retour :</span> <span th:text="${endDate}"></span></p>
+            <p><span class="label">Nombre de jours demandés :</span> <span th:text="${totalDays}"></span> jour(s)</p>
         </div>
 
         <p style="margin-top: 20px;">
             Cordialement,<br>
-            <span th:text="${sender}"></span>
+            <strong>Support RH</strong>
         </p>
     </div>
 
