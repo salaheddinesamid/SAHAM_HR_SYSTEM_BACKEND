@@ -3,11 +3,13 @@ package com.saham.hr_system.modules.absence.service.implementation;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDetails;
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
+import com.saham.hr_system.modules.absence.model.AbsenceRequestStatus;
 import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestQuery;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,5 +53,20 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
 
         return absenceRequests
                 .stream().map(AbsenceRequestDetails::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AbsenceRequestDetails> getAllForHR() {
+        List<AbsenceRequest> absenceRequests =
+                absenceRequestRepo.findAllByStatusOrStatusOrApprovedByManager(
+                        AbsenceRequestStatus.APPROVED,
+                        AbsenceRequestStatus.REJECTED,
+                        true,
+                        Sort.by(Sort.Direction.ASC, "issue_date")
+                );
+
+        return absenceRequests.stream()
+                .map(AbsenceRequestDetails::new)
+                .collect(Collectors.toList());
     }
 }

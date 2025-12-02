@@ -52,6 +52,7 @@ public class AbsenceController {
                 .body(response);
     }
 
+    /*
     @GetMapping("/subordinates-absences/get_all")
     public ResponseEntity<?> getAllSubordinatesAbsences(
             @RequestParam String email
@@ -60,6 +61,23 @@ public class AbsenceController {
         return ResponseEntity
                 .status(200)
                 .body(response);
+    }
+
+     */
+
+    @GetMapping("/requests/subordinates/get_all")
+    public ResponseEntity<?> getAllRequestsForManager(@RequestParam String email) {
+        List<AbsenceRequestDetails> response = absenceRequestQuery.getAllSubordinateAbsenceRequests(
+                email
+        );
+
+        return ResponseEntity.status(200)
+                .body(response);
+    }
+
+    @GetMapping("/requests/hr/get_all")
+    public ResponseEntity<?> getAllRequestsForHR(){
+        return null;
     }
 
     @GetMapping("/medical-certificates/download")
