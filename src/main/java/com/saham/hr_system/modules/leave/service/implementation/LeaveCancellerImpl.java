@@ -9,10 +9,13 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveRequestCanceller;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @Slf4j
@@ -21,12 +24,14 @@ public class LeaveCancellerImpl implements LeaveRequestCanceller {
     private final LeaveRepository leaveRepository;
     private final LeaveRequestRepository leaveRequestRepository;
     private final EmployeeBalanceRepository employeeBalanceRepository;
+    private final LeaveCancellerEmailSenderImpl leaveCancellerEmailSender;
 
     @Autowired
-    public LeaveCancellerImpl(LeaveRepository leaveRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository) {
+    public LeaveCancellerImpl(LeaveRepository leaveRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveCancellerEmailSenderImpl leaveCancellerEmailSender) {
         this.leaveRepository = leaveRepository;
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
+        this.leaveCancellerEmailSender = leaveCancellerEmailSender;
     }
 
     @Override
@@ -73,5 +78,26 @@ public class LeaveCancellerImpl implements LeaveRequestCanceller {
         leaveRepository.delete(leave);
         // save the balance:
         employeeBalanceRepository.save(employeeBalance);
+        // notify the employee:
+        CompletableFuture.runAsync(() ->
+                {
+                    try {
+                        leaveCancellerEmailSender.notifyEmployee(leave);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+
+        // notify the manager:
+        CompletableFuture.runAsync(() ->
+                {
+                    try {
+                        leaveCancellerEmailSender.notifyManager(leave);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
     }
 }

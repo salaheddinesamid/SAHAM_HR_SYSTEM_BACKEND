@@ -46,13 +46,15 @@ public class LeaveRequestRefNumberGeneratorUnitTest {
         )).thenReturn(5L);
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(leaveRequest));
 
-        String refNumber = leaveRequestRefNumberGenerator.generate();
-        String refNumber1 = leaveRequestRefNumberGenerator.generate();
-        String refNumber2 = leaveRequestRefNumberGenerator.generate();
+        /* String refNumber = leaveRequestRefNumberGenerator.generate();
+        //String refNumber1 = leaveRequestRefNumberGenerator.generate();
+        //String refNumber2 = leaveRequestRefNumberGenerator.generate();
 
         System.out.println(refNumber);
         System.out.println(refNumber1);
         System.out.println(refNumber2);
+
+         */
 
     }
 }

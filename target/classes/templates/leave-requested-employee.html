@@ -92,9 +92,8 @@
         <p>Bonjour <strong th:text="${employeeName}"></strong>,</p>
 
         <p>
-            Votre demande de congé a été <span class="highlight">enregistrée avec succès</span> sur la plateforme
-            <strong>My HR Saham</strong>. Elle est actuellement <strong>en cours de validation par votre manager</strong>,
-            puis sera transmise aux <strong>RH</strong> si celle-ci est approuvée.
+            Votre demande de congé a été <span class="highlight">enregistrée avec succès</span> sur la plateforme. Elle est actuellement <strong>en cours de validation par votre manager</strong>,
+            elle sera transmise aux <strong>RH</strong> si celle-ci est approuvée.
         </p>
 
         <p>
@@ -103,17 +102,17 @@
 
         <div class="details">
             <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
-            <p><span class="label">Type :</span> <span th:text="${type}"></span> (<span th:text="${typeDetails}"></span>)</p>
-            <p><span class="label">Du :</span> <span th:text="${startDate}"></span></p>
-            <p><span class="label">Au :</span> <span th:text="${endDate}"></span></p>
-            <p><span class="label">Durée :</span> <span th:text="${totalDays}"></span></p>
+            <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
+            <p><span class="label">Date de départ :</span> <span th:text="${startDate}"></span></p>
+            <p><span class="label">Date de retour :</span> <span th:text="${endDate}"></span></p>
+            <p><span class="label">Nombre de jours demandés :</span> <span th:text="${totalDays}"></span> jour(s)</p>
         </div>
 
         <a th:href="${requestLink}" class="btn">Voir ma demande</a>
 
         <p style="margin-top: 20px;">
             Cordialement,<br>
-            <strong>L’équipe My HR Saham</strong>
+            <strong>Support RH</strong>
         </p>
     </div>
 
