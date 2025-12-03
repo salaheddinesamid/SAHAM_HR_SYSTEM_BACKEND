@@ -11,7 +11,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
-import com.saham.hr_system.modules.leave.utils.TotalDaysCalculator;
+import com.saham.hr_system.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
