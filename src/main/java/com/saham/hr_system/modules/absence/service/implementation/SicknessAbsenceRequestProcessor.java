@@ -10,7 +10,7 @@ import com.saham.hr_system.modules.absence.service.AbsenceRequestProcessor;
 import com.saham.hr_system.modules.absence.utils.AbsenceReferenceNumberGenerator;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
-import com.saham.hr_system.modules.leave.utils.TotalDaysCalculator;
+import com.saham.hr_system.utils.TotalDaysCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

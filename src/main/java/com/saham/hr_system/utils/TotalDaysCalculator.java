@@ -1,4 +1,4 @@
-package com.saham.hr_system.modules.leave.utils;
+package com.saham.hr_system.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class TotalDaysCalculator {
                         date -> !List.of(weekEnds).contains(date.getDayOfWeek().toString())
                 ).count();
         log.info("Total leave days calculated: {}", totalDays);
-        return totalDays;
+        return totalDays -1 ; // the end date means the date when the leave will be over
 
     }
 }
