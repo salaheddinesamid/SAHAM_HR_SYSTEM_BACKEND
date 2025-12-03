@@ -5,19 +5,24 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveRequestCanceller;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class LeaveRequestCancelerImpl implements LeaveRequestCanceller {
 
     private final LeaveRequestRepository leaveRequestRepository;
     private final LeaveCancellerImpl leaveCancellerImpl;
+    private final LeaveRequestCancelerEmailSenderImpl leaveRequestCancelerEmailSenderImpl;
 
     @Autowired
-    public LeaveRequestCancelerImpl(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, LeaveCancellerImpl leaveCancellerImpl) {
+    public LeaveRequestCancelerImpl(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, LeaveCancellerImpl leaveCancellerImpl, LeaveRequestCancelerEmailSenderImpl leaveRequestCancelerEmailSenderImpl) {
         this.leaveRequestRepository = leaveRequestRepository;
         this.leaveCancellerImpl = leaveCancellerImpl;
+        this.leaveRequestCancelerEmailSenderImpl = leaveRequestCancelerEmailSenderImpl;
     }
 
     /**
@@ -55,5 +60,26 @@ public class LeaveRequestCancelerImpl implements LeaveRequestCanceller {
         // save the request:
         leaveRequestRepository.save(leaveRequest);
 
+        // notify the employee:
+        CompletableFuture.runAsync(() ->
+                {
+                    try {
+                        leaveRequestCancelerEmailSenderImpl.notifyEmployee(leaveRequest);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+
+        // notify the manager:
+        CompletableFuture.runAsync(() ->
+                {
+                    try {
+                        leaveRequestCancelerEmailSenderImpl.notifyManager(leaveRequest);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
     }
 }

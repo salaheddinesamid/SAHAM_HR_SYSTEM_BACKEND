@@ -33,14 +33,14 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
 
         // set information:
         helper.setFrom(from);
-        helper.setTo(managerEmail);
-        //helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
+        //helper.setTo(managerEmail);
+        helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
         helper.setSubject("Le congé de votre collaborateur a été accepter");
 
         // Template engine variables:
         Context context = new Context();
         context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
-        context.setVariable("employeeName", leaveRequest.getTypeOfLeave().toString());
+        context.setVariable("employeeName", leaveRequest.getEmployee().getManager().getFullName());
         context.setVariable("type", leaveRequest.getStartDate());
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
@@ -64,13 +64,13 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
 
         // set information:
         helper.setFrom(from);
-        helper.setTo(employeeEmail);
-        //helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
+        //helper.setTo(employeeEmail);
+        helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
         helper.setSubject("Votre congé a été accepter");
 
         // Template engine variables:
         Context context = new Context();
-        context.setVariable("employeeName", leaveRequest.getEmployee().getManager().getFullName());
+        context.setVariable("employeeName", leaveRequest.getEmployee().getFullName());
         context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
