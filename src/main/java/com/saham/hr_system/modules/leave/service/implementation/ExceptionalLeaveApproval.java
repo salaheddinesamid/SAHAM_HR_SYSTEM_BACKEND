@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
@@ -23,6 +24,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
     private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveRequestRejectionEmailSenderImpl leaveRequestRejectionEmailSender;
     private final LeaveRejectionEmailSenderImpl leaveRejectionEmailSender;
+
     @Autowired
     public ExceptionalLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, LeaveApprovalEmailSenderImpl leaveApprovalEmailSender, LeaveRequestApprovalEmailSenderImpl leaveRequestApprovalEmailSender, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRejectionEmailSenderImpl leaveRequestRejectionEmailSender, LeaveRejectionEmailSenderImpl leaveRejectionEmailSender) {
         this.leaveRequestRepository = leaveRequestRepository;
@@ -55,6 +57,20 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         double totalDays =
                 leaveRequest.getTotalDays();
 
+        // check if the request is already approved:
+        if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){
+            throw new IllegalStateException("Leave request is already approved.");
+        }
+
+        // check if the request is approved by the manager:
+        if(!leaveRequest.isApprovedByManager()){
+            throw new IllegalStateException("Leave request is not approved by the manager yet.");
+        }
+
+        // otherwise:
+        leaveRequest.setApprovedByHr(true);
+        leaveRequest.setStatus(LeaveRequestStatus.APPROVED);
+
         // create new leave:
         Leave leave = new Leave();
         leave.setEmployee(employee);
@@ -64,15 +80,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         leave.setTotalDays(totalDays);
         leave.setReferenceNumber(leaveRequest.getReferenceNumber());
 
-        // notify the employee:
-        CompletableFuture.runAsync(()->{
-            try {
-                leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        // notify the manager:
+        // notify the employee and manager:
         CompletableFuture.runAsync(()->{
             try {
                 leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
