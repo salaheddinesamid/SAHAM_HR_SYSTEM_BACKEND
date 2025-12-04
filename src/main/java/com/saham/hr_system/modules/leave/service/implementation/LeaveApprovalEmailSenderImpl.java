@@ -56,7 +56,7 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
         context.setVariable("startDate", leaveRequest.getStartDate());
         context.setVariable("endDate", leaveRequest.getEndDate());
         context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
-
+        context.setVariable("totalDays", leaveRequest.getTotalDays());
         context.setVariable("logoUrl","");
         // generate HTML content:
         String htmlContent = templateEngine.process("leave-approved-employee.html", context);
