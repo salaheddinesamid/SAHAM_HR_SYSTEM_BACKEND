@@ -1,41 +1,72 @@
-HELP.md
+############################################
+# Maven
+############################################
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+.mvn/wrapper/maven-wrapper.jar
 
-# Ignode the build package:
-target
+############################################
+# Spring Boot – Ignore sensitive files
+############################################
+# Ignore environment-specific configs (recommended)
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
+src/main/resources/application-local.properties
 
-### STS ###
+# If your main application.properties contains secrets
+# (not recommended), you can ignore it:
+# src/main/resources/application.properties
+
+# Ignore temporary internal folders
+src/main/resources/folders/
+
+############################################
+# Java Classes to ignore
+############################################
+# The initializer should NOT be ignored unless you want it excluded from the app
+# Remove this unless this file contains secrets
+# src/main/java/com/saham/hr_system/initializer/Initializer.java
+
+############################################
+# STS (Spring Tool Suite)
+############################################
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 
-src/main/resources/folders
-src/main/resources/application.properties
-
-src/main/java/com/saham/hr_system/initializer/Initializer.java
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+############################################
+# IntelliJ IDEA
+############################################
+.idea/
 *.iml
+*.iws
 *.ipr
 
-### NetBeans ###
+############################################
+# VS Code
+############################################
+.vscode/
+
+############################################
+# NetBeans
+############################################
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
+/build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+############################################
+# OS / Editor junk files
+############################################
+*.log
+*.DS_Store
+Thumbs.db
