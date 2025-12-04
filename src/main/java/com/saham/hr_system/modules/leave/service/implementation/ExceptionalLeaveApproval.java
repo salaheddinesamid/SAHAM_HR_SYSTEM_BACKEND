@@ -19,11 +19,19 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
     private final LeaveRequestRepository leaveRequestRepository;
     private final LeaveRepository leaveRepository;
     private final LeaveApprovalEmailSenderImpl leaveApprovalEmailSender;
+    private final LeaveRequestApprovalEmailSenderImpl leaveRequestApprovalEmailSender;
+    private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
+    private final LeaveRequestRejectionEmailSenderImpl leaveRequestRejectionEmailSender;
+    private final LeaveRejectionEmailSenderImpl leaveRejectionEmailSender;
     @Autowired
-    public ExceptionalLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, LeaveApprovalEmailSenderImpl leaveApprovalEmailSender) {
+    public ExceptionalLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, LeaveApprovalEmailSenderImpl leaveApprovalEmailSender, LeaveRequestApprovalEmailSenderImpl leaveRequestApprovalEmailSender, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRejectionEmailSenderImpl leaveRequestRejectionEmailSender, LeaveRejectionEmailSenderImpl leaveRejectionEmailSender) {
         this.leaveRequestRepository = leaveRequestRepository;
         this.leaveRepository = leaveRepository;
         this.leaveApprovalEmailSender = leaveApprovalEmailSender;
+        this.leaveRequestApprovalEmailSender = leaveRequestApprovalEmailSender;
+        this.leaveRequestEmailSender = leaveRequestEmailSender;
+        this.leaveRequestRejectionEmailSender = leaveRequestRejectionEmailSender;
+        this.leaveRejectionEmailSender = leaveRejectionEmailSender;
     }
 
     @Override
@@ -67,6 +75,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         // notify the manager:
         CompletableFuture.runAsync(()->{
             try {
+                leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
                 leaveApprovalEmailSender.sendHRApprovalEmailToManager(leaveRequest);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -85,8 +94,16 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
 
         // save the request:
         leaveRequestRepository.save(leaveRequest);
-        // notify the employee:
-        // notify the HR:
+
+        // notify the employee and HR:
+        CompletableFuture.runAsync(()->{
+            try {
+                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest);
+                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
@@ -102,6 +119,13 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         // save the request:
         leaveRequestRepository.save(leaveRequest);
         // notify the employee:
+        CompletableFuture.runAsync(()->{
+            try {
+                leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
@@ -117,5 +141,15 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
 
         // save the leave request:
         leaveRequestRepository.save(leaveRequest);
+
+        // notify the employee and manager:
+        CompletableFuture.runAsync(()->{
+            try {
+                leaveRejectionEmailSender.notifyEmployee(leaveRequest);
+                leaveRejectionEmailSender.notifyManager(leaveRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestRejectionEmailSender;
+import com.saham.hr_system.utils.OutlookEmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +17,17 @@ import org.thymeleaf.context.Context;
 public class LeaveRequestRejectionEmailSenderImpl implements LeaveRequestRejectionEmailSender {
 
     @Autowired
-    private JavaMailSender javamailSender;
+    private OutlookEmailService outlookEmailService;
 
     @Autowired
     private TemplateEngine templateEngine;
 
-    @Value("${spring.mail.username}")
-    private String from;
-
     @Override
     public void sendSubordinateRejectionEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException {
-        String employeeEmail = leaveRequest.getEmployee().getEmail();
+        //String to = leaveRequest.getEmployee().getEmail();
 
-        MimeMessage message = javamailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        helper.setFrom(from);
-        helper.setTo(employeeEmail);
+        String to = "salaheddine.samid@medjoolstar.com";
         //helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
-        helper.setSubject("Votre demande de congé est rejeté par le manager");
 
         // Template variables
         Context context = new Context();
@@ -46,9 +39,11 @@ public class LeaveRequestRejectionEmailSenderImpl implements LeaveRequestRejecti
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("leave-request-rejected-employee.html", context);
-        helper.setText(htmlContent, true);
-
-        javamailSender.send(message);
-        System.out.println("Leave rejection email sent to: " + employeeEmail);
+        outlookEmailService.sendEmail(
+                to,
+                htmlContent,
+                "Votre demande de congé est rejeté par le manager"
+        );
+        System.out.println("Leave rejection email sent to: " + to);
     }
 }
