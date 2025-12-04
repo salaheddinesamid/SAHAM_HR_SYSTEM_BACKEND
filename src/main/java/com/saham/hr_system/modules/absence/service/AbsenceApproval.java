@@ -42,9 +42,9 @@ public interface AbsenceApproval {
      * perform final validation, update the status of the request, trigger
      * notifications, or perform additional workflow logic.</p>
      *
-     * @param refNumber the unique reference number of the absence request
+     * @param absenceRequest the actual absence request
      *
      * @throws java.util.NoSuchElementException if no matching request exists
      */
-    void approve(String refNumber);
+    void approve(AbsenceRequest absenceRequest);
 }

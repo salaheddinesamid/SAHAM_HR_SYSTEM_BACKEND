@@ -99,9 +99,13 @@ public class AbsenceController {
     @PutMapping("/requests/approve")
     public ResponseEntity<?> approveAbsenceRequest(
             @RequestParam String refNumber
-    ){
+    ) throws Exception {
 
-        return null;
+        absenceRequestService.approveAbsence(refNumber);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body("Absence request has been finally approved");
     }
 
     @GetMapping("/medical-certificates/download")

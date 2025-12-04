@@ -57,6 +57,8 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
         String typeMapped = absenceTypeMapper.mapToReadableFormat(absenceRequest.getType().toString());
         context.setVariable("type", typeMapped);
         context.setVariable("startDate", absenceRequest.getStartDate());
+        context.setVariable("managerName", absenceRequest.getEmployee().getManager().getFullName());
+        context.setVariable("employeeName", absenceRequest.getEmployee().getFullName());
         context.setVariable("endDate", absenceRequest.getEndDate());
         context.setVariable("referenceNumber", absenceRequest.getReferenceNumber());
         context.setVariable("totalDays", absenceRequest.getTotalDays());

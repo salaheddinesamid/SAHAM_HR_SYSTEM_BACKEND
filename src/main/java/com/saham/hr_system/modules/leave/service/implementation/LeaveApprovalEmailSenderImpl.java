@@ -18,10 +18,11 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
     @Autowired
     private TemplateEngine templateEngine;
 
+    private final static String TO = "salaheddine.samid@medjoolstar.com";
+
     @Override
     public void sendHRApprovalEmailToManager(LeaveRequest leaveRequest) throws MessagingException {
-        //String to = leaveRequest.getEmployee().getManager().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        //String TO = leaveRequest.getEmployee().getManager().getEmail();
 
         // Template engine variables:
         Context context = new Context();
@@ -37,17 +38,16 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
         // generate HTML content:
         String htmlContent = templateEngine.process("leave-approved-manager.html", context);
         outlookEmailService.sendEmail(
-                to,
+                TO,
                 htmlContent,
                 "Demande de congé approuvée par le service RH"
         );
-        System.out.println("Leave approval email sent to:" + leaveRequest.getEmployee().getEmail());
+        System.out.println("Leave approval email sent to:" + TO);
     }
 
     @Override
     public void sendHRApprovalEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException{
-        //String to = leaveRequest.getEmployee().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        //String TO = leaveRequest.getEmployee().getEmail();
 
         // Template engine variables:
         Context context = new Context();
@@ -61,10 +61,10 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
         // generate HTML content:
         String htmlContent = templateEngine.process("leave-approved-employee.html", context);
         outlookEmailService.sendEmail(
-                to,
+                TO,
                 htmlContent,
                 "Votre demande de congé est approuvée par le service RH"
         );
-        System.out.println("Leave approval email sent to:" + leaveRequest.getEmployee().getEmail());
+        System.out.println("Leave approval email sent to:" + TO);
     }
 }
