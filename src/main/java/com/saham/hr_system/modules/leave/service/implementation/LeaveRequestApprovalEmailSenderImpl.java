@@ -3,12 +3,9 @@ package com.saham.hr_system.modules.leave.service.implementation;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestApprovalEmailSender;
 import com.saham.hr_system.modules.leave.utils.HRFetcherUtils;
+import com.saham.hr_system.utils.OutlookEmailService;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -22,13 +19,10 @@ import java.util.List;
 public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApprovalEmailSender {
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private OutlookEmailService outlookEmailService;
 
     @Autowired
     private TemplateEngine templateEngine;
-
-    @Value("${spring.mail.username}")
-    private String from;
 
     private final HRFetcherUtils hrFetcherUtils;
 
@@ -40,15 +34,8 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
 
     @Override
     public void sendSubordinateApprovalEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException {
-        String employeeEmail = leaveRequest.getEmployee().getEmail();
-
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        helper.setFrom(from);
-        helper.setTo(employeeEmail);
-        //helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
-        helper.setSubject("Votre demande de congé est approuvée par le manager ✔");
+        //String to = leaveRequest.getEmployee().getEmail();
+        String to = "salaheddine.samid@saham.com";
 
         // Template variables
         Context context = new Context();
@@ -60,10 +47,12 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("leave-request-approved-employee.html", context);
-        helper.setText(htmlContent, true);
-
-        javaMailSender.send(message);
-        System.out.println("Leave request approval email sent to: " + employeeEmail);
+        outlookEmailService.sendEmail(
+                to,
+                htmlContent,
+                "Votre demande de congé a été approuvée par le manager"
+        );
+        System.out.println("Leave request approval email sent to: " + to);
     }
 
     @Override
@@ -71,31 +60,26 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
         // fetch all HR emails:
         List<String> emails = hrFetcherUtils.fetchHREmail();
         emails.forEach(email -> {
-            try{
-                MimeMessage message = javaMailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-                helper.setFrom(from);
-                helper.setTo(email);
-                //helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
-                helper.setSubject("Nouvelle demande de congé à valider");
+            //String to = email;
+            String to = "salaheddine.samid@medjoolstar.com"; // for testing purposes
 
-                // Template variables
-                Context context = new Context();
-                context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
-                context.setVariable("employeeName", leaveRequest.getEmployee().getFullName());
-                context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
-                context.setVariable("startDate", leaveRequest.getStartDate());
-                context.setVariable("endDate", leaveRequest.getEndDate());
-                context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
-                context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
+            // Template variables
+            Context context = new Context();
+            context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
+            context.setVariable("employeeName", leaveRequest.getEmployee().getFullName());
+            context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
+            context.setVariable("startDate", leaveRequest.getStartDate());
+            context.setVariable("endDate", leaveRequest.getEndDate());
+            context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
+            context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
-                String htmlContent = templateEngine.process("leave-request-approved-hr.html", context);
-                helper.setText(htmlContent, true);
-                javaMailSender.send(message);
-                System.out.println("Leave request approval email sent to: " + email);
-            }catch (MessagingException e){
-                throw new RuntimeException(e);
-            }
+            String htmlContent = templateEngine.process("leave-request-approved-hr.html", context);
+            outlookEmailService.sendEmail(
+                    to,
+                    htmlContent,
+                    "Nouvelle demande de congé à valider"
+            );
+            System.out.println("Leave request approval email sent to: " + email);
 
         });
     }

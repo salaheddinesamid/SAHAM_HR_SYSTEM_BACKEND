@@ -3,12 +3,10 @@ package com.saham.hr_system.modules.leave.service.implementation;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestEmailSender;
 import com.saham.hr_system.modules.leave.utils.LeaveTypeMapper;
+import com.saham.hr_system.utils.OutlookEmailService;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -17,7 +15,7 @@ import org.thymeleaf.context.Context;
 public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private OutlookEmailService outlookEmailService;
 
     @Autowired
     private TemplateEngine templateEngine;
@@ -25,21 +23,11 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
     @Autowired
     private LeaveTypeMapper leaveTypeMapper;
 
-    @Value("${spring.mail.username}")
-    private String from;
 
     @Override
     public void sendEmployeeNotificationEmail(LeaveRequest leaveRequest) throws MessagingException {
-        String employeeEmail = leaveRequest.getEmployee().getEmail();
-
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        helper.setFrom(from);
-        //helper.setTo(employeeEmail);
-        helper.setTo("salaheddine.samid@medjoolstar.com"); // For testing purposes
-        helper.setSubject("Votre demande de congé a été enregistré");
-
+        //String to = leaveRequest.getEmployee().getEmail();
+        String to = "salaheddine.samid@medjoolstar.com";
         // Template variables
         Context context = new Context();
         String typeMapped = leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString());
@@ -50,10 +38,13 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("leave-requested-employee.html", context);
-        helper.setText(htmlContent, true);
 
-        javaMailSender.send(message);
-        System.out.println("Leave request email sent to: " + employeeEmail);
+        outlookEmailService.sendEmail(
+                to,
+                htmlContent,
+                "Votre demande de congé a été soumise avec succès"
+        );
+        System.out.println("Leave request email sent to: " + to);
     }
 
     /**
@@ -62,15 +53,8 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
     @Override
     public void sendManagerNotificationEmail(LeaveRequest leaveRequest) throws MessagingException {
 
-        String managerEmail = leaveRequest.getEmployee().getManager().getEmail();
-        assert managerEmail != null;
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        helper.setFrom(from);
-        //helper.setTo(managerEmail);
-        helper.setTo("salaheddine.samid@medjoolstar.com"); // For testing purposes
-        helper.setSubject("Nouvelle demande de congé à valider");
+        //String to = leaveRequest.getEmployee().getManager().getEmail();
+        String to = "salaheddine.samid@medjoolstar.com";
 
         Context context = new Context();
         String typeMapped = leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString());
@@ -84,9 +68,11 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
         context.setVariable("endDate", leaveRequest.getEndDate());
 
         String htmlContent = templateEngine.process("leave-requested-manager.html", context);
-        helper.setText(htmlContent, true);
-
-        javaMailSender.send(message);
-        System.out.println("Leave request email sent to: " + managerEmail);
+        outlookEmailService.sendEmail(
+                to,
+                htmlContent,
+                "Nouvelle demande de congé à approuver"
+        );
+        System.out.println("Leave request email sent to: " + to);
     }
 }
