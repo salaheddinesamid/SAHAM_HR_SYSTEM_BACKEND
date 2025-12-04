@@ -10,9 +10,9 @@ target/
 # Spring Boot – Ignore sensitive files
 ############################################
 # Ignore environment-specific configs (recommended)
-src/main/resources/application-dev.properties
+src/main/resources/application-test.properties
 src/main/resources/application-prod.properties
-src/main/resources/application-local.properties
+src/main/resources/application.properties
 
 # If your main application.properties contains secrets
 # (not recommended), you can ignore it:
