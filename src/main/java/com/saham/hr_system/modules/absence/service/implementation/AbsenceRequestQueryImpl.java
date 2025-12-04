@@ -62,7 +62,7 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
                         AbsenceRequestStatus.APPROVED,
                         AbsenceRequestStatus.REJECTED,
                         true,
-                        Sort.by(Sort.Direction.ASC, "issue_date")
+                        Sort.by(Sort.Direction.ASC, "issueDate")
                 );
 
         return absenceRequests.stream()

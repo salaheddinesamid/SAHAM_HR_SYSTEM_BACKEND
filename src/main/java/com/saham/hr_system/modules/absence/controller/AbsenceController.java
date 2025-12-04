@@ -77,7 +77,11 @@ public class AbsenceController {
 
     @GetMapping("/requests/hr/get_all")
     public ResponseEntity<?> getAllRequestsForHR(){
-        return null;
+        List<AbsenceRequestDetails> response =
+                absenceRequestQuery.getAllForHR();
+
+        return ResponseEntity.status(200)
+                .body(response);
     }
 
     @PutMapping("/requests/subordinates/approve-request")
