@@ -65,29 +65,31 @@
             padding: 10px 18px;
             margin-top: 15px;
             background: #004170;
-            color: #ffffff !important;
+            color: white !important;
             text-decoration: none;
             border-radius: 6px;
             font-size: 14px;
         }
 
         .btn:hover {
-            background: #003258;
+            background: #003456;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <!-- Absolute URL to avoid rendering issue -->
+        <!-- Replace with absolute URL or base64 -->
         <img src="https://saham.com/app/uploads/2025/05/cropped-favicon-32x32.png" alt="Logo">
     </div>
 
     <div class="content">
         <p>
-            Bonjour <strong th:text="${employeeName}"></strong>,<br><br>
-            Nous vous informons que votre congé a été
-            <strong>approuvée<span th:text="${managerName}"></span></strong>.
+            Bonjour,<br><br>
+            Une demande d'absence a été validée par le manager
+            <strong th:text="${managerName}"></strong> pour le collaborateur
+            <strong th:text="${employeeName}"></strong>. Elle est désormais en attente de validation
+            par le service <strong>RH</strong> sur la plateforme <strong>My HR Saham</strong>.
         </p>
 
         <div class="details">
@@ -98,7 +100,9 @@
             <p><span class="label">Nombre de jours demandés :</span> <span th:text="${totalDays}"></span> jour(s)</p>
         </div>
 
-        <a th:href="${requestLink}" class="btn">Consulter ma demande</a>
+        <button class="btn">
+            <a th:href="${requestLink}">Consulter la demande</a>
+        </button>
 
         <p style="margin-top: 20px;">
             Cordialement,<br>
@@ -107,8 +111,7 @@
     </div>
 
     <div class="footer">
-        Saham HR System © 2025 — Tous droits réservés.<br>
-        Cet email a été généré automatiquement, merci de ne pas y répondre.
+        Saham HR System © 2025 — Tous droits réservés.
     </div>
 </div>
 </body>

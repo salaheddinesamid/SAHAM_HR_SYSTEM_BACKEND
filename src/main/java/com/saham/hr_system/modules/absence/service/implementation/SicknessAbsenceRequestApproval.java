@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * This class implement absence approval methods for approving sickness absence requests.
@@ -22,12 +23,16 @@ public class SicknessAbsenceRequestApproval implements AbsenceApproval {
     private final AbsenceRequestRepo absenceRequestRepo;
     private final EmployeeRepository employeeRepository;
     private final AbsenceRepository absenceRepository;
+    private final AbsenceRequestApprovalEmailSenderImpl absenceRequestApprovalEmailSender;
+    private final AbsenceApprovalEmailSenderImpl absenceApprovalEmailSender;
 
     @Autowired
-    public SicknessAbsenceRequestApproval(AbsenceRequestRepo absenceRequestRepo, EmployeeRepository employeeRepository, AbsenceRepository absenceRepository) {
+    public SicknessAbsenceRequestApproval(AbsenceRequestRepo absenceRequestRepo, EmployeeRepository employeeRepository, AbsenceRepository absenceRepository, AbsenceRequestApprovalEmailSenderImpl absenceRequestApprovalEmailSender, AbsenceApprovalEmailSenderImpl absenceApprovalEmailSender) {
         this.absenceRequestRepo = absenceRequestRepo;
         this.employeeRepository = employeeRepository;
         this.absenceRepository = absenceRepository;
+        this.absenceRequestApprovalEmailSender = absenceRequestApprovalEmailSender;
+        this.absenceApprovalEmailSender = absenceApprovalEmailSender;
     }
 
     @Override
@@ -61,14 +66,20 @@ public class SicknessAbsenceRequestApproval implements AbsenceApproval {
         // save the request:
         absenceRequestRepo.save(absenceRequest);
 
+        // notify the employee and HR asynchronously:
+        CompletableFuture.runAsync(()->{
+            try {
+                absenceRequestApprovalEmailSender.notifyEmployee(absenceRequest);
+                absenceRequestApprovalEmailSender.notifyHR(absenceRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
     }
 
     @Override
-    public void approve(String refNumber) {
-        // fetch the request from db:
-        AbsenceRequest absenceRequest =
-                absenceRequestRepo.findByReferenceNumber(refNumber).orElseThrow();
-
+    public void approve(AbsenceRequest absenceRequest) {
         // check if the request is approved by the manager:
         if(!absenceRequest.isApprovedByManager()) {
             throw new IllegalStateException("This request is not yet approved by the manager.");
@@ -85,7 +96,7 @@ public class SicknessAbsenceRequestApproval implements AbsenceApproval {
 
         // create new absence:
         Absence absence = new Absence();
-        absence.setReferenceNumber(refNumber);
+        absence.setReferenceNumber(absenceRequest.getReferenceNumber());
         absence.setApprovedAt(LocalDateTime.now());
         absence.setStartDate(absenceRequest.getStartDate());
         absence.setEndDate(absenceRequest.getEndDate());
@@ -96,5 +107,15 @@ public class SicknessAbsenceRequestApproval implements AbsenceApproval {
         absenceRequestRepo.save(absenceRequest);
         // save the absence:
         absenceRepository.save(absence);
+
+        // notify the employee and manager asynchronously:
+        CompletableFuture.runAsync(()->{
+            try {
+                absenceApprovalEmailSender.notifyEmployee(absence);
+                absenceApprovalEmailSender.notifyManager(absence);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

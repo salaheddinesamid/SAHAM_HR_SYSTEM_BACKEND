@@ -79,15 +79,21 @@
 <body>
 <div class="container">
     <div class="header">
-        <!-- Absolute URL to avoid rendering issue -->
+        <!-- Use absolute URL -->
         <img src="https://saham.com/app/uploads/2025/05/cropped-favicon-32x32.png" alt="Logo">
     </div>
 
     <div class="content">
         <p>
-            Bonjour <strong th:text="${employeeName}"></strong>,<br><br>
-            Nous vous informons que votre congé a été
-            <strong>approuvée<span th:text="${managerName}"></span></strong>.
+            Bonjour <strong th:text="${managerName}"></strong>,<br><br>
+            Nous vous informons que la demande d'absence de votre collaborateur
+            <strong th:text="${employeeName}"></strong> a été
+            <strong>approuvée par le service RH</strong>.
+        </p>
+
+        <p>
+            La demande est désormais définitivement enregistrée dans le système
+            <strong>My HR Saham</strong>.
         </p>
 
         <div class="details">
@@ -98,7 +104,7 @@
             <p><span class="label">Nombre de jours demandés :</span> <span th:text="${totalDays}"></span> jour(s)</p>
         </div>
 
-        <a th:href="${requestLink}" class="btn">Consulter ma demande</a>
+        <a th:href="${requestLink}" class="btn">Consulter la demande</a>
 
         <p style="margin-top: 20px;">
             Cordialement,<br>

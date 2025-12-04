@@ -56,7 +56,17 @@ public class AbsenceRequestServiceImpl implements AbsenceRequestService {
 
     @Override
     public void approveAbsence(String refNumber) throws Exception {
+        try {
+            AbsenceRequest absenceRequest = absenceRequestRepo.findByReferenceNumber(refNumber).orElseThrow(()-> new AbsenceRequestNotFoundException("Absence request with reference number "+ refNumber +" not found."));
+            AbsenceApproval approval =
+                    approvals.stream().filter(a -> a.supports(absenceRequest.getType().toString()))
+                            .findFirst().orElse(null);
 
+            assert approval != null;
+            approval.approve(absenceRequest);
+        }catch (AbsenceRequestNotFoundException e) {
+            throw new AbsenceRequestNotFoundException("Absence request with reference number "+ refNumber +" not found.");
+        }
     }
 
 
