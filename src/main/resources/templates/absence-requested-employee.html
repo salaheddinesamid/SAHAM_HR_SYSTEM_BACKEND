@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: #eeeeee;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin: 30px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #004170;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header img {
+            max-width: 140px;
+        }
+
+        .content {
+            padding: 25px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .details {
+            background: #f4f7fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .details p {
+            margin: 5px 0;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #004170;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            margin-top: 15px;
+            background: #004170;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #003258;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            background: #fafafa;
+        }
+
+        .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <!-- Absolute URL for logo -->
+        <img src="https://saham.com/app/uploads/2025/05/cropped-favicon-32x32.png" alt="Logo">
+    </div>
+
+    <div class="content">
+        <p>Bonjour <strong th:text="${employeeName}"></strong>,</p>
+
+        <p>
+            Votre demande d'absence a été <span class="highlight">enregistrée avec succès</span> sur la plateforme. Elle est actuellement <strong>en cours de validation par votre manager</strong>,
+            elle sera transmise aux <strong>RH</strong> si celle-ci est approuvée.
+        </p>
+
+        <p>
+            Vous pourrez suivre l’évolution de votre demande directement depuis la plateforme.
+        </p>
+
+        <div class="details">
+            <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
+            <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
+            <p><span class="label">Date de départ :</span> <span th:text="${startDate}"></span></p>
+            <p><span class="label">Date de retour :</span> <span th:text="${endDate}"></span></p>
+            <p><span class="label">Nombre de jours demandés :</span> <span th:text="${totalDays}"></span> jour(s)</p>
+        </div>
+
+        <a th:href="${requestLink}" class="btn">Voir ma demande</a>
+
+        <p style="margin-top: 20px;">
+            Cordialement,<br>
+            <strong>Support RH</strong>
+        </p>
+    </div>
+
+    <div class="footer">
+        Saham HR System © 2025 — Tous droits réservés.<br>
+        Cet email a été généré automatiquement, merci de ne pas y répondre.
+    </div>
+</div>
+</body>
+</html>

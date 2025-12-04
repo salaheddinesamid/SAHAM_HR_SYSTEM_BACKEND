@@ -13,6 +13,8 @@ import com.saham.hr_system.utils.TotalDaysCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CompletableFuture;
+
 @Component
 public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcessor {
 
@@ -21,16 +23,18 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
     private final AbsenceRequestMapperImpl absenceMapper;
     private final AbsenceRequestRepo absenceRequestRepository;
     private final TotalDaysCalculator absenceTotalDaysCalculator;
-    private final AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;;
+    private final AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;
+    private final AbsenceRequestEmailSenderImpl absenceRequestEmailSender;
 
     @Autowired
-    public RemoteWorkAbsenceRequestProcessor(EmployeeRepository employeeRepository, AbsenceRequestValidatorImpl absenceRequestValidator, AbsenceRequestMapperImpl absenceMapper, AbsenceRequestRepo absenceRequestRepository, TotalDaysCalculator absenceTotalDaysCalculator, AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator) {
+    public RemoteWorkAbsenceRequestProcessor(EmployeeRepository employeeRepository, AbsenceRequestValidatorImpl absenceRequestValidator, AbsenceRequestMapperImpl absenceMapper, AbsenceRequestRepo absenceRequestRepository, TotalDaysCalculator absenceTotalDaysCalculator, AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator, AbsenceRequestEmailSenderImpl absenceRequestEmailSender) {
         this.employeeRepository = employeeRepository;
         this.absenceRequestValidator = absenceRequestValidator;
         this.absenceMapper = absenceMapper;
         this.absenceRequestRepository = absenceRequestRepository;
         this.absenceTotalDaysCalculator = absenceTotalDaysCalculator;
         this.absenceReferenceNumberGenerator = absenceReferenceNumberGenerator;
+        this.absenceRequestEmailSender = absenceRequestEmailSender;
     }
 
     @Override
@@ -58,6 +62,17 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
         absenceRequest.setEmployee(employee);
         String refNumber = absenceReferenceNumberGenerator.generate(absenceRequest);
         absenceRequest.setReferenceNumber(refNumber); // set the reference number
+
+        // notify the employee and manager asynchronously (implementation not shown):
+        // ...
+        CompletableFuture.runAsync(()->{
+            try {
+                absenceRequestEmailSender.notifyEmployee(absenceRequest);
+                absenceRequestEmailSender.notifyManager(absenceRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         // save the absence to db:
         return absenceRequestRepository.save(absenceRequest);
