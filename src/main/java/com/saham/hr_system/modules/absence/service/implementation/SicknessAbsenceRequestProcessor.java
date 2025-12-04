@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class SicknessAbsenceRequestProcessor implements AbsenceRequestProcessor {
@@ -24,15 +25,17 @@ public class SicknessAbsenceRequestProcessor implements AbsenceRequestProcessor 
     private final AbsenceRequestRepo absenceRequestRepo;
     private final TotalDaysCalculator totalDaysCalculator;
     private final AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;
+    private final AbsenceRequestEmailSenderImpl absenceRequestEmailSender;
 
     @Autowired
-    public SicknessAbsenceRequestProcessor(AbsenceRequestValidatorImpl absenceRequestValidator, EmployeeRepository employeeRepository, SicknessAbsenceDocumentStorageService sicknessAbsenceDocumentStorageService, AbsenceRequestRepo absenceRequestRepo, TotalDaysCalculator totalDaysCalculator, AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator) {
+    public SicknessAbsenceRequestProcessor(AbsenceRequestValidatorImpl absenceRequestValidator, EmployeeRepository employeeRepository, SicknessAbsenceDocumentStorageService sicknessAbsenceDocumentStorageService, AbsenceRequestRepo absenceRequestRepo, TotalDaysCalculator totalDaysCalculator, AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator, AbsenceRequestEmailSenderImpl absenceRequestEmailSender) {
         this.absenceRequestValidator = absenceRequestValidator;
         this.employeeRepository = employeeRepository;
         this.sicknessAbsenceDocumentStorageService = sicknessAbsenceDocumentStorageService;
         this.absenceRequestRepo = absenceRequestRepo;
         this.totalDaysCalculator = totalDaysCalculator;
         this.absenceReferenceNumberGenerator = absenceReferenceNumberGenerator;
+        this.absenceRequestEmailSender = absenceRequestEmailSender;
     }
 
     @Override
@@ -73,6 +76,17 @@ public class SicknessAbsenceRequestProcessor implements AbsenceRequestProcessor 
 
         // save the path:
         absenceRequest.setMedicalCertificatePath(medicalCertificatePath);
+
+        // notify the employee and manager asynchronously (implementation not shown):
+        // ...
+        CompletableFuture.runAsync(()->{
+            try {
+                absenceRequestEmailSender.notifyEmployee(absenceRequest);
+                absenceRequestEmailSender.notifyManager(absenceRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         // save the request
         return absenceRequestRepo.save(absenceRequest);
