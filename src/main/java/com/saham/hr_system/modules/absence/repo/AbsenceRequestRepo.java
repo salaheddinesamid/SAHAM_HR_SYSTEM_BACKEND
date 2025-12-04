@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AbsenceRequestRepo extends JpaRepository<AbsenceRequest, Long> {
     /**
@@ -32,4 +33,6 @@ public interface AbsenceRequestRepo extends JpaRepository<AbsenceRequest, Long> 
      * @return
      */
     long countAbsenceRequestByEmployee(Employee employee);
+
+    Optional<AbsenceRequest> findByReferenceNumber(String referenceNumber);
 }

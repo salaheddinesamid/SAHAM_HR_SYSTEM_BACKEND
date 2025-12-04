@@ -80,6 +80,26 @@ public class AbsenceController {
         return null;
     }
 
+    @PutMapping("/requests/subordinates/approve-request")
+    public ResponseEntity<?> approveSubordinateRequest(
+            @RequestParam String approvedBy,
+            @RequestParam String refNumber
+    ) throws Exception {
+        absenceRequestService.approveAbsenceRequest(approvedBy,refNumber);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body("Absence request has been approved");
+    }
+
+    @PutMapping("/requests/approve")
+    public ResponseEntity<?> approveAbsenceRequest(
+            @RequestParam String refNumber
+    ){
+
+        return null;
+    }
+
     @GetMapping("/medical-certificates/download")
     public ResponseEntity<Resource> downloadMedicalCertificate(
             @RequestParam String path

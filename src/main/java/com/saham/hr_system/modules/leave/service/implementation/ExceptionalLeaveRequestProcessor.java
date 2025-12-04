@@ -11,6 +11,7 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
+import com.saham.hr_system.modules.leave.utils.LeaveRequestRefNumberGenerator;
 import com.saham.hr_system.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,17 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
     private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveDocumentStorageServiceImpl leaveDocumentStorageService;
     private final TotalDaysCalculator leaveDaysCalculator;
+    private final LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator;
 
     @Autowired
-    public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveDocumentStorageServiceImpl leaveDocumentStorageService, TotalDaysCalculator leaveDaysCalculator) {
+    public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveDocumentStorageServiceImpl leaveDocumentStorageService, TotalDaysCalculator leaveDaysCalculator, LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator) {
         this.employeeRepository = employeeRepository;
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
         this.leaveRequestEmailSender = leaveRequestEmailSender;
         this.leaveDocumentStorageService = leaveDocumentStorageService;
         this.leaveDaysCalculator = leaveDaysCalculator;
+        this.leaveRequestRefNumberGenerator = leaveRequestRefNumberGenerator;
     }
 
     @Override
@@ -76,6 +79,9 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
         leaveRequest.setApprovedByManager(false);
         leaveRequest.setApprovedByHr(false);
         leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
+
+        String refNumber = leaveRequestRefNumberGenerator.generate(leaveRequest);
+        leaveRequest.setReferenceNumber(refNumber); // set the reference number
 
         // notify the employee:
         CompletableFuture.runAsync(()->{
