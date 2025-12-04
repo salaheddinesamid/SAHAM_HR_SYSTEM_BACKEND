@@ -50,7 +50,6 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         LeaveRequest leaveRequest =
                 leaveRequestRepository.findById(requestId).orElseThrow();
 
-
         // Get the employee:
         Employee employee  = leaveRequest.getEmployee();
         double totalDays =
@@ -63,6 +62,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         leave.setFromDate(leaveRequest.getStartDate());
         leave.setToDate(leaveRequest.getEndDate());
         leave.setTotalDays(totalDays);
+        leave.setReferenceNumber(leaveRequest.getReferenceNumber());
 
         // notify the employee:
         CompletableFuture.runAsync(()->{
