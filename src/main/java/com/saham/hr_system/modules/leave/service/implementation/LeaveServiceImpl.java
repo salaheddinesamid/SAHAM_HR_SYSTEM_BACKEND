@@ -13,9 +13,11 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
+import com.saham.hr_system.modules.leave.service.LeaveCanceller;
 import com.saham.hr_system.modules.leave.service.LeaveProcessor;
 import com.saham.hr_system.modules.leave.service.LeaveService;
 import jakarta.mail.MessagingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class LeaveServiceImpl implements LeaveService {
 
@@ -34,19 +37,19 @@ public class LeaveServiceImpl implements LeaveService {
     private final LeaveRequestValidatorImpl leaveRequestValidator;
     private final List<LeaveProcessor> processors;
     private final List<LeaveApproval> approvals;
+    private final List<LeaveCanceller> cancellers;
     private final LeaveRequestCancelerImpl leaveRequestCanceler;
-    private final LeaveCancellerImpl leaveCanceller;
 
     @Autowired
-    public LeaveServiceImpl(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, EmployeeRepository employeeRepository, LeaveRequestValidatorImpl leaveRequestValidator, List<LeaveProcessor> processors, List<LeaveApproval> approvals, LeaveRequestCancelerImpl leaveRequestCanceler, LeaveCancellerImpl leaveCanceller) {
+    public LeaveServiceImpl(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, EmployeeRepository employeeRepository, LeaveRequestValidatorImpl leaveRequestValidator, List<LeaveProcessor> processors, List<LeaveApproval> approvals, List<LeaveCanceller> cancellers, LeaveRequestCancelerImpl leaveRequestCanceler) {
         this.leaveRequestRepository = leaveRequestRepository;
         this.leaveRepository = leaveRepository;
         this.employeeRepository = employeeRepository;
         this.leaveRequestValidator = leaveRequestValidator;
         this.processors = processors;
         this.approvals = approvals;
+        this.cancellers = cancellers;
         this.leaveRequestCanceler = leaveRequestCanceler;
-        this.leaveCanceller = leaveCanceller;
     }
 
     @Override
@@ -78,7 +81,14 @@ public class LeaveServiceImpl implements LeaveService {
      */
     @Override
     public void cancelLeave(String refNumber) {
-        leaveCanceller.cancel(refNumber);
+        // fetch the leave from db:
+        Leave leave = leaveRepository.findByReferenceNumber(refNumber).orElseThrow();
+        LeaveCanceller canceller =
+                cancellers.stream().filter(c-> c.supports(leave.getLeaveType().toString()))
+                .findFirst().orElse(null);
+        log.info("Calling the canceller for leave type: "+ leave.getLeaveType().toString());
+        assert canceller != null;
+        canceller.cancel(refNumber);
     }
 
     @Override
@@ -181,15 +191,5 @@ public class LeaveServiceImpl implements LeaveService {
         // approve:
         assert approval != null;
         approval.rejectLeave(leaveRequestId);
-    }
-
-    // Notify employee of leave request approval or rejection:
-    private void notifyEmployee(String email){
-
-    }
-
-    // Notify the manager of subordinate's leave request or approval/rejection:
-    private void notifyManager(String email){
-
     }
 }

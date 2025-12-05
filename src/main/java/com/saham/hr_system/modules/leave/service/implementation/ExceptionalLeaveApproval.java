@@ -74,7 +74,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
         // create new leave:
         Leave leave = new Leave();
         leave.setEmployee(employee);
-        leave.setLeaveType(LeaveType.ANNUAL);
+        leave.setLeaveType(LeaveType.EXCEPTIONAL); // the type must be set to EXCEPTIONAL
         leave.setFromDate(leaveRequest.getStartDate());
         leave.setToDate(leaveRequest.getEndDate());
         leave.setTotalDays(totalDays);
