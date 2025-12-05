@@ -6,9 +6,10 @@ import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepositor
 import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
+import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
-import com.saham.hr_system.modules.leave.service.LeaveRequestCanceller;
+import com.saham.hr_system.modules.leave.service.LeaveCanceller;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +20,14 @@ import java.util.concurrent.CompletableFuture;
 
 @Component
 @Slf4j
-public class LeaveCancellerImpl implements LeaveRequestCanceller {
-
+public class AnnualLeaveCanceller implements LeaveCanceller {
     private final LeaveRepository leaveRepository;
     private final LeaveRequestRepository leaveRequestRepository;
     private final EmployeeBalanceRepository employeeBalanceRepository;
     private final LeaveCancellerEmailSenderImpl leaveCancellerEmailSender;
 
     @Autowired
-    public LeaveCancellerImpl(LeaveRepository leaveRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveCancellerEmailSenderImpl leaveCancellerEmailSender) {
+    public AnnualLeaveCanceller(LeaveRepository leaveRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveCancellerEmailSenderImpl leaveCancellerEmailSender) {
         this.leaveRepository = leaveRepository;
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
@@ -36,13 +36,9 @@ public class LeaveCancellerImpl implements LeaveRequestCanceller {
 
     @Override
     public boolean supports(String status) {
-        return LeaveRequestStatus.APPROVED.equals(LeaveRequestStatus.valueOf(status));
+        return LeaveType.ANNUAL.equals(LeaveType.valueOf(status));
     }
 
-    /**
-     * This function implements the cancellation of an approved leave request
-     * @param refNumber
-     */
     @Override
     @Transactional
     public void cancel(String refNumber) {
@@ -78,21 +74,11 @@ public class LeaveCancellerImpl implements LeaveRequestCanceller {
         leaveRepository.delete(leave);
         // save the balance:
         employeeBalanceRepository.save(employeeBalance);
-        // notify the employee:
+        // notify the employee and manager:
         CompletableFuture.runAsync(() ->
                 {
                     try {
                         leaveCancellerEmailSender.notifyEmployee(leave);
-                    } catch (MessagingException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        );
-
-        // notify the manager:
-        CompletableFuture.runAsync(() ->
-                {
-                    try {
                         leaveCancellerEmailSender.notifyManager(leave);
                     } catch (MessagingException e) {
                         throw new RuntimeException(e);

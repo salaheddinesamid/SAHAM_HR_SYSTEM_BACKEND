@@ -61,9 +61,6 @@ public class LeaveServiceUnitTest {
     @InjectMocks
     private LeaveRequestCancelerImpl leaveRequestCanceler;
 
-    @InjectMocks
-    private LeaveCancellerImpl leaveCanceller;
-
 
     private Employee employee;
     private Employee subordinate;
