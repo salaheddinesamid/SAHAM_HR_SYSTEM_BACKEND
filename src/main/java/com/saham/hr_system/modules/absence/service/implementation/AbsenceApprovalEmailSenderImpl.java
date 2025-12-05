@@ -18,11 +18,11 @@ public class AbsenceApprovalEmailSenderImpl implements AbsenceApprovalEmailSende
     @Autowired
     private TemplateEngine templateEngine;
 
-    private final static String TO = "salaheddine.samid@medjoolstar.com"; // for testing purposes
+    //private final static String TO = "salaheddine.samid@medjoolstar.com"; // for testing purposes
 
     @Override
     public void notifyEmployee(Absence absence) throws MessagingException {
-        //String TO = leaveRequest.getEmployee().getEmail();
+        String TO = absence.getEmployee().getEmail();
 
         // Template engine variables:
         Context context = new Context();
@@ -45,7 +45,7 @@ public class AbsenceApprovalEmailSenderImpl implements AbsenceApprovalEmailSende
 
     @Override
     public void notifyManager(Absence absence) throws MessagingException {
-        //String TO = leaveRequest.getEmployee().getManager().getEmail();
+        String TO = absence.getEmployee().getManager().getEmail();
 
         // Template engine variables:
         Context context = new Context();

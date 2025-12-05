@@ -30,8 +30,8 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
 
     @Override
     public void sendEmployeeNotificationEmail(LeaveRequest leaveRequest) throws MessagingException {
-        //String to = leaveRequest.getEmployee().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        String to = leaveRequest.getEmployee().getEmail();
+        //String to = "salaheddine.samid@medjoolstar.com";
         // Template variables
         Context context = new Context();
         String typeMapped = leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString());
@@ -58,8 +58,8 @@ public class LeaveRequestEmailSenderImpl implements LeaveRequestEmailSender {
     @Override
     public void sendManagerNotificationEmail(LeaveRequest leaveRequest) throws MessagingException {
 
-        //String to = leaveRequest.getEmployee().getManager().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        String to = leaveRequest.getEmployee().getManager().getEmail();
+        //String to = "salaheddine.samid@medjoolstar.com";
 
         Context context = new Context();
         String typeMapped = leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString());

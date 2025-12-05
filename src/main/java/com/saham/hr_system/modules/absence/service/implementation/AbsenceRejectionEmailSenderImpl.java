@@ -17,10 +17,10 @@ public class AbsenceRejectionEmailSenderImpl implements AbsenceRejectionEmailSen
     @Autowired
     private TemplateEngine templateEngine;
 
-    private final static String TO = "";
+    //private final static String TO = "";
     @Override
     public void notifyEmployee(AbsenceRequest absenceRequest) {
-        //String TO = leaveRequest.getEmployee().getEmail();
+        String TO = absenceRequest.getEmployee().getEmail();
 
         // Template engine variables:
         Context context = new Context();
@@ -43,7 +43,7 @@ public class AbsenceRejectionEmailSenderImpl implements AbsenceRejectionEmailSen
 
     @Override
     public void notifyManager(AbsenceRequest absenceRequest) {
-        //String TO = leaveRequest.getEmployee().getManager().getEmail();
+        String TO = absenceRequest.getEmployee().getManager().getEmail();
 
         // Template engine variables:
         Context context = new Context();
