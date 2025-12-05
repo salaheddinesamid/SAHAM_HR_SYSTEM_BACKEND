@@ -47,22 +47,25 @@ public class EmployeeDetailsDto {
 
 @Data
 class BalanceDetails{
-    int year;
-    double initialBalance;
+    int year; // the year for which the balance is applicable
+    double annualBalance; //
     double monthlyBalance;
-    double daysLeft;
+    double currentBalance;
     double accumulatedBalance;
     double usedBalance;
+    double reminderBalance;
     LocalDateTime lastUpdated;
 
     public BalanceDetails(
             EmployeeBalance employeeBalance
     ) {
         this.year = employeeBalance.getYear();
+        this.annualBalance = employeeBalance.getAnnualBalance();
+        this.monthlyBalance = employeeBalance.getMonthlyBalance();
         this.accumulatedBalance = employeeBalance.getAccumulatedBalance();
-        this.initialBalance = employeeBalance.getInitialBalance();
         this.usedBalance = employeeBalance.getUsedBalance();
-        this.daysLeft = employeeBalance.getDaysLeft();
+        this.currentBalance = employeeBalance.getCurrentBalance();
+        this.reminderBalance = employeeBalance.getRemainderBalance();
         this.lastUpdated = employeeBalance.getLastUpdated();
     }
 }
