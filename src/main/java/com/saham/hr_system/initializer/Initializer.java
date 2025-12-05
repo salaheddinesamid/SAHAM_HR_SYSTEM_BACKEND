@@ -76,9 +76,9 @@ public class Initializer implements CommandLineRunner {
 
             // Default Balance:
             EmployeeBalance managerBalance = new EmployeeBalance();
-            managerBalance.setInitialBalance(22); // Droit Annuel
+            managerBalance.setAnnualBalance(22); // Droit Annuel
             managerBalance.setMonthlyBalance(2); // Droit Mensuel*
-            managerBalance.setDaysLeft(0); // Solde 2024
+            managerBalance.setCurrentBalance(0); // Solde 2024
             managerBalance.setAccumulatedBalance(10); // Jours Accumulés
             managerBalance.setYear(2024); // Année
             managerBalance.setLastUpdated(LocalDateTime.now());
@@ -108,11 +108,11 @@ public class Initializer implements CommandLineRunner {
 
             // Default Balance:
             EmployeeBalance balance = new EmployeeBalance();
-            balance.setInitialBalance(29); // Droit Annuel
+            balance.setAnnualBalance(29); // Droit Annuel
             balance.setMonthlyBalance(2); // Droit Mensuel
             balance.setAccumulatedBalance(14); // Jours Accumulés
             balance.setYear(2024); // Année
-            balance.setDaysLeft(48); // Solde 2024
+            balance.setCurrentBalance(48); // Solde 2024
             balance.setLastUpdated(LocalDateTime.now());
             balance.setUsedBalance(21); // pris
             balance.setEmployee(myriam);
@@ -140,11 +140,11 @@ public class Initializer implements CommandLineRunner {
 
             // Default Balance:
             EmployeeBalance balance = new EmployeeBalance();
-            balance.setInitialBalance(26); // Droit Annuel
+            balance.setAnnualBalance(26); // Droit Annuel
             balance.setMonthlyBalance(3); // Droit Mensuel
             balance.setAccumulatedBalance(23); // Jours Accumulés
             balance.setYear(2024); // Année
-            balance.setDaysLeft(2); // Solde 2024
+            balance.setCurrentBalance(2); // Solde 2024
             balance.setLastUpdated(LocalDateTime.now());
             balance.setUsedBalance(25); // pris
             balance.setEmployee(wijdane);

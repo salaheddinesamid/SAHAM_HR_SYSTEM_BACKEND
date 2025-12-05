@@ -105,7 +105,7 @@ public class LeaveServiceIntegrationTest {
         EmployeeBalance employeeBalance = employeeBalanceRepository
                 .findByEmployee(e).orElse(null);
         assert employeeBalance != null;
-        employeeBalance.setDaysLeft(0);
+        employeeBalance.setCurrentBalance(0);
         employeeBalanceRepository.save(employeeBalance);
 
         // Act:

@@ -81,12 +81,12 @@ public class AnnualLeaveApproval implements LeaveApproval {
         double totalDays =
                 leaveRequest.getTotalDays();
         log.info("Total days requested: {}", totalDays);
-        log.info("Employee balance days left: {}", employeeBalance.getDaysLeft());
+        log.info("Employee current balance: {}", employeeBalance.getCurrentBalance()); // log the current balance
 
-        // subtract total days from the balance
-        employeeBalance.setDaysLeft(employeeBalance.getDaysLeft() - totalDays);
+        // update the balance:
+        employeeBalance.setCurrentBalance(employeeBalance.getCurrentBalance() - totalDays);
         employeeBalance.setUsedBalance(employeeBalance.getUsedBalance() + totalDays);
-        log.info("Employee balance days left after deduction: {}", employeeBalance.getDaysLeft());
+        log.info("Employee balance days left after deduction: {}", employeeBalance.getCurrentBalance()); // log the post current balance
 
         // save the balance:
         employeeBalanceRepository.save(employeeBalance);
