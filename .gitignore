@@ -12,7 +12,6 @@ target/
 ############################################
 # Ignore all property files (recommended for security)
 **/application.properties
-**/application-*.properties
 
 # Ignore temporary custom folders
 src/main/resources/folders/
