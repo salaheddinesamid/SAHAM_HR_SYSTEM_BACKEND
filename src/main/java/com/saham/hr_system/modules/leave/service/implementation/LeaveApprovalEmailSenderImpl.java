@@ -2,6 +2,8 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveApprovalEmailSender;
+import com.saham.hr_system.modules.leave.utils.LeaveTypeMapper;
+import com.saham.hr_system.modules.leave.utils.LocalDateMapper;
 import com.saham.hr_system.utils.OutlookEmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,12 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Autowired
+    private LocalDateMapper localDateMapper;
+
+    @Autowired
+    private LeaveTypeMapper leaveTypeMapper;
+
     private final static String TO = "salaheddine.samid@medjoolstar.com";
 
     @Override
@@ -28,9 +36,9 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
         Context context = new Context();
         context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
         context.setVariable("employeeName", leaveRequest.getEmployee().getManager().getFullName());
-        context.setVariable("type", leaveRequest.getStartDate());
-        context.setVariable("startDate", leaveRequest.getStartDate());
-        context.setVariable("endDate", leaveRequest.getEndDate());
+        context.setVariable("type", leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString()));
+        context.setVariable("startDate", localDateMapper.mapToFrenchFormat(leaveRequest.getStartDate()));
+        context.setVariable("endDate", localDateMapper.mapToFrenchFormat(leaveRequest.getEndDate()));
         context.setVariable("totalDays", leaveRequest.getTotalDays());
         context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
 
@@ -52,9 +60,9 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
         // Template engine variables:
         Context context = new Context();
         context.setVariable("employeeName", leaveRequest.getEmployee().getFullName());
-        context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
-        context.setVariable("startDate", leaveRequest.getStartDate());
-        context.setVariable("endDate", leaveRequest.getEndDate());
+        context.setVariable("type", leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString()));
+        context.setVariable("startDate", localDateMapper.mapToFrenchFormat(leaveRequest.getStartDate()));
+        context.setVariable("endDate", localDateMapper.mapToFrenchFormat(leaveRequest.getEndDate()));
         context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
         context.setVariable("totalDays", leaveRequest.getTotalDays());
         context.setVariable("logoUrl","");

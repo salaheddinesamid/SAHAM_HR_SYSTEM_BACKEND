@@ -145,17 +145,10 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // save the request:
         leaveRequestRepository.save(leaveRequest);
 
-        // notify the employee
+        // notify the employee and HR
         CompletableFuture.runAsync(()->{
             try {
                 leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        // notify the HR:
-        CompletableFuture.runAsync(()->{
-            try {
                 leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);

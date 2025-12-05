@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.absence.service.implementation;
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestEmailSender;
 import com.saham.hr_system.modules.absence.utils.AbsenceTypeMapper;
+import com.saham.hr_system.modules.leave.utils.LocalDateMapper;
 import com.saham.hr_system.utils.OutlookEmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
     @Autowired
     private AbsenceTypeMapper absenceTypeMapper;
 
+    @Autowired
+    private LocalDateMapper localDateMapper;
+
     private final static String TO = "salaheddine.samid@medjoolstar.com";
 
     @Override
@@ -33,8 +37,8 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
         Context context = new Context();
         String typeMapped = absenceTypeMapper.mapToReadableFormat(absenceRequest.getType().toString());
         context.setVariable("type", typeMapped);
-        context.setVariable("startDate", absenceRequest.getStartDate());
-        context.setVariable("endDate", absenceRequest.getEndDate());
+        context.setVariable("startDate", localDateMapper.mapToFrenchFormat(absenceRequest.getStartDate()));
+        context.setVariable("endDate", localDateMapper.mapToFrenchFormat(absenceRequest.getEndDate()));
         context.setVariable("referenceNumber", absenceRequest.getReferenceNumber());
         context.setVariable("totalDays", absenceRequest.getTotalDays());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
@@ -44,7 +48,7 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
         outlookEmailService.sendEmail(
                 TO,
                 htmlContent,
-                "Votre demande d'absence a été soumise ✔");
+                "Votre demande d'absence a été soumise avec succès");
         System.out.println("Absence request email sent to: " + TO);
     }
 
@@ -56,10 +60,10 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
         Context context = new Context();
         String typeMapped = absenceTypeMapper.mapToReadableFormat(absenceRequest.getType().toString());
         context.setVariable("type", typeMapped);
-        context.setVariable("startDate", absenceRequest.getStartDate());
+        context.setVariable("startDate", localDateMapper.mapToFrenchFormat(absenceRequest.getStartDate()));
+        context.setVariable("endDate", localDateMapper.mapToFrenchFormat(absenceRequest.getEndDate()));
         context.setVariable("managerName", absenceRequest.getEmployee().getManager().getFullName());
         context.setVariable("employeeName", absenceRequest.getEmployee().getFullName());
-        context.setVariable("endDate", absenceRequest.getEndDate());
         context.setVariable("referenceNumber", absenceRequest.getReferenceNumber());
         context.setVariable("totalDays", absenceRequest.getTotalDays());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
@@ -71,7 +75,7 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
         outlookEmailService.sendEmail(
                 TO,
                 htmlContent,
-                "Votre demande d'absence a été soumise ✔");
+                "Nouvelle demande d'absence à approuver");
         System.out.println("Absence request email sent to: " + TO);
     }
 }

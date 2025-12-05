@@ -36,7 +36,7 @@ public class EmployeeBalance {
 
 
     @Column(name = "remainder_balance")
-    private double remainderBalance; // the remaining balance
+    private float remainderBalance; // the remaining balance
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
@@ -51,7 +51,7 @@ public class EmployeeBalance {
      */
     @PrePersist
     void prePersist() {
-        this.remainderBalance = this.currentBalance + this.accumulatedBalance - this.usedBalance;
+        this.remainderBalance = (float) (this.currentBalance + this.accumulatedBalance - this.usedBalance);
         this.lastUpdated = LocalDateTime.now();
     }
 

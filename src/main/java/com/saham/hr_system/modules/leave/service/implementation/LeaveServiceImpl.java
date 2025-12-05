@@ -125,7 +125,11 @@ public class LeaveServiceImpl implements LeaveService {
 
         // Fetch leave requests (IN PROCESS ONLY):
         List<LeaveRequest> requests = subordinates.stream()
-                .flatMap(employee -> leaveRequestRepository.findAllByEmployee(employee).stream())
+                .flatMap(employee -> leaveRequestRepository.findAllByEmployeeAndStatusAndApprovedByManager(
+                        employee,
+                        LeaveRequestStatus.IN_PROCESS,
+                        false
+                ).stream())
                 .toList();
         return requests.isEmpty() ? List.of() : requests.stream()
                 .map(LeaveRequestResponse::new)
