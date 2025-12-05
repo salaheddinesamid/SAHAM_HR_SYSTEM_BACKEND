@@ -1,6 +1,6 @@
 package com.saham.hr_system.modules.loan.service.implementation;
 
-import com.saham.hr_system.modules.loan.model.LoanResponseDto;
+import com.saham.hr_system.modules.loan.dto.LoanResponseDto;
 import com.saham.hr_system.modules.loan.service.LoanQueryService;
 import org.springframework.stereotype.Component;
 

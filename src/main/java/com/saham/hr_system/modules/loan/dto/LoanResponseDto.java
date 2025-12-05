@@ -1,4 +1,4 @@
-package com.saham.hr_system.modules.loan.model;
+package com.saham.hr_system.modules.loan.dto;
 
 import lombok.Data;
 

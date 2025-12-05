@@ -12,17 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class LoanApprovalImpl implements LoanApproval {
 
     private final LoanRequestRepository loanRequestRepository;
     private final LoanRepository loanRepository;
+    private final LoanApprovalEmailSenderImpl loanApprovalEmailSender;
 
     @Autowired
-    public LoanApprovalImpl(LoanRequestRepository loanRequestRepository, LoanRepository loanRepository) {
+    public LoanApprovalImpl(LoanRequestRepository loanRequestRepository, LoanRepository loanRepository, LoanApprovalEmailSenderImpl loanApprovalEmailSender) {
         this.loanRequestRepository = loanRequestRepository;
         this.loanRepository = loanRepository;
+        this.loanApprovalEmailSender = loanApprovalEmailSender;
     }
 
     @Override
@@ -52,6 +55,15 @@ public class LoanApprovalImpl implements LoanApproval {
 
         // save the loan:
         loanRepository.save(loan);
+
+        // notify the employee
+        CompletableFuture.runAsync(() -> {
+            try{
+                loanApprovalEmailSender.notifyEmployee(loanRequest);
+            }catch (Exception e){
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 

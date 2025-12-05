@@ -86,18 +86,14 @@
     <div class="content">
         <p>
             Bonjour,<br><br>
-            Une demande d'absence a été validée par le manager
-            <strong th:text="${managerName}"></strong> pour le collaborateur/ice
-            <strong th:text="${employeeName}"></strong>. Elle est désormais en attente de validation
-            par le service <strong>RH</strong> sur la plateforme <strong>My HR Saham</strong>.
+            Vous avez une nouvelle demande de <span th:text="${loanType}"></span> soumise par <strong th:text="${requestedBy}"></strong>, en attente de traitement.
+            Merci de cliquer sur le lien ci-dessous pour la consulter :
         </p>
 
         <div class="details">
-            <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
-            <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
-            <p><span class="label">Date de départ :</span> <span th:text="${startDate}"></span></p>
-            <p><span class="label">Date de retour :</span> <span th:text="${endDate}"></span></p>
-            <p><span class="label">Nombre de jours demandés :</span> <span th:text="${totalDays}"></span> jour(s)</p>
+            <p><span class="label">Date de soumission :</span> <span th:text="${issueDate}"></span></p>
+            <p><span class="label">Montant :</span> <span th:text="${amount}"></span></p>
+            <p><span class="label">Motif :</span> <span th:text="${motif}"></span></p>
         </div>
 
         <button class="btn">
