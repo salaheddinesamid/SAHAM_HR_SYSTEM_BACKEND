@@ -26,11 +26,11 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
     @Autowired
     private LeaveTypeMapper leaveTypeMapper;
 
-    private final static String TO = "salaheddine.samid@medjoolstar.com";
+    //private final static String TO = "salaheddine.samid@medjoolstar.com";
 
     @Override
     public void sendHRApprovalEmailToManager(LeaveRequest leaveRequest) throws MessagingException {
-        //String TO = leaveRequest.getEmployee().getManager().getEmail();
+        String TO = leaveRequest.getEmployee().getManager().getEmail();
 
         // Template engine variables:
         Context context = new Context();
@@ -55,7 +55,7 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
 
     @Override
     public void sendHRApprovalEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException{
-        //String TO = leaveRequest.getEmployee().getEmail();
+        String TO = leaveRequest.getEmployee().getEmail();
 
         // Template engine variables:
         Context context = new Context();

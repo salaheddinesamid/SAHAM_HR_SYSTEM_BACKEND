@@ -28,9 +28,9 @@ public class LeaveRequestRejectionEmailSenderImpl implements LeaveRequestRejecti
 
     @Override
     public void sendSubordinateRejectionEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException {
-        //String to = leaveRequest.getEmployee().getEmail();
+        String to = leaveRequest.getEmployee().getEmail();
 
-        String to = "salaheddine.samid@medjoolstar.com";
+        //String to = "salaheddine.samid@medjoolstar.com";
         //helper.setTo("salaheddine.samid@medjoolstar.com"); // for testing purposes
 
         // Template variables

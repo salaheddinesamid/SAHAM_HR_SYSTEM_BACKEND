@@ -27,11 +27,11 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
     @Autowired
     private LocalDateMapper localDateMapper;
 
-    private final static String TO = "salaheddine.samid@medjoolstar.com";
+    //private final static String TO = "salaheddine.samid@medjoolstar.com";
 
     @Override
     public void notifyEmployee(AbsenceRequest absenceRequest) throws MessagingException {
-        //String TO = absenceRequest.getEmployee().getEmail();
+        String TO = absenceRequest.getEmployee().getEmail();
 
         // Template variables
         Context context = new Context();
@@ -54,7 +54,7 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
 
     @Override
     public void notifyManager(AbsenceRequest absenceRequest) throws MessagingException {
-        //String TO = absenceRequest.getEmployee().getEmail();
+        String TO = absenceRequest.getEmployee().getEmail();
 
         // Template variables
         Context context = new Context();

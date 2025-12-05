@@ -42,8 +42,8 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
 
     @Override
     public void sendSubordinateApprovalEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException {
-        //String to = leaveRequest.getEmployee().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        String to = leaveRequest.getEmployee().getEmail();
+        //String to = "salaheddine.samid@medjoolstar.com";
 
         // Template variables
         Context context = new Context();
@@ -69,8 +69,8 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
         // fetch all HR emails:
         List<String> emails = hrFetcherUtils.fetchHREmail();
         emails.forEach(email -> {
-            //String to = email;
-            String to = "salaheddine.samid@medjoolstar.com"; // for testing purposes
+            String to = email;
+            //String to = "salaheddine.samid@medjoolstar.com"; // for testing purposes
 
             // Template variables
             Context context = new Context();

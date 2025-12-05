@@ -21,8 +21,8 @@ public class LeaveRejectionEmailSenderImpl implements LeaveRejectionEmailSender 
 
     @Override
     public void notifyEmployee(LeaveRequest leaveRequest) throws MessagingException {
-        //String to = leaveRequest.getEmployee().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        String to = leaveRequest.getEmployee().getEmail();
+        //String to = "salaheddine.samid@medjoolstar.com";
 
         // Template engine variables:
         Context context = new Context();
@@ -45,8 +45,8 @@ public class LeaveRejectionEmailSenderImpl implements LeaveRejectionEmailSender 
 
     @Override
     public void notifyManager(LeaveRequest leaveRequest) throws MessagingException{
-        //String to = leaveRequest.getEmployee().getManager().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        String to = leaveRequest.getEmployee().getManager().getEmail();
+        //String to = "salaheddine.samid@medjoolstar.com";
 
         // Template engine variables:
         Context context = new Context();

@@ -29,8 +29,8 @@ public class LeaveCancellerEmailSenderImpl implements LeaveCancelerEmailSender {
 
     @Override
     public void notifyEmployee(Leave leave) throws MessagingException {
-        //String to = leave.getEmployee().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        String to = leave.getEmployee().getEmail();
+        //String to = "salaheddine.samid@medjoolstar.com";
 
         // Template variables
         Context context = new Context();
@@ -56,8 +56,8 @@ public class LeaveCancellerEmailSenderImpl implements LeaveCancelerEmailSender {
 
     @Override
     public void notifyManager(Leave leave) throws MessagingException {
-        //String to = leave.getEmployee().getEmail();
-        String to = "salaheddine.samid@medjoolstar.com";
+        String to = leave.getEmployee().getManager().getEmail();
+        //String to = "salaheddine.samid@medjoolstar.com";
 
         // Template variables
         Context context = new Context();

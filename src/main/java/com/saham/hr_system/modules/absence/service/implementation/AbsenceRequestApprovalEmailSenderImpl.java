@@ -32,10 +32,10 @@ public class AbsenceRequestApprovalEmailSenderImpl implements AbsenceRequestAppr
     @Autowired
     private LocalDateMapper localDateMapper;
 
-    private final static String TO = "salaheddine.samid@medjoolstar.com";
+    //private final static String TO = "salaheddine.samid@medjoolstar.com";
     @Override
     public void notifyEmployee(AbsenceRequest absenceRequest) throws MessagingException {
-        //String TO = leaveRequest.getEmployee().getEmail();
+        String TO = absenceRequest.getEmployee().getEmail();
 
         // Template variables
         Context context = new Context();
@@ -61,7 +61,7 @@ public class AbsenceRequestApprovalEmailSenderImpl implements AbsenceRequestAppr
         // fetch all HR emails:
         List<String> emails = hrFetcherUtils.fetchHREmail();
         emails.forEach(email -> {
-            //String TO = email;
+            String TO = email;
 
             // Template variables
             Context context = new Context();
