@@ -37,8 +37,8 @@ public class AbsenceRequestRejectionEmailSenderImpl implements AbsenceRequestRej
         outlookEmailService.sendEmail(
                 to,
                 htmlContent,
-                "Votre demande de congé est rejeté par le manager"
+                "Votre demande d'absence est rejeté par le manager"
         );
-        System.out.println("Leave rejection email sent to: " + to);
+        System.out.println("Absence Request rejection email sent to: " + to);
     }
 }

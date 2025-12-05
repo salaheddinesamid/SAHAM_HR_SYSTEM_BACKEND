@@ -2,9 +2,11 @@ package com.saham.hr_system.modules.absence.controller;
 
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDetails;
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDto;
+import com.saham.hr_system.modules.absence.service.implementation.AbsenceRejectionImpl;
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestQueryImpl;
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestServiceImpl;
 import com.saham.hr_system.modules.absence.service.implementation.SicknessAbsenceDocumentStorageService;
+import org.apache.catalina.connector.Response;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -23,11 +25,13 @@ public class AbsenceController {
 
     private final AbsenceRequestServiceImpl absenceRequestService;
     private final AbsenceRequestQueryImpl absenceRequestQuery;
+    private final AbsenceRejectionImpl absenceRejection;
     private final SicknessAbsenceDocumentStorageService sicknessAbsenceDocumentStorageService;
 
-    public AbsenceController(AbsenceRequestServiceImpl absenceRequestService, AbsenceRequestQueryImpl absenceRequestQuery, SicknessAbsenceDocumentStorageService sicknessAbsenceDocumentStorageService) {
+    public AbsenceController(AbsenceRequestServiceImpl absenceRequestService, AbsenceRequestQueryImpl absenceRequestQuery, AbsenceRejectionImpl absenceRejection, SicknessAbsenceDocumentStorageService sicknessAbsenceDocumentStorageService) {
         this.absenceRequestService = absenceRequestService;
         this.absenceRequestQuery = absenceRequestQuery;
+        this.absenceRejection = absenceRejection;
         this.sicknessAbsenceDocumentStorageService = sicknessAbsenceDocumentStorageService;
     }
 
@@ -107,7 +111,29 @@ public class AbsenceController {
                         .status(200)
                         .body("Absence request has been finally approved");
     }
+    @PutMapping("/requests/subordinates/reject-request")
+    public ResponseEntity<?> rejectSubordinateRequest(
+            @RequestParam String rejectedBy,
+            @RequestParam String refNumber
+    ) throws Exception {
+        absenceRejection.rejectSubordinate(rejectedBy,refNumber);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body("Absence request has been rejected");
+    }
 
+    @PutMapping("/requests/reject")
+    public ResponseEntity<?> rejectAbsenceRequest(
+            @RequestParam String refNumber
+    ) throws Exception {
+
+        absenceRejection.rejectAbsence(refNumber);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body("Absence request has been rejected");
+    }
     @GetMapping("/medical-certificates/download")
     public ResponseEntity<Resource> downloadMedicalCertificate(
             @RequestParam String path
