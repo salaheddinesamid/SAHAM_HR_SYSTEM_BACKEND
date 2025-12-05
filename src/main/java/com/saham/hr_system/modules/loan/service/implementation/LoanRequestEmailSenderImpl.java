@@ -1,4 +1,5 @@
 package com.saham.hr_system.modules.loan.service.implementation;
+import com.saham.hr_system.modules.leave.utils.HRFetcherUtils;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
 import com.saham.hr_system.modules.loan.service.LoanRequestEmailSender;
 import com.saham.hr_system.modules.loan.utils.LoanTypeMapper;
@@ -20,11 +21,14 @@ public class LoanRequestEmailSenderImpl implements LoanRequestEmailSender {
     @Autowired
     private LoanTypeMapper loanTypeMapper;
 
+    @Autowired
+    private HRFetcherUtils hrFetcherUtils;
+
     private final static String TO = "salaheddine.samid@medjoolstar.com";
 
     @Override
     public void notifyEmployee(LoanRequest loanRequest) {
-        //String TO = leaveRequest.getEmployee().getEmail();
+        String TO = loanRequest.getEmployee().getEmail();
 
         // Template variables
         Context context = new Context();
