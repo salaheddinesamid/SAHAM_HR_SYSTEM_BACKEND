@@ -2,13 +2,11 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestRejectionEmailSender;
+import com.saham.hr_system.modules.leave.utils.LeaveTypeMapper;
+import com.saham.hr_system.modules.leave.utils.LocalDateMapper;
 import com.saham.hr_system.utils.OutlookEmailService;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -22,6 +20,12 @@ public class LeaveRequestRejectionEmailSenderImpl implements LeaveRequestRejecti
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Autowired
+    private LeaveTypeMapper leaveTypeMapper;
+
+    @Autowired
+    private LocalDateMapper localDateMapper;
+
     @Override
     public void sendSubordinateRejectionEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException {
         //String to = leaveRequest.getEmployee().getEmail();
@@ -32,9 +36,11 @@ public class LeaveRequestRejectionEmailSenderImpl implements LeaveRequestRejecti
         // Template variables
         Context context = new Context();
         context.setVariable("manager", leaveRequest.getEmployee().getManager().getFullName());
-        context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
-        context.setVariable("startDate", leaveRequest.getStartDate());
-        context.setVariable("endDate", leaveRequest.getEndDate());
+        context.setVariable("type", leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString()));
+        context.setVariable("startDate", localDateMapper.mapToFrenchFormat(leaveRequest.getStartDate()));
+        context.setVariable("endDate", localDateMapper.mapToFrenchFormat(leaveRequest.getEndDate()));
+        context.setVariable("totalDays", leaveRequest.getTotalDays());
+
         context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 

@@ -36,6 +36,7 @@ public class LeaveCancellerEmailSenderImpl implements LeaveCancelerEmailSender {
         Context context = new Context();
         String typeMapped = leaveTypeMapper.mapLeaveType(leave.getLeaveType().toString());
         context.setVariable("type", typeMapped);
+        context.setVariable("employeeName", leave.getEmployee().getFirstName());
         context.setVariable("startDate", leave.getFromDate());
         context.setVariable("endDate", leave.getToDate());
         context.setVariable("referenceNumber", leave.getReferenceNumber());
@@ -63,6 +64,7 @@ public class LeaveCancellerEmailSenderImpl implements LeaveCancelerEmailSender {
         String typeMapped = leaveTypeMapper.mapLeaveType(leave.getLeaveType().toString());
         context.setVariable("type", typeMapped);
         context.setVariable("employeeName", leave.getEmployee().getFirstName());
+        context.setVariable("managerName", leave.getEmployee().getManager().getFirstName());
         context.setVariable("startDate", leave.getFromDate());
         context.setVariable("endDate", leave.getToDate());
         context.setVariable("referenceNumber", leave.getReferenceNumber());

@@ -98,16 +98,16 @@ public class LeaveServiceUnitTest {
 
         employeeBalance = new EmployeeBalance();
         employeeBalance.setBalanceId(1L);
-        employeeBalance.setInitialBalance(30);
+        employeeBalance.setAnnualBalance(30);
         employeeBalance.setYear(2025);
-        employeeBalance.setDaysLeft(1);
+        employeeBalance.setCurrentBalance(1);
         employeeBalance.setEmployee(employee);
 
         subordinateBalance = new EmployeeBalance();
         subordinateBalance.setBalanceId(1L);
-        subordinateBalance.setInitialBalance(30);
+        subordinateBalance.setAnnualBalance(30);
         subordinateBalance.setYear(2025);
-        subordinateBalance.setDaysLeft(20);
+        subordinateBalance.setCurrentBalance(20);
         subordinateBalance.setEmployee(employee);
 
         // Leave request made by manager:

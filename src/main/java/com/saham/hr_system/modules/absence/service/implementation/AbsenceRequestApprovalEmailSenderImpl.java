@@ -2,7 +2,9 @@ package com.saham.hr_system.modules.absence.service.implementation;
 
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestApprovalEmailSender;
+import com.saham.hr_system.modules.absence.utils.AbsenceTypeMapper;
 import com.saham.hr_system.modules.leave.utils.HRFetcherUtils;
+import com.saham.hr_system.modules.leave.utils.LocalDateMapper;
 import com.saham.hr_system.utils.OutlookEmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,12 @@ public class AbsenceRequestApprovalEmailSenderImpl implements AbsenceRequestAppr
     @Autowired
     private HRFetcherUtils hrFetcherUtils;
 
+    @Autowired
+    private AbsenceTypeMapper absenceTypeMapper;
+
+    @Autowired
+    private LocalDateMapper localDateMapper;
+
     private final static String TO = "salaheddine.samid@medjoolstar.com";
     @Override
     public void notifyEmployee(AbsenceRequest absenceRequest) throws MessagingException {
@@ -32,10 +40,11 @@ public class AbsenceRequestApprovalEmailSenderImpl implements AbsenceRequestAppr
         // Template variables
         Context context = new Context();
         context.setVariable("manager", absenceRequest.getEmployee().getManager().getFullName());
-        context.setVariable("type", absenceRequest.getType().toString());
-        context.setVariable("startDate", absenceRequest.getStartDate());
-        context.setVariable("endDate", absenceRequest.getEndDate());
+        context.setVariable("type", absenceTypeMapper.mapToReadableFormat(absenceRequest.getType().toString()));
+        context.setVariable("startDate", localDateMapper.mapToFrenchFormat(absenceRequest.getStartDate()));
+        context.setVariable("endDate", localDateMapper.mapToFrenchFormat(absenceRequest.getEndDate()));
         context.setVariable("referenceNumber", absenceRequest.getReferenceNumber());
+        context.setVariable("totalDays", absenceRequest.getTotalDays());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("absence-request-approved-employee.html", context);
@@ -58,10 +67,11 @@ public class AbsenceRequestApprovalEmailSenderImpl implements AbsenceRequestAppr
             Context context = new Context();
             context.setVariable("managerName", absenceRequest.getEmployee().getManager().getFullName());
             context.setVariable("employeeName", absenceRequest.getEmployee().getFullName());
-            context.setVariable("type", absenceRequest.getType().toString());
-            context.setVariable("startDate", absenceRequest.getStartDate());
-            context.setVariable("endDate", absenceRequest.getEndDate());
+            context.setVariable("type", absenceTypeMapper.mapToReadableFormat(absenceRequest.getType().toString()));
+            context.setVariable("startDate", localDateMapper.mapToFrenchFormat(absenceRequest.getStartDate()));
+            context.setVariable("endDate", localDateMapper.mapToFrenchFormat(absenceRequest.getEndDate()));
             context.setVariable("referenceNumber", absenceRequest.getReferenceNumber());
+            context.setVariable("totalDays", absenceRequest.getTotalDays());
             context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
             String htmlContent = templateEngine.process("absence-request-approved-hr.html", context);

@@ -3,6 +3,8 @@ package com.saham.hr_system.modules.leave.service.implementation;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.service.LeaveRequestApprovalEmailSender;
 import com.saham.hr_system.modules.leave.utils.HRFetcherUtils;
+import com.saham.hr_system.modules.leave.utils.LeaveTypeMapper;
+import com.saham.hr_system.modules.leave.utils.LocalDateMapper;
 import com.saham.hr_system.utils.OutlookEmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,12 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Autowired
+    private LeaveTypeMapper leaveTypeMapper;
+
+    @Autowired
+    private LocalDateMapper localDateMapper;
+
     private final HRFetcherUtils hrFetcherUtils;
 
     @Autowired
@@ -35,16 +43,17 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
     @Override
     public void sendSubordinateApprovalEmailToEmployee(LeaveRequest leaveRequest) throws MessagingException {
         //String to = leaveRequest.getEmployee().getEmail();
-        String to = "salaheddine.samid@saham.com";
+        String to = "salaheddine.samid@medjoolstar.com";
 
         // Template variables
         Context context = new Context();
         context.setVariable("manager", leaveRequest.getEmployee().getManager().getFullName());
-        context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
-        context.setVariable("startDate", leaveRequest.getStartDate());
-        context.setVariable("endDate", leaveRequest.getEndDate());
+        context.setVariable("type", leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString()));
+        context.setVariable("startDate", localDateMapper.mapToFrenchFormat(leaveRequest.getStartDate()));
+        context.setVariable("endDate", localDateMapper.mapToFrenchFormat(leaveRequest.getEndDate()));
         context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
+        context.setVariable("totalDays",leaveRequest.getTotalDays());
 
         String htmlContent = templateEngine.process("leave-request-approved-employee.html", context);
         outlookEmailService.sendEmail(
@@ -67,10 +76,11 @@ public class LeaveRequestApprovalEmailSenderImpl implements LeaveRequestApproval
             Context context = new Context();
             context.setVariable("managerName", leaveRequest.getEmployee().getManager().getFullName());
             context.setVariable("employeeName", leaveRequest.getEmployee().getFullName());
-            context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
-            context.setVariable("startDate", leaveRequest.getStartDate());
-            context.setVariable("endDate", leaveRequest.getEndDate());
+            context.setVariable("type", leaveTypeMapper.mapLeaveType(leaveRequest.getTypeOfLeave().toString()));
+            context.setVariable("startDate", localDateMapper.mapToFrenchFormat(leaveRequest.getStartDate()));
+            context.setVariable("endDate", localDateMapper.mapToFrenchFormat(leaveRequest.getEndDate()));
             context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
+            context.setVariable("totalDays",leaveRequest.getTotalDays());
             context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
             String htmlContent = templateEngine.process("leave-request-approved-hr.html", context);

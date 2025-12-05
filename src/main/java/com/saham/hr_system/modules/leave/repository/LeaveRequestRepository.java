@@ -44,6 +44,8 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      */
     long countByRequestDateBetween(LocalDateTime start, LocalDateTime end);
 
+    long countByEmployeeAndStatus(Employee employee, LeaveRequestStatus status);
+
     /**
      * Calculate the number of leave requests made by an employee
      * @param employee
