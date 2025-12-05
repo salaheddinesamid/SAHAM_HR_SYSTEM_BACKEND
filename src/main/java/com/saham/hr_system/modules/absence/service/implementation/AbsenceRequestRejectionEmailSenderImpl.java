@@ -2,11 +2,21 @@ package com.saham.hr_system.modules.absence.service.implementation;
 
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestRejectionEmailSender;
+import com.saham.hr_system.utils.OutlookEmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 @Component
 public class AbsenceRequestRejectionEmailSenderImpl implements AbsenceRequestRejectionEmailSender {
+
+    @Autowired
+    private OutlookEmailService outlookEmailService;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
     @Override
     public void notifyEmployee(AbsenceRequest absenceRequest) {
         //String to = leaveRequest.getEmployee().getEmail();
@@ -16,11 +26,11 @@ public class AbsenceRequestRejectionEmailSenderImpl implements AbsenceRequestRej
 
         // Template variables
         Context context = new Context();
-        context.setVariable("manager", leaveRequest.getEmployee().getManager().getFullName());
-        context.setVariable("type", leaveRequest.getTypeOfLeave().toString());
-        context.setVariable("startDate", leaveRequest.getStartDate());
-        context.setVariable("endDate", leaveRequest.getEndDate());
-        context.setVariable("referenceNumber", leaveRequest.getReferenceNumber());
+        context.setVariable("manager", absenceRequest.getEmployee().getManager().getFullName());
+        context.setVariable("type", absenceRequest.getType().toString());
+        context.setVariable("startDate", absenceRequest.getStartDate());
+        context.setVariable("endDate", absenceRequest.getEndDate());
+        context.setVariable("referenceNumber", absenceRequest.getReferenceNumber());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
 
         String htmlContent = templateEngine.process("leave-request-rejected-employee.html", context);

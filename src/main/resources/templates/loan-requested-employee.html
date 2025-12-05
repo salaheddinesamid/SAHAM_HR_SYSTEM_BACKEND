@@ -20,12 +20,12 @@
 
         .header {
             background: #004170;
-            padding: 20px;
             text-align: center;
+            padding: 20px;
         }
 
         .header img {
-            max-width: 150px;
+            max-width: 140px;
         }
 
         .content {
@@ -51,6 +51,21 @@
             color: #004170;
         }
 
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            margin-top: 15px;
+            background: #004170;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #003258;
+        }
+
         .footer {
             text-align: center;
             font-size: 12px;
@@ -60,49 +75,37 @@
             background: #fafafa;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 18px;
-            margin-top: 15px;
-            background: #004170;
-            color: white !important;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .btn:hover {
-            background: #003456;
+        .highlight {
+            color: #28a745;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <!-- Replace with absolute URL or base64 -->
+        <!-- Absolute URL for logo -->
         <img src="https://saham.com/app/uploads/2025/05/cropped-favicon-32x32.png" alt="Logo">
     </div>
 
     <div class="content">
+        <p>Bonjour <strong th:text="${employeeName}"></strong>,</p>
+
         <p>
-            Bonjour,<br><br>
-            Une demande d'absence a été validée par le manager
-            <strong th:text="${managerName}"></strong> pour le collaborateur/ice
-            <strong th:text="${employeeName}"></strong>. Elle est désormais en attente de validation
-            par le service <strong>RH</strong> sur la plateforme <strong>My HR Saham</strong>.
+            Votre demande de <span th:text="${loanType}"></span> a été <span class="highlight">enregistrée avec succès</span> sur la plateforme. Elle est actuellement <strong>en cours de validation par le service RH.</strong>,
+        </p>
+
+        <p>
+            Vous pourrez suivre l’évolution de votre demande directement depuis la plateforme.
         </p>
 
         <div class="details">
-            <p><span class="label">Reference N° :</span> <span th:text="${referenceNumber}"></span></p>
-            <p><span class="label">Type :</span> <span th:text="${type}"></span></p>
-            <p><span class="label">Date de départ :</span> <span th:text="${startDate}"></span></p>
-            <p><span class="label">Date de retour :</span> <span th:text="${endDate}"></span></p>
-            <p><span class="label">Nombre de jours demandés :</span> <span th:text="${totalDays}"></span> jour(s)</p>
+            <p><span class="label">Date de soumission :</span> <span th:text="${issueDate}"></span></p>
+            <p><span class="label">Montant :</span> <span th:text="${amount}"></span></p>
+            <p><span class="label">Motif :</span> <span th:text="${motif}"></span></p>
         </div>
 
-        <button class="btn">
-            <a th:href="${requestLink}">Consulter la demande</a>
-        </button>
+        <a th:href="${requestLink}" class="btn">Voir ma demande</a>
 
         <p style="margin-top: 20px;">
             Cordialement,<br>
@@ -111,7 +114,8 @@
     </div>
 
     <div class="footer">
-        Saham HR System © 2025 — Tous droits réservés.
+        Saham HR System © 2025 — Tous droits réservés.<br>
+        Cet email a été généré automatiquement, merci de ne pas y répondre.
     </div>
 </div>
 </body>

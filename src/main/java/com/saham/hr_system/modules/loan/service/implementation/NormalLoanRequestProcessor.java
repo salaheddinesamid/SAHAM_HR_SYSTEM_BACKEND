@@ -12,22 +12,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class NormalLoanRequestProcessor implements LoanRequestProcessor {
 
     private final LoanRequestRepository loanRequestRepository;
     private final LoanRequestValidatorImpl loanRequestValidator;
+    private final LoanRequestEmailSenderImpl loanRequestEmailSender;
 
     @Autowired
-    public NormalLoanRequestProcessor(LoanRequestRepository loanRequestRepository, LoanRequestValidatorImpl loanRequestValidator) {
+    public NormalLoanRequestProcessor(LoanRequestRepository loanRequestRepository, LoanRequestValidatorImpl loanRequestValidator, LoanRequestEmailSenderImpl loanRequestEmailSender) {
         this.loanRequestRepository = loanRequestRepository;
         this.loanRequestValidator = loanRequestValidator;
+        this.loanRequestEmailSender = loanRequestEmailSender;
     }
 
     @Override
     public boolean supports(String loanType) {
-        return LoanType.NORMAL.equals(LoanType.valueOf(loanType));
+        return LoanType.NORMAL.equals(LoanType.valueOf(loanType)) || LoanType.ADVANCE.equals(LoanType.valueOf(loanType));
     }
 
     @Override
@@ -45,6 +48,16 @@ public class NormalLoanRequestProcessor implements LoanRequestProcessor {
         loanRequest.setApprovedByHrDepartment(true);
         loanRequest.setType(LoanType.valueOf(requestDto.getLoanType()));
         loanRequest.setStatus(LoanRequestStatus.IN_PROCESS);
+
+        // notify the employee and HR ASYNC:
+        CompletableFuture.runAsync(()->{
+            try{
+                loanRequestEmailSender.notifyEmployee(loanRequest);
+                loanRequestEmailSender.notifyHR(loanRequest);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+            }
+        });
 
         // save the loan request to the db:
         return loanRequestRepository.save(loanRequest);

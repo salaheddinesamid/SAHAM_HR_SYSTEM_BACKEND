@@ -1,6 +1,6 @@
 package com.saham.hr_system.modules.loan.service;
 
-import com.saham.hr_system.modules.loan.model.LoanResponseDto;
+import com.saham.hr_system.modules.loan.dto.LoanResponseDto;
 
 import java.util.List;
 
