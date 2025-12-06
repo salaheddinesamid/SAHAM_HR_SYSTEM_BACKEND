@@ -38,13 +38,18 @@ public class SecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000","http://192.168.15.27:3000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedOrigins(
+                                "http://localhost:3000",
+                                "http://192.168.15.27:3000",
+                                "http://YOUR_SERVER_IP",
+                                "http://YOUR_SERVER_IP:YOUR_FRONTEND_PORT",
+                                "https://YOUR_DOMAIN"
+                        )
+                        .allowedMethods("*")
                         .allowedHeaders("*")
-                        .allowCredentials(true)
-                        .maxAge(3600);
-
+                        .allowCredentials(true);
             }
         };
     }
+
 }
