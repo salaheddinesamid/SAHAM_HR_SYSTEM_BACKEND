@@ -106,6 +106,33 @@ public class LeaveController {
         return ResponseEntity.status(200)
                 .body(requests);
     }
+    /**
+     *
+     * @param leaveRequestId
+     * @return
+     */
+    @PutMapping("/requests/hr/approve")
+    public ResponseEntity<?> approveRequest(@RequestParam Long leaveRequestId) {
+        leaveService.approveLeaveRequest(leaveRequestId);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(Map.of("message","Leave request has been finally approved"));
+    }
+
+    /**
+     *
+     * @param requestId
+     * @return
+     */
+    @PutMapping("/requests/hr/reject")
+    public ResponseEntity<?> rejectRequest(@RequestParam Long requestId){
+        leaveService.rejectLeaveRequest(requestId);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(Map.of("message","Leave request has been finally rejected"));
+    }
 
     /**
      *
@@ -135,33 +162,6 @@ public class LeaveController {
                 ResponseEntity
                         .status(200)
                         .body(Map.of("message","Leave request has been rejected"));
-    }
-
-    /**
-     *
-     * @param leaveRequestId
-     * @return
-     */
-    @PutMapping("/requests/approve-request")
-    public ResponseEntity<?> approveRequest(@RequestParam Long leaveRequestId) {
-        leaveService.approveLeaveRequest(leaveRequestId);
-        return
-                ResponseEntity
-                        .status(200)
-                        .body(Map.of("message","Leave request has been finally approved"));
-    }
-    /**
-     *
-     * @param requestId
-     * @return
-     */
-    @PutMapping("/requests/reject-request")
-    public ResponseEntity<?> rejectRequest(@RequestParam Long requestId){
-        leaveService.rejectLeaveRequest(requestId);
-        return
-                ResponseEntity
-                        .status(200)
-                        .body(Map.of("message","Leave request has been finally rejected"));
     }
     /**
      *
