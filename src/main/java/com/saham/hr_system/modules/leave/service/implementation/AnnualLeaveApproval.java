@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.exception.LeaveRequestAlreadyApprovedException;
 import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorException;
+import com.saham.hr_system.exception.UnauthorizedAccessException;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
@@ -13,7 +14,6 @@ import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
-import com.saham.hr_system.modules.leave.service.LeaveApprovalEmailSender;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,7 +136,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         Employee manager = employee.getManager();
 
         if(!manager.getEmail().equals(approvedBy)){
-            throw new SecurityException("You are not authorized to approve this request");
+            throw new UnauthorizedAccessException("You are not authorized to approve this request");
         }
 
         // approve the request:
@@ -168,7 +168,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         Employee manager = employee.getManager();
 
         if(!manager.getEmail().equals(rejectedBy)){
-            throw new SecurityException("You are not authorized to approve this request");
+            throw new UnauthorizedAccessException("You are not authorized to reject this request");
         }
 
         // Check if the request has already been approved:

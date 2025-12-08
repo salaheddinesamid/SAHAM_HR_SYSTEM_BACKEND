@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -77,38 +78,17 @@ public class AbsenceController {
         return ResponseEntity.status(200)
                 .body(response);
     }
-
-    @GetMapping("/requests/hr/get_all")
-    public ResponseEntity<?> getAllRequestsForHR(){
-        List<AbsenceRequestDetails> response =
-                absenceRequestQuery.getAllForHR();
-
-        return ResponseEntity.status(200)
-                .body(response);
-    }
-
     @PutMapping("/requests/subordinates/approve-request")
     public ResponseEntity<?> approveSubordinateRequest(
-            @RequestParam String approvedBy,
+            Authentication authentication,
             @RequestParam String refNumber
     ) throws Exception {
+        String approvedBy = authentication.getName(); // extract the email of the manager
         absenceRequestService.approveAbsenceRequest(approvedBy,refNumber);
         return
                 ResponseEntity
                         .status(200)
                         .body("Absence request has been approved");
-    }
-
-    @PutMapping("/requests/approve")
-    public ResponseEntity<?> approveAbsenceRequest(
-            @RequestParam String refNumber
-    ) throws Exception {
-
-        absenceRequestService.approveAbsence(refNumber);
-        return
-                ResponseEntity
-                        .status(200)
-                        .body("Absence request has been finally approved");
     }
     @PutMapping("/requests/subordinates/reject-request")
     public ResponseEntity<?> rejectSubordinateRequest(
@@ -122,7 +102,16 @@ public class AbsenceController {
                         .body("Absence request has been rejected");
     }
 
-    @PutMapping("/requests/reject")
+
+    @GetMapping("/requests/hr/get_all")
+    public ResponseEntity<?> getAllRequestsForHR(){
+        List<AbsenceRequestDetails> response =
+                absenceRequestQuery.getAllForHR();
+
+        return ResponseEntity.status(200)
+                .body(response);
+    }
+    @PutMapping("/requests/hr/reject")
     public ResponseEntity<?> rejectAbsenceRequest(
             @RequestParam String refNumber
     ) throws Exception {
@@ -132,6 +121,17 @@ public class AbsenceController {
                 ResponseEntity
                         .status(200)
                         .body("Absence request has been rejected");
+    }
+    @PutMapping("/requests/hr/approve")
+    public ResponseEntity<?> approveAbsenceRequest(
+            @RequestParam String refNumber
+    ) throws Exception {
+
+        absenceRequestService.approveAbsence(refNumber);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body("Absence request has been finally approved");
     }
     @GetMapping("/medical-certificates/download")
     public ResponseEntity<Resource> downloadMedicalCertificate(

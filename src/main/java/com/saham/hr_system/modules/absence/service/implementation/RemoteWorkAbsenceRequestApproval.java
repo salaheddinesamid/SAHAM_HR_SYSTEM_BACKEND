@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.absence.service.implementation;
 
+import com.saham.hr_system.exception.UnauthorizedAccessException;
 import com.saham.hr_system.modules.absence.model.Absence;
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.model.AbsenceRequestStatus;
@@ -43,7 +44,7 @@ public class RemoteWorkAbsenceRequestApproval implements AbsenceApproval {
         Employee manager = employeeRepository.findByEmail(approvedBy).orElseThrow();
 
         if(!absenceRequest.getEmployee().getManager().equals(manager)) {
-            throw new IllegalStateException("You are not authorized to approve this absence request.");
+            throw new UnauthorizedAccessException("You are not authorized to approve this absence request.");
         }
         // otherwise, approve the request
         absenceRequest.setApprovedByManager(true);

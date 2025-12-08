@@ -85,6 +85,7 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
 
 
         // notify the employee:
+        /*
         CompletableFuture.runAsync(() ->
                 {
                     try {
@@ -105,6 +106,8 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
                     }
                 }
         );
+
+         */
 
         // return the saved request:
         return savedRequest;

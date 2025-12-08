@@ -27,7 +27,7 @@ public class LoanController {
                 .body(loanService.getAllRequests());
     }
 
-    @GetMapping("/employee-requests")
+    @GetMapping("/requests/employee/get-all")
     public ResponseEntity<?> getAllEmployeeRequests(@RequestParam String email){
         return
                 ResponseEntity
@@ -43,7 +43,7 @@ public class LoanController {
                 .body("Loan request submitted successfully");
     }
 
-    @PutMapping("approve-request")
+    @PutMapping("/requests/hr/approve-request")
     public ResponseEntity<?> approveLoanRequest(@RequestParam Long requestId) {
         // Implementation for approving loan request goes here
         loanApproval.approveLoanRequest(requestId);
@@ -53,7 +53,7 @@ public class LoanController {
                 .body("Loan request approved successfully");
     }
 
-    @PutMapping("reject-request")
+    @PutMapping("/requests/hr/reject-request")
     public ResponseEntity<?> rejectLoanRequest(@RequestParam Long requestId) {
         // Implementation for rejecting loan request goes here
         loanApproval.rejectLoanRequest(requestId);

@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.absence.service.implementation;
 
+import com.saham.hr_system.exception.UnauthorizedAccessException;
 import com.saham.hr_system.modules.absence.model.Absence;
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.model.AbsenceRequestStatus;
@@ -58,7 +59,7 @@ public class SicknessAbsenceRequestApproval implements AbsenceApproval {
 
         // check if the manager is indeed the manager of the employee:
         if(!absenceRequest.getEmployee().getManager().equals(manager)) {
-            throw new IllegalStateException("You are not authorized to approve this request.");
+            throw new UnauthorizedAccessException("You are not authorized to approve this request.");
         }
         // Otherwise:
         absenceRequest.setApprovedByManager(true);

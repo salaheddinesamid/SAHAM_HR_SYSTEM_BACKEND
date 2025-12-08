@@ -1,11 +1,13 @@
 package com.saham.hr_system.modules.leave.controller;
 
+import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveDocumentStorageServiceImpl;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
 import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,10 +21,12 @@ public class LeaveController {
 
     private final LeaveServiceImpl leaveService;
     private final LeaveDocumentStorageServiceImpl documentService;
+    private final JwtUtilities jwtUtilities;
 
-    public LeaveController(LeaveServiceImpl leaveService, LeaveDocumentStorageServiceImpl documentService) {
+    public LeaveController(LeaveServiceImpl leaveService, LeaveDocumentStorageServiceImpl documentService, JwtUtilities jwtUtilities) {
         this.leaveService = leaveService;
         this.documentService = documentService;
+        this.jwtUtilities = jwtUtilities;
     }
 
     /*
@@ -135,13 +139,15 @@ public class LeaveController {
     }
 
     /**
-     *
-     * @param approvedBy
+     * This endpoint handles the approval of a subordinate's leave request by a manager.
+     * This operation requires fine-grained access to ensure that only authorized managers can approve their subordinates' requests.
+     * @param authentication
      * @param leaveRequestId
      * @return
      */
     @PutMapping("/requests/subordinates/approve-request")
-    public ResponseEntity<?> approveSubordinateRequest(@RequestParam String approvedBy,@RequestParam Long leaveRequestId) {
+    public ResponseEntity<?> approveSubordinateRequest(Authentication authentication,@RequestParam Long leaveRequestId) {
+        String approvedBy = authentication.getName();  // extract the email from the authentication object
         leaveService.approveSubordinateLeaveRequest(approvedBy,leaveRequestId);
         return
                 ResponseEntity
@@ -151,12 +157,13 @@ public class LeaveController {
 
     /**
      *
-     * @param rejectedBy
+     * @param authentication
      * @param leaveRequestId
      * @return
      */
     @PutMapping("/requests/subordinates/reject-request")
-    public ResponseEntity<?> rejectSubordinateRequest(@RequestParam String rejectedBy,@RequestParam Long leaveRequestId) {
+    public ResponseEntity<?> rejectSubordinateRequest(Authentication authentication,@RequestParam Long leaveRequestId) {
+        String rejectedBy = authentication.getName();
         leaveService.rejectSubordinateLeaveRequest(rejectedBy, leaveRequestId);
         return
                 ResponseEntity
@@ -164,12 +171,14 @@ public class LeaveController {
                         .body(Map.of("message","Leave request has been rejected"));
     }
     /**
-     *
+     * This endpoint handles the retrieval of all leave requests made by subordinates of a specific manager.
+     * This endpoint requires fine-grained access to ensure that only authorized managers can view their subordinates' requests.
      * @param email
      * @return
      */
     @GetMapping("/requests/subordinates/get_all")
     public ResponseEntity<?> getSubordinatesRequests(@RequestParam String email){
+        //String managerEmail = authentication.getName();
         return
                 ResponseEntity.status(200)
                         .body(leaveService.getAllSubordinatesRequests(email));

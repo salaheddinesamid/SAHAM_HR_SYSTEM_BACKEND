@@ -35,13 +35,37 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll() // this endpoint is open for every one to do the authentication
                         .requestMatchers("/api/v1/employees/**").hasAnyAuthority("ADMIN","EMPLOYEE","HR","MANAGER")
-                        .requestMatchers("/api/v1/leaves/apply").hasAnyAuthority("EMPLOYEE","MANAGER","HR")
+                        /*
+                            Configuration of Leave endpoints authorization
+                         */
+                        .requestMatchers("/api/v1/leaves/apply").hasAnyAuthority("EMPLOYEE")
                         .requestMatchers("/api/v1/leaves/requests/subordinates/**").hasAuthority("MANAGER") // The manager of a team is the only one who can see the leave requests of his subordinates, approved and reject.
                         .requestMatchers("/api/v1/leaves/requests/hr/**").hasAuthority("HR")
                         .requestMatchers("/api/v1/leaves/**").hasAnyAuthority("HR","MANAGER","EMPLOYEE")
-                        .requestMatchers("/api/v1/absences/**").hasAnyAuthority("MANAGER","EMPLOYEE")
+                        /*
+                          Configuration of Absence endpoints authorization
+                         */
+                        .requestMatchers("/api/v1/absences/new").hasAnyAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/absences/requests/subordinates/**").hasAnyAuthority("MANAGER")
+                        .requestMatchers("/api/v1/absences/requests/hr/**").hasAuthority("HR")
+                        /*
+                            Configuration of Loan endpoints authorization
+                         */
+                        .requestMatchers("/api/v1/loans/new").hasAnyAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/absences/requests/hr/**").hasAuthority("HR")
+                        .requestMatchers("/api/v1/loans/requests/employee/get-all").hasAnyAuthority("EMPLOYEE")
                         // Any other endpoint requires authentication
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(
+                        httpSecurityExceptionHandlingConfigurer ->
+                                httpSecurityExceptionHandlingConfigurer
+                                        .authenticationEntryPoint((request, response, authException) ->
+                                                response.sendError(
+                                                        response.SC_UNAUTHORIZED,
+                                                        "Unauthorized: " + authException.getMessage()
+                                                )
+                                        )
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
