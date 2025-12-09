@@ -7,6 +7,7 @@ import com.saham.hr_system.modules.loan.model.LoanRequestStatus;
 import com.saham.hr_system.modules.loan.repository.LoanRepository;
 import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
 import com.saham.hr_system.modules.loan.service.LoanApproval;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,12 +21,14 @@ public class LoanApprovalImpl implements LoanApproval {
     private final LoanRequestRepository loanRequestRepository;
     private final LoanRepository loanRepository;
     private final LoanApprovalEmailSenderImpl loanApprovalEmailSender;
+    private final LoanRejectionEmailSenderImpl loanRejectionEmailSender;
 
     @Autowired
-    public LoanApprovalImpl(LoanRequestRepository loanRequestRepository, LoanRepository loanRepository, LoanApprovalEmailSenderImpl loanApprovalEmailSender) {
+    public LoanApprovalImpl(LoanRequestRepository loanRequestRepository, LoanRepository loanRepository, LoanApprovalEmailSenderImpl loanApprovalEmailSender, LoanRejectionEmailSenderImpl loanRejectionEmailSender) {
         this.loanRequestRepository = loanRequestRepository;
         this.loanRepository = loanRepository;
         this.loanApprovalEmailSender = loanApprovalEmailSender;
+        this.loanRejectionEmailSender = loanRejectionEmailSender;
     }
 
     @Override
@@ -81,5 +84,14 @@ public class LoanApprovalImpl implements LoanApproval {
 
         // save the loan request:
         loanRequestRepository.save(loanRequest);
+
+        // notify the employee:
+        CompletableFuture.runAsync(()->{
+            try{
+                loanRejectionEmailSender.notifyEmployee(loanRequest);
+            }catch (MessagingException e){
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
