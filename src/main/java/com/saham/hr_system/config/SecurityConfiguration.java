@@ -34,7 +34,8 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll() // this endpoint is open for every one to do the authentication
-                        .requestMatchers("/api/v1/employees/**").hasAnyAuthority("ADMIN","EMPLOYEE","HR","MANAGER")
+                        .requestMatchers("/api/v1/employees/get").hasAnyAuthority("ADMIN","EMPLOYEE","HR","MANAGER")
+                        .requestMatchers("/api/v1/employees/subordinates").hasAnyAuthority("MANAGER")
                         /*
                             Configuration of Leave endpoints authorization
                          */
@@ -52,7 +53,8 @@ public class SecurityConfiguration {
                             Configuration of Loan endpoints authorization
                          */
                         .requestMatchers("/api/v1/loans/new").hasAnyAuthority("EMPLOYEE")
-                        .requestMatchers("/api/v1/absences/requests/hr/**").hasAuthority("HR")
+                        .requestMatchers("/api/v1/absences/requests/subordinates/**").hasAnyAuthority("MANAGER")
+                        .requestMatchers("/api/v1/absences/requests/hr/**").hasAnyAuthority("HR")
                         .requestMatchers("/api/v1/loans/requests/employee/get-all").hasAnyAuthority("EMPLOYEE")
                         // Any other endpoint requires authentication
                         .anyRequest().authenticated()

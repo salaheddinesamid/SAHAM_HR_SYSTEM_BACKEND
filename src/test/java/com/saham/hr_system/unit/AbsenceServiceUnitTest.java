@@ -1,15 +1,13 @@
 package com.saham.hr_system.unit;
 
+import com.saham.hr_system.exception.UnauthorizedAccessException;
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDetails;
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDto;
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.model.AbsenceRequestStatus;
 import com.saham.hr_system.modules.absence.model.AbsenceType;
 import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
-import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestMapperImpl;
-import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestServiceImpl;
-import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestValidatorImpl;
-import com.saham.hr_system.modules.absence.service.implementation.RemoteWorkAbsenceRequestProcessor;
+import com.saham.hr_system.modules.absence.service.implementation.*;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class AbsenceServiceUnitTest {
@@ -47,14 +46,38 @@ public class AbsenceServiceUnitTest {
     @InjectMocks
     private AbsenceRequestServiceImpl absenceRequestService;
 
+    @InjectMocks
+    private AbsenceRejectionImpl absenceRejection;
+
+    private Employee manager;
+    private Employee falseManager;
     private Employee employee;
+    private AbsenceRequest absenceRequest1;
+    private AbsenceRequest absenceRequest2;
 
     @BeforeEach
     void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
+        manager = new Employee();
+        manager.setId(3L);
+        manager.setEmail("manager.test@saham.com");
+
+        falseManager = new Employee();
+        falseManager.setId(4L);
+        falseManager.setEmail("manager@saham.com");
+
         employee = new Employee();
         employee.setId(1L);
         employee.setEmail("test@saham.com");
+        employee.setManager(manager);
+
+        absenceRequest1 = new AbsenceRequest();
+        absenceRequest1.setAbsenceRequestId(1L);
+        absenceRequest1.setReferenceNumber("REF123");
+        absenceRequest1.setStatus(AbsenceRequestStatus.IN_PROCESS);
+        absenceRequest1.setEmployee(employee);
+        absenceRequest1.setApprovedByManager(false);
+        absenceRequest1.setApprovedByHr(false);
     }
 
     @Test
@@ -141,6 +164,36 @@ public class AbsenceServiceUnitTest {
 
     @Test
     void testProcessRemoteWorkShouldThrowEmployeeNotFoundException(){}
+
+    @Test
+    void approveSubordinateRemoteWorkAbsence(){
+    }
+
+    @Test
+    void approveRemoteWorkAbsence(){}
+
+    @Test
+    void rejectSubordinateRemoteWorkAbsence(){
+        // Arrange:
+        when(absenceRequestRepo.findByReferenceNumber("REF123")).thenReturn(Optional.of(absenceRequest1));
+        when(employeeRepository.findByEmail("manager.test@saham.com")).thenReturn(Optional.of(manager));
+        // Act:
+        absenceRejection.rejectSubordinate("manager.test@saham.com","REF123");
+        // Verify:
+        verify(absenceRequestRepo, times(1)).save(any());
+    }
+
+    @Test
+    void rejectSubordinateRemoteWorkUnauthorizedAccess(){
+        // Arrange:
+        when(absenceRequestRepo.findByReferenceNumber("REF123")).thenReturn(Optional.of(absenceRequest1));
+        when(employeeRepository.findByEmail("manager@saham.com")).thenReturn(Optional.of(falseManager));
+        // Act:
+        assertThrows(UnauthorizedAccessException.class, ()-> absenceRejection.rejectSubordinate("manager@saham.com","REF123"));
+    }
+
+    @Test
+    void rejectRemoteWorkAbsence(){}
 
 
 }
