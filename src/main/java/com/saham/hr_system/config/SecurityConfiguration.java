@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                             Configuration of Leave endpoints authorization
                          */
                         .requestMatchers("/api/v1/leaves/apply").hasAnyAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/leaves/employee-leaves/get_all").hasAnyAuthority("MANAGER","EMPLOYEE")
                         .requestMatchers("/api/v1/leaves/requests/subordinates/**").hasAuthority("MANAGER") // The manager of a team is the only one who can see the leave requests of his subordinates, approved and reject.
                         .requestMatchers("/api/v1/leaves/requests/hr/**").hasAuthority("HR")
                         .requestMatchers("/api/v1/leaves/**").hasAnyAuthority("HR","MANAGER","EMPLOYEE")
@@ -53,9 +54,8 @@ public class SecurityConfiguration {
                             Configuration of Loan endpoints authorization
                          */
                         .requestMatchers("/api/v1/loans/apply").permitAll()
-                        .requestMatchers("/api/v1/absences/requests/subordinates/**").hasAnyAuthority("MANAGER")
-                        .requestMatchers("/api/v1/absences/requests/hr/**").hasAnyAuthority("HR")
-                        .requestMatchers("/api/v1/loans/requests/employee/get-all").hasAnyAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/loans/requests/subordinates/**").hasAnyAuthority("MANAGER")
+                        .requestMatchers("/api/v1/loans/requests/hr/**").hasAnyAuthority("HR")
                         // Any other endpoint requires authentication
                         .anyRequest().authenticated()
                 )

@@ -20,13 +20,6 @@ public class LoanController {
         this.loanApproval = loanApproval;
     }
 
-    @GetMapping("get-all-requests")
-    public ResponseEntity<?> getAllRequests(){
-        return ResponseEntity
-                .status(200)
-                .body(loanService.getAllRequests());
-    }
-
     @GetMapping("/requests/employee/get-all")
     public ResponseEntity<?> getAllEmployeeRequests(@RequestParam String email){
         return
@@ -42,7 +35,12 @@ public class LoanController {
                 .status(200)
                 .body("Loan request submitted successfully");
     }
-
+    @GetMapping("/requests/hr/get-all")
+    public ResponseEntity<?> getAllRequests(){
+        return ResponseEntity
+                .status(200)
+                .body(loanService.getAllRequests());
+    }
     @PutMapping("/requests/hr/approve-request")
     public ResponseEntity<?> approveLoanRequest(@RequestParam Long requestId) {
         // Implementation for approving loan request goes here
