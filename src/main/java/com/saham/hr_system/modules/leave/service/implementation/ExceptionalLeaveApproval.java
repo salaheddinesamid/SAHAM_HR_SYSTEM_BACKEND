@@ -93,10 +93,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void approveSubordinate(String approvedBy,Long requestId) {
-        // fetch the request from db:
-        LeaveRequest leaveRequest =leaveRequestRepository.findById(requestId).orElseThrow();
-
+    public void approveSubordinate(String approvedBy,LeaveRequest leaveRequest) {
         // set the request:
         leaveRequest.setApprovedByManager(true);
 
@@ -115,10 +112,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void rejectSubordinate(String rejectedBy,Long requestId) {
-        // fetch the request from db:
-        LeaveRequest leaveRequest =leaveRequestRepository.findById(requestId).orElseThrow();
-
+    public void rejectSubordinate(String rejectedBy,LeaveRequest leaveRequest) {
         // set the request:
         leaveRequest.setApprovedByManager(false);
         // if the request is rejected by manager, it is considered as final rejection
@@ -137,11 +131,7 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void rejectLeave(Long requestId) {
-        // Fetch the request:
-        LeaveRequest leaveRequest =
-                leaveRequestRepository.findById(requestId).orElseThrow();
-
+    public void rejectLeave(LeaveRequest leaveRequest) {
         // set the leave request:
         leaveRequest.setApprovedByManager(false);
         leaveRequest.setApprovedByManager(false);

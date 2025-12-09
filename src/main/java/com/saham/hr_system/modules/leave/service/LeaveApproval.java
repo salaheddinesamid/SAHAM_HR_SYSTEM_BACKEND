@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.leave.service;
 
 import com.saham.hr_system.modules.leave.model.Leave;
+import com.saham.hr_system.modules.leave.model.LeaveRequest;
 
 public interface LeaveApproval {
 
@@ -14,20 +15,20 @@ public interface LeaveApproval {
     Leave approve(Long requestId);
 
     /**
-     * @param requestId
+     * @param leaveRequest
      * @param approvedBy is the email of the manager to check if the manager is the direct manager of the employee
      */
-    void approveSubordinate(String approvedBy, Long requestId);
+    void approveSubordinate(String approvedBy, LeaveRequest leaveRequest);
 
     /**
      *
-     * @param requestId
+     * @param leaveRequest
      */
-    void rejectSubordinate(String rejectedBy,Long requestId);
+    void rejectSubordinate(String rejectedBy,LeaveRequest leaveRequest);
 
     /**
      *
-     * @param requestId
+     * @param leaveRequest
      */
-    void rejectLeave(Long requestId);
+    void rejectLeave(LeaveRequest leaveRequest);
 }

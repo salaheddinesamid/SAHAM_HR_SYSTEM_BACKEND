@@ -125,11 +125,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void approveSubordinate(String approvedBy,Long requestId) {
-        // Fetch the request:
-        LeaveRequest leaveRequest =
-                leaveRequestRepository.findById(requestId)
-                        .orElseThrow();
+    public void approveSubordinate(String approvedBy,LeaveRequest leaveRequest) {
         // Fetch the employee:
         Employee employee  = leaveRequest.getEmployee();
         // Fetch the manager:
@@ -157,11 +153,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void rejectSubordinate(String rejectedBy,Long requestId) {
-        // Fetch leave request:
-        LeaveRequest leaveRequest = leaveRequestRepository
-                .findById(requestId).orElseThrow();
-
+    public void rejectSubordinate(String rejectedBy,LeaveRequest leaveRequest) {
         // Fetch the employee:
         Employee employee  = leaveRequest.getEmployee();
         // Fetch the manager:
@@ -194,12 +186,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
     }
 
     @Override
-    public void rejectLeave(Long requestId) {
-        // Fetch the request:
-        LeaveRequest leaveRequest = leaveRequestRepository
-                .findById(requestId)
-                .orElseThrow();
-
+    public void rejectLeave(LeaveRequest leaveRequest) {
         // Check if the request has already been approved:
         if(leaveRequest.getStatus().equals(LeaveRequestStatus.REJECTED)){
             throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());

@@ -159,7 +159,7 @@ public class LeaveServiceImpl implements LeaveService {
                 .findFirst().orElse(null);
         // approve:
         assert approval != null;
-        approval.approveSubordinate(approvedBy,leaveRequestId);
+        approval.approveSubordinate(approvedBy,leaveRequest);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class LeaveServiceImpl implements LeaveService {
                         .findFirst().orElse(null);
         // approve:
         assert approval != null;
-        approval.rejectSubordinate(rejectedBy ,leaveRequestId);
+        approval.rejectSubordinate(rejectedBy ,leaveRequest);
     }
 
     @Override
@@ -194,6 +194,6 @@ public class LeaveServiceImpl implements LeaveService {
                         .findFirst().orElse(null);
         // approve:
         assert approval != null;
-        approval.rejectLeave(leaveRequestId);
+        approval.rejectLeave(leaveRequest);
     }
 }

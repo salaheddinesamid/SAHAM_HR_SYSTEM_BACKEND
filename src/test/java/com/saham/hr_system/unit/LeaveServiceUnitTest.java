@@ -1,5 +1,6 @@
 package com.saham.hr_system.unit;
 
+import com.saham.hr_system.exception.UnauthorizedAccessException;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.exception.LeaveRequestNotApprovedBySupervisorException;
 import com.saham.hr_system.exception.UserNotFoundException;
@@ -14,6 +15,8 @@ import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.implementation.*;
+import com.saham.hr_system.modules.leave.utils.LeaveRequestRefNumberGenerator;
+import com.saham.hr_system.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +51,12 @@ public class LeaveServiceUnitTest {
 
     @Mock
     private LeaveDocumentStorageServiceImpl leaveDocumentStorageService;
+
+    @Mock
+    private TotalDaysCalculator totalDaysCalculator;
+
+    @Mock
+    private LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator;
 
     @InjectMocks
     private AnnualLeaveApproval annualLeaveApproval;
@@ -204,7 +213,7 @@ public class LeaveServiceUnitTest {
         // Arrange:
         when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act:
-        annualLeaveApproval.approveSubordinate("Ciryane@saham.com",requestId);
+        annualLeaveApproval.approveSubordinate("Ciryane@saham.com",subordinateLeaveRequest);
         verify(leaveRequestRepository, times(1)).save(any());
     }
 
@@ -214,7 +223,7 @@ public class LeaveServiceUnitTest {
         // Arrange:
         when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act and verify:
-        assertThrows(SecurityException.class, ()-> annualLeaveApproval.approveSubordinate("manager2@saham.com",requestId));
+        assertThrows(UnauthorizedAccessException.class, ()-> annualLeaveApproval.approveSubordinate("manager2@saham.com",subordinateLeaveRequest));
     }
 
     @Test
@@ -237,7 +246,7 @@ public class LeaveServiceUnitTest {
         // Arrange:
         when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act:
-        annualLeaveApproval.rejectSubordinate(managerEmail,requestId);
+        annualLeaveApproval.rejectSubordinate(managerEmail,subordinateLeaveRequest);
         verify(leaveRequestRepository, times(1)).save(any());
     }
 
@@ -247,7 +256,7 @@ public class LeaveServiceUnitTest {
         // Arrange:
         when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act:
-        assertThrows(SecurityException.class, ()-> annualLeaveApproval.rejectSubordinate("manager2@saham.com",requestId));
+        assertThrows(UnauthorizedAccessException.class, ()-> annualLeaveApproval.rejectSubordinate("manager2@saham.com",subordinateLeaveRequest));
     }
 
     @Test
@@ -280,7 +289,7 @@ public class LeaveServiceUnitTest {
         Long requestId = 2L;
         String refNumber = "SHDC-SAHAMEMP20241202-0001";
         // Arrange:
-        when(leaveRequestRepository.findById(2L)).thenReturn(Optional.of(subordinateLeaveRequest));
+        when(leaveRequestRepository.findByReferenceNumber(refNumber)).thenReturn(Optional.of(subordinateLeaveRequest));
         // Act:
         leaveRequestCanceler.cancel(refNumber);
         // verify:
