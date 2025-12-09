@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.loan.service.implementation;
 import com.saham.hr_system.modules.leave.utils.HRFetcherUtils;
+import com.saham.hr_system.modules.leave.utils.LocalDateMapper;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
 import com.saham.hr_system.modules.loan.service.LoanRequestEmailSender;
 import com.saham.hr_system.modules.loan.utils.LoanTypeMapper;
@@ -22,20 +23,24 @@ public class LoanRequestEmailSenderImpl implements LoanRequestEmailSender {
     private LoanTypeMapper loanTypeMapper;
 
     @Autowired
+    private LocalDateMapper localDateMapper;
+
+    @Autowired
     private HRFetcherUtils hrFetcherUtils;
 
     private final static String TO = "salaheddine.samid@medjoolstar.com";
 
     @Override
     public void notifyEmployee(LoanRequest loanRequest) {
-        String TO = loanRequest.getEmployee().getEmail();
+        //String TO = loanRequest.getEmployee().getEmail();
 
         // Template variables
         Context context = new Context();
         String typeMapped = loanTypeMapper.mapLoanType(loanRequest.getType().toString());
 
+        context.setVariable("employeeName",loanRequest.getEmployee().getFullName());
         context.setVariable("loanType", typeMapped);
-        context.setVariable("issueDate", loanRequest.getIssueDate());
+        context.setVariable("issueDate", localDateMapper.mapToFrenchFormat(loanRequest.getIssueDate().toLocalDate()));
         context.setVariable("amount", loanRequest.getAmount());
         context.setVariable("motif", loanRequest.getMotif());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");
@@ -58,8 +63,9 @@ public class LoanRequestEmailSenderImpl implements LoanRequestEmailSender {
         Context context = new Context();
         String typeMapped = loanTypeMapper.mapLoanType(loanRequest.getType().toString());
 
+        context.setVariable("employeeName",loanRequest.getEmployee().getFullName());
         context.setVariable("loanType", typeMapped);
-        context.setVariable("issueDate", loanRequest.getIssueDate());
+        context.setVariable("issueDate", localDateMapper.mapToFrenchFormat(loanRequest.getIssueDate().toLocalDate()));
         context.setVariable("amount", loanRequest.getAmount());
         context.setVariable("motif", loanRequest.getMotif());
         context.setVariable("logoUrl", "https://yourpublicurl.com/logo.png");

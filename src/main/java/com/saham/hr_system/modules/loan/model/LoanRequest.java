@@ -19,6 +19,9 @@ public class LoanRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
 
+    @Column(name = "reference_number", unique = true, nullable = false, columnDefinition = "VARCHAR(255) default ''")
+    private String referenceNumber;
+
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;

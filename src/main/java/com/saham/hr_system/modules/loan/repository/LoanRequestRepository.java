@@ -9,6 +9,11 @@ import java.util.List;
 
 public interface LoanRequestRepository extends JpaRepository<LoanRequest,Long> {
 
+    /**
+     *
+     * @param employee
+     * @return
+     */
     List<LoanRequest> findAllByEmployee(Employee employee);
 
     /**
@@ -17,4 +22,11 @@ public interface LoanRequestRepository extends JpaRepository<LoanRequest,Long> {
      * @return
      */
     List<LoanRequest> findAllByStatus(LoanRequestStatus status);
+
+    /**
+     *
+     * @param employee
+     * @return the number of loan requests made by an employee.
+     */
+    long countByEmployee(Employee employee);
 }
