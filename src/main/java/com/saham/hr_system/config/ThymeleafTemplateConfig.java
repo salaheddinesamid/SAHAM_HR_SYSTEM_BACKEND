@@ -10,6 +10,10 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 @Configuration
 public class ThymeleafTemplateConfig {
 
+    /**
+     *
+     * @return
+     */
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
@@ -17,6 +21,10 @@ public class ThymeleafTemplateConfig {
         return templateEngine;
     }
 
+    /**
+     *
+     * @return
+     */
     @Bean
     public ITemplateResolver templateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();

@@ -1,7 +1,6 @@
 package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
@@ -9,8 +8,11 @@ import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveCanceller;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class ExceptionalLeaveCanceller implements LeaveCanceller {
@@ -54,6 +56,16 @@ public class ExceptionalLeaveCanceller implements LeaveCanceller {
 
         // save the request in db:
         leaveRequestRepository.save(leaveRequest);
+
+        // notify the manager and the employee by email asynchronously
+        CompletableFuture.runAsync(()->{
+            try{
+                leaveCancellerEmailSender.notifyManager(leave);
+                leaveCancellerEmailSender.notifyEmployee(leave);
+            }catch (MessagingException e){
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 }
