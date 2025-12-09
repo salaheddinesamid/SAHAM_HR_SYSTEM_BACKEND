@@ -17,18 +17,33 @@ import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * This class implement absence approval methods for approving sickness absence requests.
+ * Provides approval workflow logic for Sickness absence requests,
+ * including manager approval and final HR approval.
  */
 @Component
 public class SicknessAbsenceRequestApproval implements AbsenceApproval {
+
     private final AbsenceRequestRepo absenceRequestRepo;
     private final EmployeeRepository employeeRepository;
     private final AbsenceRepository absenceRepository;
     private final AbsenceRequestApprovalEmailSenderImpl absenceRequestApprovalEmailSender;
     private final AbsenceApprovalEmailSenderImpl absenceApprovalEmailSender;
 
+    /**
+     * Constructs a SicknessAbsenceRequestApproval with necessary dependencies.
+     *
+     * @param absenceRequestRepo               repository for absence requests
+     * @param employeeRepository               repository for employee lookups
+     * @param absenceRepository                repository for approved absences
+     * @param absenceRequestApprovalEmailSender email sender for manager-level approval notifications
+     * @param absenceApprovalEmailSender        email sender for HR-level approval notifications
+     */
     @Autowired
-    public SicknessAbsenceRequestApproval(AbsenceRequestRepo absenceRequestRepo, EmployeeRepository employeeRepository, AbsenceRepository absenceRepository, AbsenceRequestApprovalEmailSenderImpl absenceRequestApprovalEmailSender, AbsenceApprovalEmailSenderImpl absenceApprovalEmailSender) {
+    public SicknessAbsenceRequestApproval(AbsenceRequestRepo absenceRequestRepo,
+                                          EmployeeRepository employeeRepository,
+                                          AbsenceRepository absenceRepository,
+                                          AbsenceRequestApprovalEmailSenderImpl absenceRequestApprovalEmailSender,
+                                          AbsenceApprovalEmailSenderImpl absenceApprovalEmailSender) {
         this.absenceRequestRepo = absenceRequestRepo;
         this.employeeRepository = employeeRepository;
         this.absenceRepository = absenceRepository;
@@ -36,39 +51,51 @@ public class SicknessAbsenceRequestApproval implements AbsenceApproval {
         this.absenceApprovalEmailSender = absenceApprovalEmailSender;
     }
 
+    /**
+     * Checks if this handler supports Sickness absence types.
+     *
+     * @param type the absence type as a string
+     * @return true if SICKNESS, false otherwise
+     */
     @Override
     public boolean supports(String type) {
         return AbsenceType.SICKNESS.equals(AbsenceType.valueOf(type));
     }
 
+    /**
+     * Approves a sickness absence request at the manager level.
+     * <p>
+     * Responsibilities:
+     * <ul>
+     *     <li>Validate manager identity</li>
+     *     <li>Ensure request is not already approved</li>
+     *     <li>Mark as manager-approved</li>
+     *     <li>Send email notifications asynchronously</li>
+     * </ul>
+     *
+     * @param approvedBy     manager's email
+     * @param absenceRequest the request to approve
+     */
     @Override
     public void approveSubordinate(String approvedBy, AbsenceRequest absenceRequest) {
+        Employee manager = employeeRepository.findByEmail(approvedBy).orElseThrow();
 
-        // fetch the manager:
-        Employee manager =
-                employeeRepository.findByEmail(approvedBy).orElseThrow();
-
-        if(absenceRequest.getStatus().equals(AbsenceRequestStatus.APPROVED)){
+        if (absenceRequest.getStatus().equals(AbsenceRequestStatus.APPROVED)) {
             throw new IllegalStateException("This request is already approved.");
         }
 
-        // check if the request is already approved:
-        if(absenceRequest.isApprovedByManager()) {
+        if (absenceRequest.isApprovedByManager()) {
             throw new IllegalStateException("This request is already approved by the manager.");
         }
 
-        // check if the manager is indeed the manager of the employee:
-        if(!absenceRequest.getEmployee().getManager().equals(manager)) {
+        if (!absenceRequest.getEmployee().getManager().equals(manager)) {
             throw new UnauthorizedAccessException("You are not authorized to approve this request.");
         }
-        // Otherwise:
-        absenceRequest.setApprovedByManager(true);
 
-        // save the request:
+        absenceRequest.setApprovedByManager(true);
         absenceRequestRepo.save(absenceRequest);
 
-        // notify the employee and HR asynchronously:
-        CompletableFuture.runAsync(()->{
+        CompletableFuture.runAsync(() -> {
             try {
                 absenceRequestApprovalEmailSender.notifyEmployee(absenceRequest);
                 absenceRequestApprovalEmailSender.notifyHR(absenceRequest);
@@ -76,41 +103,46 @@ public class SicknessAbsenceRequestApproval implements AbsenceApproval {
                 throw new RuntimeException(e);
             }
         });
-
     }
 
+    /**
+     * Approves a sickness absence request at the HR level.
+     * <p>
+     * Responsibilities:
+     * <ul>
+     *     <li>Verify manager approval</li>
+     *     <li>Prevent duplicate approvals</li>
+     *     <li>Update request status</li>
+     *     <li>Create and persist an Absence object</li>
+     *     <li>Trigger email notifications</li>
+     * </ul>
+     *
+     * @param absenceRequest the request being fully approved
+     */
     @Override
     public void approve(AbsenceRequest absenceRequest) {
-        // check if the request is approved by the manager:
-        if(!absenceRequest.isApprovedByManager()) {
+        if (!absenceRequest.isApprovedByManager()) {
             throw new IllegalStateException("This request is not yet approved by the manager.");
         }
 
-        // check if the request is already approved:
-        if(absenceRequest.getStatus().equals(AbsenceRequestStatus.APPROVED)){
+        if (absenceRequest.getStatus().equals(AbsenceRequestStatus.APPROVED)) {
             throw new IllegalStateException("This request is already approved.");
         }
 
-        // otherwise:
         absenceRequest.setApprovedByHr(true);
         absenceRequest.setStatus(AbsenceRequestStatus.APPROVED);
 
-        // create new absence:
         Absence absence = new Absence();
         absence.setReferenceNumber(absenceRequest.getReferenceNumber());
         absence.setApprovedAt(LocalDateTime.now());
         absence.setStartDate(absenceRequest.getStartDate());
         absence.setEndDate(absenceRequest.getEndDate());
-        assert absenceRequest.getEmployee() != null;
         absence.setEmployee(absenceRequest.getEmployee());
 
-        // save the request:
         absenceRequestRepo.save(absenceRequest);
-        // save the absence:
         absenceRepository.save(absence);
 
-        // notify the employee and manager asynchronously:
-        CompletableFuture.runAsync(()->{
+        CompletableFuture.runAsync(() -> {
             try {
                 absenceApprovalEmailSender.notifyEmployee(absence);
                 absenceApprovalEmailSender.notifyManager(absence);

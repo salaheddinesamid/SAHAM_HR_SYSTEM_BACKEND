@@ -13,6 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of {@link AbsenceRequestService}.
+ * <p>
+ * This service manages the lifecycle of absence requests, including creating
+ * new requests, approving them by managers, and final HR approval. It delegates
+ * processing to specific {@link AbsenceRequestProcessor} implementations
+ * and approvals to {@link AbsenceApproval} implementations based on absence type.
+ */
 @Service
 public class AbsenceRequestServiceImpl implements AbsenceRequestService {
 
@@ -32,42 +40,44 @@ public class AbsenceRequestServiceImpl implements AbsenceRequestService {
         AbsenceRequestProcessor processor =
                 processors.stream().filter(p -> p.supports(requestDto.getType()))
                         .findFirst().orElse(null);
-        // process the absence request:
+
         assert processor != null;
         AbsenceRequest absence = processor.processAbsenceRequest(email, requestDto);
-        // return the response dto:
+
         return new AbsenceRequestDetails(absence);
     }
 
     @Override
     public void approveAbsenceRequest(String approvedBy, String refNumber) throws Exception {
         try {
-            AbsenceRequest absenceRequest = absenceRequestRepo.findByReferenceNumber(refNumber).orElseThrow(()-> new AbsenceRequestNotFoundException("Absence request with reference number "+ refNumber +" not found."));
+            AbsenceRequest absenceRequest = absenceRequestRepo.findByReferenceNumber(refNumber)
+                    .orElseThrow(() -> new AbsenceRequestNotFoundException("Absence request with reference number " + refNumber + " not found."));
+
             AbsenceApproval approval =
                     approvals.stream().filter(a -> a.supports(absenceRequest.getType().toString()))
                             .findFirst().orElse(null);
 
             assert approval != null;
-            approval.approveSubordinate(approvedBy,absenceRequest);
-        }catch (AbsenceRequestNotFoundException e) {
-            throw new AbsenceRequestNotFoundException("Absence request with reference number "+ refNumber +" not found.");
+            approval.approveSubordinate(approvedBy, absenceRequest);
+        } catch (AbsenceRequestNotFoundException e) {
+            throw new AbsenceRequestNotFoundException("Absence request with reference number " + refNumber + " not found.");
         }
     }
 
     @Override
     public void approveAbsence(String refNumber) throws Exception {
         try {
-            AbsenceRequest absenceRequest = absenceRequestRepo.findByReferenceNumber(refNumber).orElseThrow(()-> new AbsenceRequestNotFoundException("Absence request with reference number "+ refNumber +" not found."));
+            AbsenceRequest absenceRequest = absenceRequestRepo.findByReferenceNumber(refNumber)
+                    .orElseThrow(() -> new AbsenceRequestNotFoundException("Absence request with reference number " + refNumber + " not found."));
+
             AbsenceApproval approval =
                     approvals.stream().filter(a -> a.supports(absenceRequest.getType().toString()))
                             .findFirst().orElse(null);
 
             assert approval != null;
             approval.approve(absenceRequest);
-        }catch (AbsenceRequestNotFoundException e) {
-            throw new AbsenceRequestNotFoundException("Absence request with reference number "+ refNumber +" not found.");
+        } catch (AbsenceRequestNotFoundException e) {
+            throw new AbsenceRequestNotFoundException("Absence request with reference number " + refNumber + " not found.");
         }
     }
-
-
 }
