@@ -13,17 +13,20 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
 
     private final EmployeeRepository employeeRepository;;
     private final DocumentRequestRepository documentRequestRepository;
+    private final DocumentRequestEmailSenderImpl documentRequestEmailSender;
 
     @Autowired
-    public DocumentServiceImpl(EmployeeRepository employeeRepository, DocumentRequestRepository documentRequestRepository) {
+    public DocumentServiceImpl(EmployeeRepository employeeRepository, DocumentRequestRepository documentRequestRepository, DocumentRequestEmailSenderImpl documentRequestEmailSender) {
         this.employeeRepository = employeeRepository;
         this.documentRequestRepository = documentRequestRepository;
+        this.documentRequestEmailSender = documentRequestEmailSender;
     }
 
     @Override
@@ -41,6 +44,15 @@ public class DocumentServiceImpl implements DocumentService {
 
         // save the request:
         documentRequestRepository.save(documentRequest);
+
+        // notify the employee and HR:
+        CompletableFuture.runAsync(()->{
+            try{
+                documentRequestEmailSender.notifyEmployee(documentRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private String processDocumentName(List<String> documentName) {

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: #eeeeee;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin: 30px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #004170;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header img {
+            max-width: 150px;
+        }
+
+        .content {
+            padding: 25px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .details {
+            background: #f4f7fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .details p {
+            margin: 5px 0;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #004170;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            background: #fafafa;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            margin-top: 15px;
+            background: #004170;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #003456;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <!-- Replace with absolute URL or base64 -->
+        <img src="https://saham.com/app/uploads/2025/05/cropped-favicon-32x32.png" alt="Logo">
+    </div>
+
+    <div class="content">
+        <p>
+            Bonjour,<br><br>
+            Une demande des documents soumis par <span th:text="${employeeName}"></span> en attente de validation.
+        </p>
+
+        <div class="details">
+            <p><span class="label">Documents demandés :</span> <span th:text="${documentsRequested}"></span></p>
+        </div>
+
+        <button class="btn">
+            <a th:href="${requestLink}">Consulter la demande</a>
+        </button>
+
+        <p style="margin-top: 20px;">
+            Cordialement,<br>
+            <strong>Support RH</strong>
+        </p>
+    </div>
+
+    <div class="footer">
+        Saham HR System © 2025 — Tous droits réservés.
+    </div>
+</div>
+</body>
+</html>

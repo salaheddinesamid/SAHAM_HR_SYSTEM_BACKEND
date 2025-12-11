@@ -7,14 +7,18 @@ import com.saham.hr_system.modules.documents.service.DocumentRequestApproval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CompletableFuture;
+
 @Component
 public class DocumentRequestApprovalImpl implements DocumentRequestApproval {
 
     private final DocumentRequestRepository documentRequestRepository;
+    private final DocumentApprovalEmailSenderImpl documentApprovalEmailSender;
 
     @Autowired
-    public DocumentRequestApprovalImpl(DocumentRequestRepository documentRequestRepository) {
+    public DocumentRequestApprovalImpl(DocumentRequestRepository documentRequestRepository, DocumentApprovalEmailSenderImpl documentApprovalEmailSender) {
         this.documentRequestRepository = documentRequestRepository;
+        this.documentApprovalEmailSender = documentApprovalEmailSender;
     }
 
     @Override
@@ -28,6 +32,15 @@ public class DocumentRequestApprovalImpl implements DocumentRequestApproval {
         documentRequest.setStatus(DocumentRequestStatus.APPROVED);
         // save the request:
         documentRequestRepository.save(documentRequest);
+
+        // notify the employee:
+        CompletableFuture.runAsync(() -> {
+            try {
+                documentApprovalEmailSender.notifyEmployee(documentRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
