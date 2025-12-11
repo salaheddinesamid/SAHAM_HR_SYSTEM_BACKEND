@@ -10,6 +10,7 @@ import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
 import com.saham.hr_system.modules.absence.service.implementation.*;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.utils.TotalDaysCalculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +41,10 @@ public class AbsenceServiceUnitTest {
     @Mock
     private AbsenceRequestValidatorImpl absenceRequestValidator;
 
-    @InjectMocks
+    @Mock
+    private TotalDaysCalculator totalDaysCalculator;
+
+    @Mock
     private RemoteWorkAbsenceRequestProcessor remoteWorkAbsenceRequestProcessor;
 
     @InjectMocks
