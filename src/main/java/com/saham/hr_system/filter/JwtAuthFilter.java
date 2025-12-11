@@ -1,6 +1,7 @@
 package com.saham.hr_system.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.saham.hr_system.exception.ExpiredJwtTokenException;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.auth.service.implementation.UserDetailsServiceImpl;
@@ -80,7 +81,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
         catch (ExpiredJwtException ex) {
-            log.error("JWT Token expired: {}", ex.getMessage());
+            //log.error("JWT Token expired: {}", ex.getMessage());
             sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Token has expired", "JWT_EXPIRED");
         } /*catch (TokenExpiredException ex) {
             log.error("JWT Token expired: {}", ex.getMessage());
@@ -92,7 +93,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         catch (UserNotFoundException ex) {
             log.error("User not found: {}", ex.getMessage());
             sendErrorResponse(response, HttpStatus.NOT_FOUND, "User not found", "USER_NOT_FOUND");
-        } catch (Exception ex) {
+        } catch (ExpiredJwtTokenException ex){
+        }
+        catch (Exception ex) {
             log.error("Authentication error: {}", ex.getMessage());
             sendErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Authentication failed", "AUTH_ERROR");
         }

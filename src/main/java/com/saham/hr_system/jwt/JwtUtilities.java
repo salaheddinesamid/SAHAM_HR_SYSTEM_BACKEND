@@ -1,5 +1,6 @@
 package com.saham.hr_system.jwt;
 
+import com.saham.hr_system.exception.ExpiredJwtTokenException;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -114,7 +115,7 @@ public class JwtUtilities {
             log.trace("Invalid JWT token trace: {}", e);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token.");
-            //throw new TokenExpiredException("Token has expired");
+            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), "JWT token has expired", e);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token.");
             log.trace("Unsupported JWT token trace: {}", e);
