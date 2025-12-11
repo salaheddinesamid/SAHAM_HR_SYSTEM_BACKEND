@@ -8,6 +8,7 @@ import com.saham.hr_system.modules.absence.model.AbsenceRequestStatus;
 import com.saham.hr_system.modules.absence.model.AbsenceType;
 import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
 import com.saham.hr_system.modules.absence.service.implementation.*;
+import com.saham.hr_system.modules.absence.utils.AbsenceReferenceNumberGenerator;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.utils.TotalDaysCalculator;
@@ -49,6 +50,9 @@ public class AbsenceServiceUnitTest {
 
     @InjectMocks
     private AbsenceRequestServiceImpl absenceRequestService;
+
+    @InjectMocks
+    private AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;
 
     @InjectMocks
     private AbsenceRejectionImpl absenceRejection;
@@ -199,5 +203,12 @@ public class AbsenceServiceUnitTest {
     @Test
     void rejectRemoteWorkAbsence(){}
 
+    @Test
+    void testGenerateAbsenceReferenceNumber(){
+        String refNumber =
+                absenceReferenceNumberGenerator
+                        .generate(absenceRequest1);
+        System.out.println("Generated Reference Number: " + refNumber);
+    }
 
 }

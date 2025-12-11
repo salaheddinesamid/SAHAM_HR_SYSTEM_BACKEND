@@ -8,10 +8,12 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 
 @Component
 public class LoanReferenceNumberGenerator {
 
+    private final static String PREFIX = "LOAN";
     private final LoanRequestRepository loanRequestRepository;
 
     @Autowired
@@ -21,8 +23,12 @@ public class LoanReferenceNumberGenerator {
 
     public String generate(LoanRequest loanRequest) {
         Employee employee = loanRequest.getEmployee();
-        String prefix = "SHDP"; // SAHAM HR LEAVE REQUEST Abbreviation
-        String employeeMatriculationNumber = employee.getMatriculation(); // Employee's Matriculation Number
+        String fingerprint =
+                Base64
+                        .getUrlEncoder()
+                        .withoutPadding()
+                        .encodeToString(employee.getEmail().getBytes())
+                        .substring(0, 6);
         String todayPart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")); // the date of the today
 
         long employeeRequestCount = loanRequestRepository.countByEmployee(
@@ -30,6 +36,6 @@ public class LoanReferenceNumberGenerator {
         );
 
         return
-                String.format("%s-%s-%s-%04d",prefix,employeeMatriculationNumber,todayPart,employeeRequestCount);
+                String.format("%s%s%s%04d",PREFIX,fingerprint,todayPart,employeeRequestCount);
     }
 }

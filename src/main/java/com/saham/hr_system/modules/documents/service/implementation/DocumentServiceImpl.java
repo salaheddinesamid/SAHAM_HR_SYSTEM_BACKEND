@@ -5,6 +5,7 @@ import com.saham.hr_system.modules.documents.dto.DocumentRequestResponseDto;
 import com.saham.hr_system.modules.documents.model.DocumentRequest;
 import com.saham.hr_system.modules.documents.model.DocumentRequestStatus;
 import com.saham.hr_system.modules.documents.service.DocumentService;
+import com.saham.hr_system.modules.documents.utils.DocumentRefNumberGenerator;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.documents.repository.DocumentRequestRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
@@ -21,12 +22,14 @@ public class DocumentServiceImpl implements DocumentService {
     private final EmployeeRepository employeeRepository;;
     private final DocumentRequestRepository documentRequestRepository;
     private final DocumentRequestEmailSenderImpl documentRequestEmailSender;
+    private final DocumentRefNumberGenerator documentRefNumberGenerator;
 
     @Autowired
-    public DocumentServiceImpl(EmployeeRepository employeeRepository, DocumentRequestRepository documentRequestRepository, DocumentRequestEmailSenderImpl documentRequestEmailSender) {
+    public DocumentServiceImpl(EmployeeRepository employeeRepository, DocumentRequestRepository documentRequestRepository, DocumentRequestEmailSenderImpl documentRequestEmailSender, DocumentRefNumberGenerator documentRefNumberGenerator) {
         this.employeeRepository = employeeRepository;
         this.documentRequestRepository = documentRequestRepository;
         this.documentRequestEmailSender = documentRequestEmailSender;
+        this.documentRefNumberGenerator = documentRefNumberGenerator;
     }
 
     @Override
@@ -41,6 +44,9 @@ public class DocumentServiceImpl implements DocumentService {
         documentRequest.setEmployee(employee);
         documentRequest.setRequestDate(LocalDateTime.now());
         documentRequest.setStatus(DocumentRequestStatus.IN_PROCESS);
+        String refNumber = documentRefNumberGenerator
+                .generate(documentRequest); // generate the unique reference number
+        documentRequest.setReferenceNumber(refNumber); // set the reference number
 
         // save the request:
         documentRequestRepository.save(documentRequest);

@@ -12,6 +12,7 @@ import com.saham.hr_system.modules.loan.service.implementation.LoanApprovalImpl;
 import com.saham.hr_system.modules.loan.service.implementation.LoanRequestValidatorImpl;
 import com.saham.hr_system.modules.loan.service.implementation.LoanServiceImpl;
 import com.saham.hr_system.modules.loan.service.implementation.NormalLoanRequestProcessor;
+import com.saham.hr_system.modules.loan.utils.LoanReferenceNumberGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -46,6 +47,9 @@ public class LoanServiceUnitTest {
 
     @InjectMocks
     private LoanServiceImpl loanService;
+
+    @InjectMocks
+    private LoanReferenceNumberGenerator loanReferenceNumberGenerator;
 
     private Employee employee;
     private LoanRequest loanRequest;
@@ -106,6 +110,13 @@ public class LoanServiceUnitTest {
         assertThrows(UserNotFoundException.class, ()-> // Act:
                 loanService.requestLoan("test@gmail.com",requestDto));
         verify(loanRequestRepository, times(0)).save(any());
+    }
+
+    @Test
+
+    void testGenerateLoanRequestRefNumber(){
+        String refNumber = loanReferenceNumberGenerator.generate(loanRequest);
+        System.out.println("Generated Loan Reference Number: " + refNumber);
     }
 
 

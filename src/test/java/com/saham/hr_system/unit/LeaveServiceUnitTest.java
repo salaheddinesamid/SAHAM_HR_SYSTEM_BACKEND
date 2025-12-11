@@ -55,7 +55,7 @@ public class LeaveServiceUnitTest {
     @Mock
     private TotalDaysCalculator totalDaysCalculator;
 
-    @Mock
+    @InjectMocks
     private LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator;
 
     @InjectMocks
@@ -316,4 +316,10 @@ public class LeaveServiceUnitTest {
     }
 
      */
+    @Test
+    void testRequestRefNumberGeneration(){
+        String refNumber = leaveRequestRefNumberGenerator
+                .generate(subordinateLeaveRequest);
+        System.out.println("Generated Reference Number: " + refNumber);
+    }
 }

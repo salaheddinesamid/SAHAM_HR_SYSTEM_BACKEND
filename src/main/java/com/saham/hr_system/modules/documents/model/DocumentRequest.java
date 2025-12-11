@@ -16,6 +16,9 @@ public class DocumentRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
 
+    @Column(name = "reference_number", unique = true, nullable = false, columnDefinition = "VARCHAR(255) default ''")
+    private String referenceNumber;
+
     @Column(name = "documents")
     private String documents;
 

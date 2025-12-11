@@ -6,6 +6,7 @@ import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 
 @Component
 public class LeaveRequestRefNumberGenerator {
@@ -16,8 +17,12 @@ public class LeaveRequestRefNumberGenerator {
     }
     public String generate(LeaveRequest leaveRequest) {
         Employee employee = leaveRequest.getEmployee();
-        String prefix = "SHDC"; // SAHAM HR LEAVE REQUEST Abbreviation
-        String employeeMatriculationNumber = employee.getMatriculation(); // Employee's Matriculation Number
+        String prefix = "LEAVE"; // LEAVE REQUEST Abbreviation
+        String fingerprint =
+                Base64.getUrlEncoder()
+                        .withoutPadding()
+                        .encodeToString(employee.getEmail().getBytes())
+                        .substring(0, 6);
         String todayPart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")); // the date of the today
 
         long employeeRequestCount = leaveRequestRepository.countLeaveRequestByEmployee(
@@ -25,6 +30,6 @@ public class LeaveRequestRefNumberGenerator {
         );
 
         return
-                String.format("%s-%s-%s-%04d",prefix,employeeMatriculationNumber,todayPart,employeeRequestCount);
+                String.format("%s%s%s%04d",prefix,fingerprint,todayPart,employeeRequestCount);
     }
 }

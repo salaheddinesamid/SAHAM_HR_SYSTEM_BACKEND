@@ -27,4 +27,9 @@ public class DocumentServiceUnitTest {
 
     @Test
     void testRequestDocumentSuccess(){}
+
+    @Test
+    void testDocumentRequestRefNumber(){
+
+    }
 }
