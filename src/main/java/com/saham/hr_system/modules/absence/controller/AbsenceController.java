@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -183,23 +184,29 @@ public class AbsenceController {
      * @throws IOException if file retrieval fails
      */
     @GetMapping("/medical-certificates/download")
-    public ResponseEntity<Resource> downloadMedicalCertificate(
-            @RequestParam String path
-    ) throws IOException {
+    public ResponseEntity<Resource> downloadMedicalCertificate(@RequestParam String path)
+            throws IOException {
 
-        File file = sicknessAbsenceDocumentStorageService.download(path);
+        Resource resource = sicknessAbsenceDocumentStorageService.download(path);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getName() + "\"");
+        if (!resource.exists()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        InputStreamResource resource =
-                new InputStreamResource(new FileInputStream(file));
+        // Detect correct content type
+        String contentType = Files.probeContentType(resource.getFile().toPath());
+        if (contentType == null) {
+            contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
+
+        // Extract real filename
+        String filename = resource.getFilename();
 
         return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(file.length())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + filename + "\"")
                 .body(resource);
     }
+
 }

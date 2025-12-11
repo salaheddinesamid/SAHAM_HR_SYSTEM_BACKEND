@@ -79,10 +79,10 @@ public class SicknessAbsenceDocumentStorageService implements DocumentStorageSer
     }
 
     @Override
-    public File download(String filePath) throws IOException {
+    public Resource download(String filePath) throws IOException {
         // resolve the file:
-        Path targetPath = uploadPath.resolve(filePath).normalize();
+        File targetPath = uploadPath.resolve(filePath).toFile();
         // converting the file path to file:
-        return targetPath.toFile();
+        return new UrlResource(targetPath.toURI());
     }
 }

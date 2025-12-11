@@ -48,6 +48,7 @@ public class SecurityConfiguration {
                           Configuration of Absence endpoints authorization
                          */
                         .requestMatchers("/api/v1/absences/new").hasAnyAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/absences/medical-certificates/**").permitAll()
                         .requestMatchers("/api/v1/absences/requests/subordinates/**").hasAnyAuthority("MANAGER")
                         .requestMatchers("/api/v1/absences/requests/hr/**").hasAuthority("HR")
                         /*
@@ -56,6 +57,10 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/loans/apply").permitAll()
                         .requestMatchers("/api/v1/loans/requests/subordinates/**").hasAnyAuthority("MANAGER")
                         .requestMatchers("/api/v1/loans/requests/hr/**").hasAnyAuthority("HR")
+                        /*
+                            Configuration of Documents Upload/Download endpoints authorization
+                         */
+                        .requestMatchers("/api/v1/files/download").permitAll()
                         // Any other endpoint requires authentication
                         .anyRequest().authenticated()
                 )

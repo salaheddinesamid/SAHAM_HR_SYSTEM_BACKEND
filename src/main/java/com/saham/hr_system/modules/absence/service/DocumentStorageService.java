@@ -20,5 +20,5 @@ public interface DocumentStorageService {
      *
      * @return
      */
-    File download(String filePath) throws IOException;
+    Resource download(String filePath) throws IOException;
 }
