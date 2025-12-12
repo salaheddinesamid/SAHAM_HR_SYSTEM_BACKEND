@@ -12,11 +12,11 @@ public interface LoanRequestQueryService {
      * This method returns all employee loan requests.
      * @return list of loan request details
      */
-    List<LoanRequestResponseDto> getAllEmployeeRequests(String email);
+    List<LoanRequestResponseDto> getAllEmployeeRequests(String email, int page, int size);
 
     /**
      *
      * @return
      */
-    List<LoanRequestResponseDto> getAllRequests();
+    List<LoanRequestResponseDto> getAllRequests(int page , int size);
 }

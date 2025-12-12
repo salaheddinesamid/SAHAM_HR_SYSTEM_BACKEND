@@ -1,7 +1,6 @@
 package com.saham.hr_system.modules.documents.service.implementation;
 
 import com.saham.hr_system.modules.documents.dto.DocumentRequestDto;
-import com.saham.hr_system.modules.documents.dto.DocumentRequestResponseDto;
 import com.saham.hr_system.modules.documents.model.DocumentRequest;
 import com.saham.hr_system.modules.documents.model.DocumentRequestStatus;
 import com.saham.hr_system.modules.documents.service.DocumentService;
@@ -71,29 +70,5 @@ public class DocumentServiceImpl implements DocumentService {
             names.setLength(names.length() - 2);
         }
         return names.toString();
-    }
-
-    @Override
-    public List<DocumentRequestResponseDto> getAllDocumentRequests(String email) {
-        // Fetch the employee from db:
-        Employee employee = employeeRepository.findByEmail(email).orElse(null);
-
-        List<DocumentRequest> requests = documentRequestRepository.findAllByEmployee(employee);
-
-        return requests.stream()
-                .map(DocumentRequestResponseDto::new)
-                .toList();
-    }
-
-    @Override
-    public List<DocumentRequestResponseDto> getAllEmployeesRequests() {
-        // Fetch document requests that are in process for approval:
-        List<DocumentRequest> documentRequests =
-                documentRequestRepository.findAllByStatus(DocumentRequestStatus.IN_PROCESS);
-        // return mapped response:
-        return
-                documentRequests.stream()
-                        .map(DocumentRequestResponseDto::new)
-                        .toList();
     }
 }

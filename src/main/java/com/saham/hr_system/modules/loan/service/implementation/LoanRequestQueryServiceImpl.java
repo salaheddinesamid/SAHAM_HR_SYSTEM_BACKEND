@@ -9,6 +9,9 @@ import com.saham.hr_system.modules.loan.model.LoanRequestStatus;
 import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
 import com.saham.hr_system.modules.loan.service.LoanRequestQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,13 +28,15 @@ public class LoanRequestQueryServiceImpl implements LoanRequestQueryService {
     }
 
     @Override
-    public List<LoanRequestResponseDto> getAllEmployeeRequests(String email) {
+    public List<LoanRequestResponseDto> getAllEmployeeRequests(String email, int page, int size) {
         // fetch the employee requests from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
+
+        Pageable pageable = PageRequest.of(page, size);
         // fetch the requests from db:
         List<LoanRequest> requests =
-                loanRequestRepository.findAllByEmployee(employee);
+                loanRequestRepository.findAllByEmployee(employee, pageable);
 
         // map the loan requests:
         return
@@ -39,9 +44,15 @@ public class LoanRequestQueryServiceImpl implements LoanRequestQueryService {
     }
 
     @Override
-    public List<LoanRequestResponseDto> getAllRequests() {
+    public List<LoanRequestResponseDto> getAllRequests(
+            int page, int size
+    ) {
+
+        Pageable pageable = PageRequest.of(page, size);
         // fetch the requests from db:
-        List<LoanRequest> requests = loanRequestRepository.findAll();
+        Page<LoanRequest> requests = loanRequestRepository.findAll(
+                pageable
+        );
 
         // map the loan requests:
         return

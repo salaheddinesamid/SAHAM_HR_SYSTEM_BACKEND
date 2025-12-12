@@ -13,17 +13,4 @@ public interface LoanService {
      * @param requestDto
      */
     void requestLoan(String email, LoanRequestDto requestDto) throws Exception;
-
-    /**
-     * This function retrieves all loan requests made by a specific employee.
-     * @param email
-     * @return list of loan requests.
-     */
-    List<LoanRequestResponseDto> getAllEmployeeRequests(String email);
-
-    /**
-     * This function fetches all the loan requests made by all employees
-     * @return list of loan requests.
-     */
-    List<LoanRequestResponseDto> getAllRequests();
 }

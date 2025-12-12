@@ -14,16 +14,5 @@ public interface DocumentService {
      */
     void requestDocument(String email, DocumentRequestDto requestDto);
 
-    /**
-     * Get all document requests made by an employee.
-     * @param email
-     * @return list of document requests.
-     */
-    List<DocumentRequestResponseDto> getAllDocumentRequests(String email);
 
-    /**
-     * This function returns all document requests that needs HR approval
-     * @return list of document requests
-     */
-    List<DocumentRequestResponseDto> getAllEmployeesRequests();
 }

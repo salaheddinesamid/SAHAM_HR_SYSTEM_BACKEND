@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.documents.controller;
 
 import com.saham.hr_system.modules.documents.dto.DocumentRequestDto;
 import com.saham.hr_system.modules.documents.service.implementation.DocumentRequestApprovalImpl;
+import com.saham.hr_system.modules.documents.service.implementation.DocumentRequestQueryImpl;
 import com.saham.hr_system.modules.documents.service.implementation.DocumentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,13 @@ public class DocumentController {
 
     private final DocumentServiceImpl documentService;
     private final DocumentRequestApprovalImpl documentRequestApproval;
+    private final DocumentRequestQueryImpl documentRequestQuery;
 
     @Autowired
-    public DocumentController(DocumentServiceImpl documentService, DocumentRequestApprovalImpl documentRequestApproval) {
+    public DocumentController(DocumentServiceImpl documentService, DocumentRequestApprovalImpl documentRequestApproval, DocumentRequestQueryImpl documentRequestQuery) {
         this.documentService = documentService;
         this.documentRequestApproval = documentRequestApproval;
+        this.documentRequestQuery = documentRequestQuery;
     }
 
     @PostMapping("request")
@@ -29,17 +32,26 @@ public class DocumentController {
     }
 
     @GetMapping("get_requests")
-    public ResponseEntity<?> getDocumentRequests(@RequestParam String email) {
+    public ResponseEntity<?> getDocumentRequests(
+            @RequestParam String email,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize
+    ) {
         return ResponseEntity
                 .status(200)
-                .body(documentService.getAllDocumentRequests(email));
+                .body(
+                        documentRequestQuery.getAllDocumentRequests(email, pageNumber, pageSize)
+                );
     }
 
     @GetMapping("employees/get-all")
-    public ResponseEntity<?> getEmployeesDocumentRequests(){
+    public ResponseEntity<?> getEmployeesDocumentRequests(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize
+    ){
         return ResponseEntity
                 .status(200)
-                .body(documentService.getAllEmployeesRequests());
+                .body(documentRequestQuery.getAllEmployeesRequests(pageNumber, pageSize));
     }
 
     @PutMapping("/approve-request")

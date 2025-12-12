@@ -19,6 +19,8 @@ import com.saham.hr_system.modules.leave.service.LeaveService;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,19 +105,21 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public List<LeaveRequestResponse> getAllLeaveRequests(String email) {
+    public List<LeaveRequestResponse> getAllLeaveRequests(String email, int page, int size) {
 
         // Fetch the employee from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow();
 
-        List<LeaveRequest> requests = leaveRequestRepository.findAllByEmployee(employee);
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<LeaveRequest> requests = leaveRequestRepository.findAllByEmployee(employee, pageable);
 
         return requests.stream().map(LeaveRequestResponse::new).collect(Collectors.toList());
     }
 
     @Override
-    public List<LeaveRequestResponse> getAllSubordinatesRequests(String email) {
+    public List<LeaveRequestResponse> getAllSubordinatesRequests(String email, int page, int size) {
         // Fetch the manager:
         Employee manager = employeeRepository
                 .findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
@@ -123,12 +127,14 @@ public class LeaveServiceImpl implements LeaveService {
         // Fetch the subordinates
         List<Employee> subordinates = employeeRepository.findAllByManagerId(manager.getId());
 
+        Pageable pageable = PageRequest.of(page, size);
         // Fetch leave requests (IN PROCESS ONLY):
         List<LeaveRequest> requests = subordinates.stream()
                 .flatMap(employee -> leaveRequestRepository.findAllByEmployeeAndStatusAndApprovedByManager(
                         employee,
                         LeaveRequestStatus.IN_PROCESS,
-                        false
+                        false,
+                        pageable
                 ).stream())
                 .toList();
         return requests.isEmpty() ? List.of() : requests.stream()
@@ -137,13 +143,16 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public List<LeaveRequestResponse> getAllLeaveRequestsForHR() {
+    public List<LeaveRequestResponse> getAllLeaveRequestsForHR(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
         // Fetch all leave requests for HR:
         List<LeaveRequest> requests =
                 leaveRequestRepository.findAllByApprovedByManagerOrStatusOrStatus(
                         true,
                         LeaveRequestStatus.APPROVED,
-                        LeaveRequestStatus.REJECTED
+                        LeaveRequestStatus.REJECTED,
+                        pageable
                 );
 
         // return a response dto:

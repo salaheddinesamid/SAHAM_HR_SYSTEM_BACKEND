@@ -3,7 +3,9 @@ package com.saham.hr_system.modules.leave.repository;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +27,8 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      * @param approvedByManager
      * @return list of leave requests
      */
-    List<LeaveRequest> findAllByEmployeeAndStatusAndApprovedByManager(Employee employee, LeaveRequestStatus status, boolean approvedByManager);
+    List<LeaveRequest> findAllByEmployeeAndStatusAndApprovedByManager(Employee employee, LeaveRequestStatus status,
+                                                                      boolean approvedByManager, Pageable pageable);
 
     /**
      *
@@ -34,7 +37,8 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      * @param status1
      * @return
      */
-    List<LeaveRequest> findAllByApprovedByManagerOrStatusOrStatus(boolean approvedByManager, LeaveRequestStatus status, LeaveRequestStatus status1);
+    List<LeaveRequest> findAllByApprovedByManagerOrStatusOrStatus(boolean approvedByManager, LeaveRequestStatus status,
+                                                                  LeaveRequestStatus status1, Pageable pageable);
 
     /**
      *
@@ -52,7 +56,13 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      * @return
      */
     long countLeaveRequestByEmployee(Employee employee);
-    List<LeaveRequest> findAllByEmployee(Employee employee);
+
+    /**
+     *
+     * @param employee
+     * @return
+     */
+    List<LeaveRequest> findAllByEmployee(Employee employee, Pageable pageable);
 
     Optional<LeaveRequest> findByEmployee(Employee employee);
 }

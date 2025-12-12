@@ -83,8 +83,11 @@ public class AbsenceController {
      * @return a list of {@link AbsenceRequestDetails} representing the employee’s absence history
      */
     @GetMapping("/employee-absences/get_all")
-    public ResponseEntity<?> getAllEmployeeAbsences(@RequestParam String email) {
-        List<AbsenceRequestDetails> response = absenceRequestQuery.getAllMyAbsenceRequests(email);
+    public ResponseEntity<?> getAllEmployeeAbsences(@RequestParam String email,
+                                                    @RequestParam(defaultValue = "0") int pageNumber,
+                                                    @RequestParam(defaultValue = "5") int pageSize
+    ) {
+        List<AbsenceRequestDetails> response = absenceRequestQuery.getAllMyAbsenceRequests(email, pageNumber, pageSize);
         return ResponseEntity.status(200).body(response);
     }
 
@@ -95,9 +98,12 @@ public class AbsenceController {
      * @return list of subordinate absence requests awaiting approval or rejection
      */
     @GetMapping("/requests/subordinates/get_all")
-    public ResponseEntity<?> getAllRequestsForManager(@RequestParam String email) {
+    public ResponseEntity<?> getAllRequestsForManager(@RequestParam String email,
+                                                      @RequestParam(defaultValue = "0") int pageNumber,
+                                                      @RequestParam(defaultValue = "5") int pageSize
+    ) {
         List<AbsenceRequestDetails> response =
-                absenceRequestQuery.getAllSubordinateAbsenceRequests(email);
+                absenceRequestQuery.getAllSubordinateAbsenceRequests(email, pageNumber, pageSize);
         return ResponseEntity.status(200).body(response);
     }
 
@@ -142,8 +148,11 @@ public class AbsenceController {
      * @return list of all pending absence requests for HR processing
      */
     @GetMapping("/requests/hr/get_all")
-    public ResponseEntity<?> getAllRequestsForHR() {
-        List<AbsenceRequestDetails> response = absenceRequestQuery.getAllForHR();
+    public ResponseEntity<?> getAllRequestsForHR(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize
+    ) {
+        List<AbsenceRequestDetails> response = absenceRequestQuery.getAllForHR(pageNumber, pageSize);
         return ResponseEntity.status(200).body(response);
     }
 

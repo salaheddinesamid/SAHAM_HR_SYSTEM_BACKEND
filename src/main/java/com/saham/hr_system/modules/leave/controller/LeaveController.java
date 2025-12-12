@@ -93,19 +93,28 @@ public class LeaveController {
      * @return
      */
     @GetMapping("/requests/get")
-    public ResponseEntity<?> getLeaves(@RequestParam String email){
+    public ResponseEntity<?> getLeaves(
+            @RequestParam String email,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "2") int pageSize
+    ){
         return ResponseEntity
                 .status(200)
-                .body(leaveService.getAllLeaveRequests(email));
+                .body(leaveService.getAllLeaveRequests(email, pageNumber, pageSize));
     }
     /**
      *
      * @return
      */
     @GetMapping("/requests/hr/get_all")
-    public ResponseEntity<?> getAllRequestsForHR(){
-
-        List<LeaveRequestResponse> requests = leaveService.getAllLeaveRequestsForHR();
+    public ResponseEntity<?> getAllRequestsForHR(
+            @RequestParam(defaultValue = "0" ) int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize
+    ){
+        List<LeaveRequestResponse> requests = leaveService.getAllLeaveRequestsForHR(
+                pageNumber,
+                pageSize
+        );
 
         return ResponseEntity.status(200)
                 .body(requests);
@@ -177,11 +186,14 @@ public class LeaveController {
      * @return
      */
     @GetMapping("/requests/subordinates/get_all")
-    public ResponseEntity<?> getSubordinatesRequests(@RequestParam String email){
+    public ResponseEntity<?> getSubordinatesRequests(@RequestParam String email,
+                                                     @RequestParam(defaultValue = "0") int pageNumber,
+                                                     @RequestParam(defaultValue = "5") int pageSize
+                                                     ){
         //String managerEmail = authentication.getName();
         return
                 ResponseEntity.status(200)
-                        .body(leaveService.getAllSubordinatesRequests(email));
+                        .body(leaveService.getAllSubordinatesRequests(email, pageNumber, pageSize));
     }
 
     // Upload medical certificates:

@@ -16,18 +16,22 @@ public interface AbsenceRequestQuery {
      * Retrieves all absence requests submitted by a specific employee.
      *
      * @param email the email address of the employee
+     * @param page  the page number for pagination
+     * @param size  the number of records per page
      * @return a list of detailed absence request responses
      */
-    List<AbsenceRequestDetails> getAllMyAbsenceRequests(String email);
+    List<AbsenceRequestDetails> getAllMyAbsenceRequests(String email, int page, int size);
 
     /**
      * Retrieves all absence requests submitted by employees who report
      * to the specified manager.
      *
      * @param managerEmail the email address of the manager
+     * @param page         the page number for pagination
+     * @param size         the number of records per page
      * @return a list of absence request details for subordinate employees
      */
-    List<AbsenceRequestDetails> getAllSubordinateAbsenceRequests(String managerEmail);
+    List<AbsenceRequestDetails> getAllSubordinateAbsenceRequests(String managerEmail, int page, int size);
 
     /**
      * Retrieves all absence requests across the organization that require
@@ -41,7 +45,9 @@ public interface AbsenceRequestQuery {
      * </ul>
      * </p>
      *
+     * @param page
+     * @param size
      * @return a list of absence request details visible to HR
      */
-    List<AbsenceRequestDetails> getAllForHR();
+    List<AbsenceRequestDetails> getAllForHR(int page, int size);
 }
