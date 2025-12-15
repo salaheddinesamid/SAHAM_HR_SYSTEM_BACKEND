@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.leave.repository;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -62,7 +63,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      * @param employee
      * @return
      */
-    List<LeaveRequest> findAllByEmployee(Employee employee, Pageable pageable);
+    Page<LeaveRequest> findAllByEmployee(Employee employee, Pageable pageable);
 
     Optional<LeaveRequest> findByEmployee(Employee employee);
 }

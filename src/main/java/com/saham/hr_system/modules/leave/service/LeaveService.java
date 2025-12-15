@@ -4,6 +4,7 @@ import com.saham.hr_system.modules.leave.dto.LeaveDetailsDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import jakarta.mail.MessagingException;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public interface LeaveService {
      * @param email
      * @return list of leave requests.
      */
-    List<LeaveRequestResponse> getAllLeaveRequests(String email, int page, int size);
+    Page<LeaveRequestResponse> getAllLeaveRequests(String email, int page, int size);
 
 
     /**

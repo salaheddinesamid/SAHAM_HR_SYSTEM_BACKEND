@@ -96,7 +96,7 @@ public class LeaveController {
     public ResponseEntity<?> getLeaves(
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int pageNumber,
-            @RequestParam(defaultValue = "2") int pageSize
+            @RequestParam(defaultValue = "10") int pageSize
     ){
         return ResponseEntity
                 .status(200)

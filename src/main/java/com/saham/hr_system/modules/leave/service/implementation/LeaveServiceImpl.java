@@ -19,6 +19,7 @@ import com.saham.hr_system.modules.leave.service.LeaveService;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -105,7 +106,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public List<LeaveRequestResponse> getAllLeaveRequests(String email, int page, int size) {
+    public Page<LeaveRequestResponse> getAllLeaveRequests(String email, int page, int size) {
 
         // Fetch the employee from db:
         Employee employee =
@@ -113,9 +114,9 @@ public class LeaveServiceImpl implements LeaveService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        List<LeaveRequest> requests = leaveRequestRepository.findAllByEmployee(employee, pageable);
+        Page<LeaveRequest> requests = leaveRequestRepository.findAllByEmployee(employee, pageable);
 
-        return requests.stream().map(LeaveRequestResponse::new).collect(Collectors.toList());
+        return requests.map(LeaveRequestResponse::new);
     }
 
     @Override

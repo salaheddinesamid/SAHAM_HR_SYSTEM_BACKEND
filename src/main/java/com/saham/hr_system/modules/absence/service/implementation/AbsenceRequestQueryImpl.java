@@ -11,7 +11,6 @@ import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,7 +70,6 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
                         AbsenceRequestStatus.APPROVED,
                         AbsenceRequestStatus.REJECTED,
                         true,
-                        Sort.by(Sort.Direction.ASC, "issueDate"),
                         pageable
                 );
 

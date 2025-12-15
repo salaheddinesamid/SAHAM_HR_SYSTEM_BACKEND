@@ -27,7 +27,7 @@ public interface AbsenceRequestRepo extends JpaRepository<AbsenceRequest, Long> 
      * @return
      */
     List<AbsenceRequest> findAllByStatusOrStatusOrApprovedByManager(AbsenceRequestStatus status, AbsenceRequestStatus status2,
-                                                                    boolean approvedByManager, Sort sort, Pageable pageable);
+                                                                    boolean approvedByManager, Pageable pageable);
 
     /**
      * Count absence requests by employee
