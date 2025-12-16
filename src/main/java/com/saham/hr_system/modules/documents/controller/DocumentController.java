@@ -31,7 +31,14 @@ public class DocumentController {
                 .body("Document request submitted successfully");
     }
 
-    @GetMapping("get_requests")
+    /**
+     * Thsi endpoint returns all document requests made by a specific employee
+     * @param email
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/requests/employee/get_all")
     public ResponseEntity<?> getDocumentRequests(
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int pageNumber,
@@ -44,7 +51,13 @@ public class DocumentController {
                 );
     }
 
-    @GetMapping("employees/get-all")
+    /**
+     * This endpoint returns all document requests made by all employees (HR use case)
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("requests/hr/get_all")
     public ResponseEntity<?> getEmployeesDocumentRequests(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "5") int pageSize
@@ -54,7 +67,12 @@ public class DocumentController {
                 .body(documentRequestQuery.getAllEmployeesRequests(pageNumber, pageSize));
     }
 
-    @PutMapping("/approve-request")
+    /**
+     * This endpoint allows HR to approve a document request
+     * @param requestId
+     * @return
+     */
+    @PutMapping("/requests/approve-request")
     public ResponseEntity<?> approveDocumentRequest(@RequestParam Long requestId) {
         documentRequestApproval.approveDocumentRequest(requestId);
         return ResponseEntity
@@ -62,7 +80,12 @@ public class DocumentController {
                 .body("Document request approved successfully");
     }
 
-    @PutMapping("/reject-request")
+    /**
+     * This endpoint allows HR to reject a document request
+     * @param requestId
+     * @return
+     */
+    @PutMapping("/requests/reject-request")
     public ResponseEntity<?> rejectDocumentRequest(@RequestParam Long requestId) {
         documentRequestApproval.rejectDocumentRequest(requestId);
         return ResponseEntity
