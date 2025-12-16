@@ -6,6 +6,7 @@ import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveDocumentStorageServiceImpl;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
 import jakarta.mail.MessagingException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -111,7 +112,7 @@ public class LeaveController {
             @RequestParam(defaultValue = "0" ) int pageNumber,
             @RequestParam(defaultValue = "5") int pageSize
     ){
-        List<LeaveRequestResponse> requests = leaveService.getAllLeaveRequestsForHR(
+        Page<LeaveRequestResponse> requests = leaveService.getAllLeaveRequestsForHR(
                 pageNumber,
                 pageSize
         );

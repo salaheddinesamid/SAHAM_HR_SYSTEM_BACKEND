@@ -9,6 +9,7 @@ import com.saham.hr_system.modules.absence.service.AbsenceRequestQuery;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,20 +30,20 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
     }
 
     @Override
-    public List<AbsenceRequestDetails> getAllMyAbsenceRequests(String email, int page, int size) {
+    public Page<AbsenceRequestDetails> getAllMyAbsenceRequests(String email, int page, int size) {
         // fetch the employee from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
 
         Pageable pageable = PageRequest.of(page, size);
-        List<AbsenceRequest> absenceRequests =
+        Page<AbsenceRequest> absenceRequests =
                 absenceRequestRepo.findAllByEmployee(employee, pageable);
 
-        return absenceRequests.stream().map(AbsenceRequestDetails::new).collect(Collectors.toList());
+        return absenceRequests.map(AbsenceRequestDetails::new);
     }
 
     @Override
-    public List<AbsenceRequestDetails> getAllSubordinateAbsenceRequests(String managerEmail, int page, int size) {
+    public Page<AbsenceRequestDetails> getAllSubordinateAbsenceRequests(String managerEmail, int page, int size) {
         // Fetch the manager:
         Employee manager =
                 employeeRepository.findByEmail(managerEmail).orElseThrow(()-> new UserNotFoundException(managerEmail));
@@ -53,19 +54,16 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        List<AbsenceRequest> absenceRequests =
-                subordinates.stream().map(
-                        subordinate -> absenceRequestRepo.findAllByEmployee(subordinate, pageable)
-                ).flatMap(List::stream).toList();
+        Page<AbsenceRequest> absenceRequests =
+                absenceRequestRepo.findAllByEmployeeIn(subordinates, pageable);
 
-        return absenceRequests
-                .stream().map(AbsenceRequestDetails::new).collect(Collectors.toList());
+        return absenceRequests.map(AbsenceRequestDetails::new);
     }
 
     @Override
-    public List<AbsenceRequestDetails> getAllForHR(int page, int size) {
+    public Page<AbsenceRequestDetails> getAllForHR(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<AbsenceRequest> absenceRequests =
+        Page<AbsenceRequest> absenceRequests =
                 absenceRequestRepo.findAllByStatusOrStatusOrApprovedByManager(
                         AbsenceRequestStatus.APPROVED,
                         AbsenceRequestStatus.REJECTED,
@@ -73,8 +71,7 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
                         pageable
                 );
 
-        return absenceRequests.stream()
-                .map(AbsenceRequestDetails::new)
-                .collect(Collectors.toList());
+        return absenceRequests
+                .map(AbsenceRequestDetails::new);
     }
 }

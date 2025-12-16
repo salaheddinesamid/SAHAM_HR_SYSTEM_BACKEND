@@ -120,7 +120,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public List<LeaveRequestResponse> getAllSubordinatesRequests(String email, int page, int size) {
+    public Page<LeaveRequestResponse> getAllSubordinatesRequests(String email, int page, int size) {
         // Fetch the manager:
         Employee manager = employeeRepository
                 .findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
@@ -130,25 +130,22 @@ public class LeaveServiceImpl implements LeaveService {
 
         Pageable pageable = PageRequest.of(page, size);
         // Fetch leave requests (IN PROCESS ONLY):
-        List<LeaveRequest> requests = subordinates.stream()
-                .flatMap(employee -> leaveRequestRepository.findAllByEmployeeAndStatusAndApprovedByManager(
-                        employee,
+        Page<LeaveRequest> requests = leaveRequestRepository
+                .findByEmployeeInAndStatusAndApprovedByManager(
+                        subordinates,
                         LeaveRequestStatus.IN_PROCESS,
                         false,
                         pageable
-                ).stream())
-                .toList();
-        return requests.isEmpty() ? List.of() : requests.stream()
-                .map(LeaveRequestResponse::new)
-                .collect(Collectors.toList());
+                );
+        return requests.isEmpty() ? null : requests.map(LeaveRequestResponse::new);
     }
 
     @Override
-    public List<LeaveRequestResponse> getAllLeaveRequestsForHR(int page, int size) {
+    public Page<LeaveRequestResponse> getAllLeaveRequestsForHR(int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         // Fetch all leave requests for HR:
-        List<LeaveRequest> requests =
+        Page<LeaveRequest> requests =
                 leaveRequestRepository.findAllByApprovedByManagerOrStatusOrStatus(
                         true,
                         LeaveRequestStatus.APPROVED,
@@ -158,7 +155,7 @@ public class LeaveServiceImpl implements LeaveService {
 
         // return a response dto:
         return
-                requests.stream().map(LeaveRequestResponse::new).collect(Collectors.toList());
+                requests.map(LeaveRequestResponse::new);
     }
 
     @Override

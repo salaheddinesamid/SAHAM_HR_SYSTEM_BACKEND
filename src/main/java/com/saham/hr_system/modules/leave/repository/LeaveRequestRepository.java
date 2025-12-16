@@ -6,7 +6,6 @@ import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,13 +22,17 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
 
     /**
      * This method returns all the requests made by subordinates of a manager that are in process and not yet approved by the manager.
-     * @param employee
+     * @param employees
      * @param status
      * @param approvedByManager
      * @return list of leave requests
      */
-    List<LeaveRequest> findAllByEmployeeAndStatusAndApprovedByManager(Employee employee, LeaveRequestStatus status,
-                                                                      boolean approvedByManager, Pageable pageable);
+    Page<LeaveRequest> findByEmployeeInAndStatusAndApprovedByManager(
+            List<Employee> employees,
+            LeaveRequestStatus status,
+            boolean approvedByManager,
+            Pageable pageable
+    );
 
     /**
      *
@@ -38,7 +41,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
      * @param status1
      * @return
      */
-    List<LeaveRequest> findAllByApprovedByManagerOrStatusOrStatus(boolean approvedByManager, LeaveRequestStatus status,
+    Page<LeaveRequest> findAllByApprovedByManagerOrStatusOrStatus(boolean approvedByManager, LeaveRequestStatus status,
                                                                   LeaveRequestStatus status1, Pageable pageable);
 
     /**

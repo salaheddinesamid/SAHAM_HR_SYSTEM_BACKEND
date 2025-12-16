@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.documents.repository;
 import com.saham.hr_system.modules.documents.model.DocumentRequest;
 import com.saham.hr_system.modules.documents.model.DocumentRequestStatus;
 import com.saham.hr_system.modules.employees.model.Employee;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,14 +16,14 @@ public interface DocumentRequestRepository extends JpaRepository<DocumentRequest
      * @param employee
      * @return
      */
-    List<DocumentRequest> findAllByEmployee(Employee employee, Pageable pageable);
+    Page<DocumentRequest> findAllByEmployee(Employee employee, Pageable pageable);
 
     /**
      *
      * @param status
      * @return
      */
-    List<DocumentRequest> findAllByStatus(DocumentRequestStatus status, Pageable pageable);
+    Page<DocumentRequest> findAllByStatus(DocumentRequestStatus status, Pageable pageable);
 
     /**
      *

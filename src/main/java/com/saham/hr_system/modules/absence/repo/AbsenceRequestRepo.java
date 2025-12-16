@@ -3,30 +3,38 @@ package com.saham.hr_system.modules.absence.repo;
 import com.saham.hr_system.modules.absence.model.AbsenceRequest;
 import com.saham.hr_system.modules.absence.model.AbsenceRequestStatus;
 import com.saham.hr_system.modules.employees.model.Employee;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AbsenceRequestRepo extends JpaRepository<AbsenceRequest, Long> {
+
     /**
      *
      * @param employee
+     * @param pageable
      * @return
      */
-    List<AbsenceRequest> findAllByEmployee(Employee employee, Pageable pageable);
+    Page<AbsenceRequest> findAllByEmployee(Employee employee, Pageable pageable);
+    /**
+     *
+     * @param employees
+     * @return
+     */
+    Page<AbsenceRequest> findAllByEmployeeIn(List<Employee> employees, Pageable pageable);
 
     /**
      *
      * @param status
      * @param status2
      * @param approvedByManager
-     * @param sort
+     * @param
      * @return
      */
-    List<AbsenceRequest> findAllByStatusOrStatusOrApprovedByManager(AbsenceRequestStatus status, AbsenceRequestStatus status2,
+    Page<AbsenceRequest> findAllByStatusOrStatusOrApprovedByManager(AbsenceRequestStatus status, AbsenceRequestStatus status2,
                                                                     boolean approvedByManager, Pageable pageable);
 
     /**

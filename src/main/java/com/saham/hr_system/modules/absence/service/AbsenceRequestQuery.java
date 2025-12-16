@@ -1,6 +1,8 @@
 package com.saham.hr_system.modules.absence.service;
 
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDetails;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ public interface AbsenceRequestQuery {
      * @param size  the number of records per page
      * @return a list of detailed absence request responses
      */
-    List<AbsenceRequestDetails> getAllMyAbsenceRequests(String email, int page, int size);
+    Page<AbsenceRequestDetails> getAllMyAbsenceRequests(String email, int page, int size);
 
     /**
      * Retrieves all absence requests submitted by employees who report
@@ -31,7 +33,7 @@ public interface AbsenceRequestQuery {
      * @param size         the number of records per page
      * @return a list of absence request details for subordinate employees
      */
-    List<AbsenceRequestDetails> getAllSubordinateAbsenceRequests(String managerEmail, int page, int size);
+    Page<AbsenceRequestDetails> getAllSubordinateAbsenceRequests(String managerEmail, int page, int size);
 
     /**
      * Retrieves all absence requests across the organization that require
@@ -49,5 +51,5 @@ public interface AbsenceRequestQuery {
      * @param size
      * @return a list of absence request details visible to HR
      */
-    List<AbsenceRequestDetails> getAllForHR(int page, int size);
+    Page<AbsenceRequestDetails> getAllForHR(int page, int size);
 }

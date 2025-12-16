@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.documents.service;
 
 import com.saham.hr_system.modules.documents.dto.DocumentRequestResponseDto;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface DocumentRequestQuery {
      * @param size
      * @return list of document requests.
      */
-    List<DocumentRequestResponseDto> getAllDocumentRequests(String email, int page , int size);
+    Page<DocumentRequestResponseDto> getAllDocumentRequests(String email, int page , int size);
 
     /**
      * This function returns all document requests that needs HR approval
@@ -21,5 +22,5 @@ public interface DocumentRequestQuery {
      * @return list of document requests
      *
      */
-    List<DocumentRequestResponseDto> getAllEmployeesRequests(int page , int size);
+    Page<DocumentRequestResponseDto> getAllEmployeesRequests(int page , int size);
 }

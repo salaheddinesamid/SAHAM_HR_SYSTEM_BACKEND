@@ -7,6 +7,7 @@ import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequest
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestServiceImpl;
 import com.saham.hr_system.modules.absence.service.implementation.SicknessAbsenceDocumentStorageService;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -87,7 +88,7 @@ public class AbsenceController {
                                                     @RequestParam(defaultValue = "0") int pageNumber,
                                                     @RequestParam(defaultValue = "5") int pageSize
     ) {
-        List<AbsenceRequestDetails> response = absenceRequestQuery.getAllMyAbsenceRequests(email, pageNumber, pageSize);
+        Page<AbsenceRequestDetails> response = absenceRequestQuery.getAllMyAbsenceRequests(email, pageNumber, pageSize);
         return ResponseEntity.status(200).body(response);
     }
 
@@ -102,7 +103,7 @@ public class AbsenceController {
                                                       @RequestParam(defaultValue = "0") int pageNumber,
                                                       @RequestParam(defaultValue = "5") int pageSize
     ) {
-        List<AbsenceRequestDetails> response =
+        Page<AbsenceRequestDetails> response =
                 absenceRequestQuery.getAllSubordinateAbsenceRequests(email, pageNumber, pageSize);
         return ResponseEntity.status(200).body(response);
     }
@@ -152,7 +153,7 @@ public class AbsenceController {
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "5") int pageSize
     ) {
-        List<AbsenceRequestDetails> response = absenceRequestQuery.getAllForHR(pageNumber, pageSize);
+        Page<AbsenceRequestDetails> response = absenceRequestQuery.getAllForHR(pageNumber, pageSize);
         return ResponseEntity.status(200).body(response);
     }
 

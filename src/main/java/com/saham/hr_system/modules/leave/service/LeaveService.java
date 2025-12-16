@@ -34,13 +34,13 @@ public interface LeaveService {
      * @param email
      * @return
      */
-    List<LeaveRequestResponse> getAllSubordinatesRequests(String email, int page, int size);
+    Page<LeaveRequestResponse> getAllSubordinatesRequests(String email, int page, int size);
 
     /**
      * This function returns all leave requests approved by managers and pending HR approval.
      * @return list of leave requests.
      */
-    List<LeaveRequestResponse> getAllLeaveRequestsForHR(int page, int size);
+    Page<LeaveRequestResponse> getAllLeaveRequestsForHR(int page, int size);
 
     /**
      * Approve a leave request by its ID.
