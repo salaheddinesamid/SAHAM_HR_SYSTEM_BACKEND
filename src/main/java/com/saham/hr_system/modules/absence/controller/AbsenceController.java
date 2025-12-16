@@ -13,10 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
+
 
 /**
  * REST controller responsible for managing absence requests in the HR system.
@@ -65,7 +64,7 @@ public class AbsenceController {
      *
      * @param email       the email of the employee submitting the request
      * @param requestDto  the request payload containing absence details and optional documents
-     * @return HTTP 200 with {@link AbsenceRequestDetails} describing the newly created request
+     * @return HTTP 200 with {@link AbsenceRequestDetails } describing the newly created request
      * @throws Exception if validation fails or service processing throws an error
      */
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -111,7 +110,7 @@ public class AbsenceController {
     /**
      * Approves an absence request that belongs to a subordinate employee.
      *
-     * @param authentication the authenticated manager (used to extract approver email)
+     * @param authentication the authenticated manager (used to extract approve email).
      * @param refNumber      reference number of the absence request
      * @return HTTP success message after approval
      * @throws Exception if the request cannot be processed
@@ -129,16 +128,17 @@ public class AbsenceController {
     /**
      * Rejects an absence request belonging to a subordinate employee.
      *
-     * @param rejectedBy email of the manager rejecting the request
-     * @param refNumber  reference number of the absence request
-     * @return HTTP success message after rejection
-     * @throws Exception if rejection fails
+     * @param rejectedBy email of the manager rejecting the request.
+     * @param refNumber  reference number of the absence request.
+     * @return HTTP success message after rejection.
+     * @throws Exception if rejection fails.
      */
     @PutMapping("/requests/subordinates/reject-request")
     public ResponseEntity<?> rejectSubordinateRequest(
             @RequestParam String rejectedBy,
             @RequestParam String refNumber
     ) throws Exception {
+
         absenceRejection.rejectSubordinate(rejectedBy, refNumber);
         return ResponseEntity.status(200).body("Absence request has been rejected");
     }

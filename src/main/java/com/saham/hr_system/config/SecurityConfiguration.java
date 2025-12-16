@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                         /*
                           Configuration of Absence endpoints authorization
                          */
-                        .requestMatchers("/api/v1/absences/new").hasAnyAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/absences/new").permitAll()
                         .requestMatchers("/api/v1/absences/medical-certificates/**").permitAll()
                         .requestMatchers("/api/v1/absences/requests/subordinates/**").hasAnyAuthority("MANAGER")
                         .requestMatchers("/api/v1/absences/requests/hr/**").hasAnyAuthority("HR")

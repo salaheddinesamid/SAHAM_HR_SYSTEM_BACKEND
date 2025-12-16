@@ -1,7 +1,7 @@
 package com.saham.hr_system.modules.absence.service.implementation;
 
 import com.saham.hr_system.modules.absence.service.DocumentStorageService;
-import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -15,11 +15,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class SicknessAbsenceDocumentStorageService implements DocumentStorageService {
     private final Path uploadPath;
     private static List<String> allowedExtensions = List.of(".pdf", ".jpg", ".jpeg", ".png");
@@ -60,18 +62,28 @@ public class SicknessAbsenceDocumentStorageService implements DocumentStorageSer
             throw new IOException("File contains invalid path sequence: " + cleanFileName);
         }
 
-        // Create user folder:
-        Path employeeFolder = uploadPath.resolve(String.valueOf(fullName));
-        if(!Files.exists(employeeFolder)) {
-            Files.createDirectories(employeeFolder);
-        }
+        // Create the upload folder if it does not exist:
+        LocalDate date = LocalDate.now();
+        String year = String.valueOf(date.getYear());
+        String month = String.valueOf(date.getMonthValue());
 
         String uniqueFileName = UUID.randomUUID().toString() + "_" + cleanFileName;
         // Target the path:
-        Path targetPath = employeeFolder.resolve(uniqueFileName);
+        Path targetPath =
+                uploadPath.resolve(fullName)
+                .resolve(year)
+                        .resolve(month);
+
+        // create all directories if not exists:
+        if(!Files.exists(targetPath)) {
+            Files.createDirectories(targetPath);
+        }
+
+        // generate the full path for the file copy:
+        Path copyPath = targetPath.resolve(uniqueFileName);
 
         // save copy of the file:
-        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(file.getInputStream(), copyPath, StandardCopyOption.REPLACE_EXISTING);
 
         // Return the final relative path to save in the db:
         return fullName + "/" + uniqueFileName;

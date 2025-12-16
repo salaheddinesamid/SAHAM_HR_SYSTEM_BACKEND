@@ -123,8 +123,8 @@ public class SicknessAbsenceRequestProcessor implements AbsenceRequestProcessor 
         // Send notifications asynchronously
         CompletableFuture.runAsync(() -> {
             try {
-                absenceRequestEmailSender.notifyEmployee(absenceRequest);
-                absenceRequestEmailSender.notifyManager(absenceRequest);
+                //absenceRequestEmailSender.notifyEmployee(absenceRequest);
+                //absenceRequestEmailSender.notifyManager(absenceRequest);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
