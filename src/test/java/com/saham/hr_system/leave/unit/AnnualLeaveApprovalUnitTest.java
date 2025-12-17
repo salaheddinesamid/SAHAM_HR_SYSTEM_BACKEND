@@ -69,6 +69,7 @@ public class AnnualLeaveApprovalUnitTest {
         employee.setManager(authorizedManager);
 
         employeeBalance = new EmployeeBalance();
+        employeeBalance.setBalanceId(1L);
         employeeBalance.setCurrentBalance(2);
         employeeBalance.setEmployee(employee);
 

@@ -46,6 +46,7 @@ public class ExpenseRequestProcessor {
                     item.setAmount(req.getAmount());
                     item.setDesignation(req.getDesignation());
                     item.setDate(req.getExpenseDate());
+                    item.setInvoiced(req.isInvoiced());
                     item.setExpense(expense);
                     return item;
                 })
