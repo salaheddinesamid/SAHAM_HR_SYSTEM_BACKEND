@@ -44,11 +44,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // Fetch balance:
         assert employee != null;
-        EmployeeBalance balance = employeeBalanceRepository.findByEmployee(employee).orElse(null);
+        EmployeeBalance balance = employee.getEmployeeBalance();
+        assert balance == null;
+        balance = employeeBalanceRepository.findByEmployee(employee).orElse(null);
         // In case the user does not exist:
-        if(employee == null){
-            throw new UserNotFoundException(requestDto.getEmail());
-        }
         // Verify credentials:
         if(!passwordEncoder.matches(requestDto.getPassword(), employee.getPassword())) {
             throw new BadCredentialsException("Invalid credentials for user: " + requestDto.getEmail());

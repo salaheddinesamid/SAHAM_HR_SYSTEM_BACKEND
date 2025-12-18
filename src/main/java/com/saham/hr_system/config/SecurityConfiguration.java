@@ -61,6 +61,10 @@ public class SecurityConfiguration {
                             Configuration of Documents Upload/Download endpoints authorization
                          */
                         .requestMatchers("/api/v1/files/download").permitAll()
+                        /*
+                           Configuration
+                         */
+                        .requestMatchers("/api/v1/admin/**").permitAll()
                         // Any other endpoint requires authentication
                         .anyRequest().authenticated()
                 )

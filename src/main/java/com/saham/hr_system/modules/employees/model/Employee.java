@@ -47,6 +47,10 @@ public class Employee implements UserDetails {
     @Column(name = "join_date")
     private LocalDate joinDate;
 
+    @JoinColumn(name = "balance_id")
+    @OneToOne(fetch = FetchType.EAGER)
+    private EmployeeBalance employeeBalance;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
@@ -57,7 +61,7 @@ public class Employee implements UserDetails {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Leave> leaves = new ArrayList<>();
