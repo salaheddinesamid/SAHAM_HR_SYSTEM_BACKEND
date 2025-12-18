@@ -32,9 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow();
 
         // Fetch the balance:
-        EmployeeBalance balance = employee.getEmployeeBalance();
-        assert balance == null;
-        balance = employeeBalanceRepository.findByEmployee(employee).orElse(null);
+        EmployeeBalance balance = employee.getEmployeeBalance() != null ? employee.getEmployeeBalance() : employeeBalanceRepository.findByEmployee(employee).orElse(null);
 
         // Map the employee entity to EmployeeDetailsDto:
         return new EmployeeDetailsDto(

@@ -1,7 +1,6 @@
 package com.saham.hr_system.modules.auth.service.implementation;
 
 import com.saham.hr_system.exception.BadCredentialsException;
-import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.auth.dto.BearerToken;
 import com.saham.hr_system.modules.auth.dto.LoginRequestDto;
@@ -44,9 +43,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // Fetch balance:
         assert employee != null;
-        EmployeeBalance balance = employee.getEmployeeBalance();
-        assert balance == null;
-        balance = employeeBalanceRepository.findByEmployee(employee).orElse(null);
+        EmployeeBalance balance = employee.getEmployeeBalance() != null ? employee.getEmployeeBalance() : employeeBalanceRepository.findByEmployee(employee).orElse(null);
+
         // In case the user does not exist:
         // Verify credentials:
         if(!passwordEncoder.matches(requestDto.getPassword(), employee.getPassword())) {
