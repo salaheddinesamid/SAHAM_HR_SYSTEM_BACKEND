@@ -90,10 +90,12 @@ public class Employee implements UserDetails {
         return UserDetails.super.isAccountNonLocked();
     }
 
+
     @Override
     public boolean isCredentialsNonExpired() {
         return UserDetails.super.isCredentialsNonExpired();
     }
+
 
     @Override
     public boolean isEnabled() {

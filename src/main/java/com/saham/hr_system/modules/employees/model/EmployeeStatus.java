@@ -4,5 +4,6 @@ public enum EmployeeStatus {
     AVAILABLE,
     ON_LEAVE,
     BUSY,
-    LEFT
+    LEFT,
+    OFFBOARDING
 }

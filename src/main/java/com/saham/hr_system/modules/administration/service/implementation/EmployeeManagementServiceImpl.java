@@ -6,10 +6,7 @@ import com.saham.hr_system.modules.administration.dto.NewEmployeeRequestDto;
 import com.saham.hr_system.modules.administration.mapper.EmployeeMapper;
 import com.saham.hr_system.modules.administration.service.EmployeeManagementService;
 import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
-import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.model.EmployeeBalance;
-import com.saham.hr_system.modules.employees.model.Role;
-import com.saham.hr_system.modules.employees.model.RoleName;
+import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
@@ -81,5 +78,8 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         // fetch the employee from the db:
         Employee employee =
                 employeeRepository.findByMatriculation(matriculation).orElseThrow(()-> new UserNotFoundException(matriculation));
+
+        employee.setStatus(EmployeeStatus.OFFBOARDING);
+        //employee.(false);
     }
 }
