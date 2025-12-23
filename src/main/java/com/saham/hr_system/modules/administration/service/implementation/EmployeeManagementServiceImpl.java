@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class EmployeeManagementServiceImpl implements EmployeeManagementService {
 
@@ -64,6 +62,8 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         employee.setEmployeeBalance(savedBalance);
 
         Employee savedEmployee = employeeRepository.save(employee);
+
+        // notify the employee and Manager:
 
         return new EmployeeDetailsResponseDto(savedEmployee);
     }
