@@ -65,6 +65,8 @@ public class SecurityConfiguration {
                            Configuration
                          */
                         .requestMatchers("/api/v1/admin/**").permitAll()
+
+                        .requestMatchers("/websocket").permitAll()
                         // Any other endpoint requires authentication
                         .anyRequest().authenticated()
                 )
