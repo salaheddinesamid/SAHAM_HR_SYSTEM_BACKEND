@@ -62,9 +62,11 @@ public class SecurityConfiguration {
                          */
                         .requestMatchers("/api/v1/files/download").permitAll()
                         /*
-                           Configuration
+                           Configuration of admin endpoints
                          */
                         .requestMatchers("/api/v1/admin/**").permitAll()
+
+                        .requestMatchers("/api/v1/holidays/**").permitAll()
 
                         .requestMatchers("/websocket").permitAll()
                         // Any other endpoint requires authentication

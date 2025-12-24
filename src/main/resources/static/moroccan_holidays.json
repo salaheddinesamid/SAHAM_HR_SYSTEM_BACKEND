@@ -1,0 +1,104 @@
+[
+  {
+    "date": "2026-01-01",
+    "name": "Nouvel An",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-01-11",
+    "name": "Jour du Manifeste de l'Indépendance",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-01-14",
+    "name": "Nouvel An Amazigh",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-03-20",
+    "name": "Aïd el-Fitr (prévisionnel)",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 2
+  },
+  {
+    "date": "2026-03-21",
+    "name": "Jour de l'Aïd el-Fitr (prévisionnel)",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 2
+  },
+  {
+    "date": "2026-05-01",
+    "name": "Fête du Travail",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-05-27",
+    "name": "Aïd al-Adha (prévisionnel)",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 2
+  },
+  {
+    "date": "2026-05-28",
+    "name": "Jour de l'Aïd al-Adha (prévisionnel)",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 2
+  },
+  {
+    "date": "2026-06-17",
+    "name": "Nouvel An islamique (Hijra) (prévisionnel)",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-07-30",
+    "name": "Fête du Trône",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-08-14",
+    "name": "Jour de Oued Ed-Dahab",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-08-20",
+    "name": "Anniversaire de la Révolution du Roi et du Peuple",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-08-21",
+    "name": "Fête de la Jeunesse",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-08-25",
+    "name": "Anniversaire du Prophète Mohammed (prévisionnel)",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-10-31",
+    "name": "Jour de l’Unité",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-11-06",
+    "name": "Marche Verte",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  },
+  {
+    "date": "2026-11-18",
+    "name": "Fête de l'Indépendance",
+    "type": "PUBLIC_HOLIDAY",
+    "leaveDays": 1
+  }
+]

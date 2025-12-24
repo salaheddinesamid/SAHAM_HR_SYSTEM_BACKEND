@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.administration.controller;
 
+import com.azure.core.annotation.Post;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.administration.dto.EmployeeDetailsResponseDto;
 import com.saham.hr_system.modules.administration.dto.NewEmployeeRequestDto;
@@ -23,7 +24,7 @@ public class AdminController {
     }
 
     /*
-      Employee Management
+      Employee Management endpoints
      */
 
     @GetMapping("employees/get_all")
@@ -73,4 +74,9 @@ public class AdminController {
                 .status(200)
                 .body("New employee added successfully");
     }
+    /*
+      Holidays management endpoints
+     */
+
+
 }
