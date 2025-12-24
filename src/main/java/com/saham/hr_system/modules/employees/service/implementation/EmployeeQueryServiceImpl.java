@@ -2,7 +2,9 @@ package com.saham.hr_system.modules.employees.service.implementation;
 
 import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
 import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.employees.model.Role;
+import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
 import com.saham.hr_system.modules.employees.service.EmployeeQueryService;
@@ -17,11 +19,13 @@ import java.util.List;
 @Service
 public class EmployeeQueryServiceImpl implements EmployeeQueryService {
     private final EmployeeRepository employeeRepository;
+    private final EmployeeBalanceRepository employeeBalanceRepository;
     private final RoleRepository roleRepository;
 
     @Autowired
-    public EmployeeQueryServiceImpl(EmployeeRepository employeeRepository, RoleRepository roleRepository) {
+    public EmployeeQueryServiceImpl(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, RoleRepository roleRepository) {
         this.employeeRepository = employeeRepository;
+        this.employeeBalanceRepository = employeeBalanceRepository;
         this.roleRepository = roleRepository;
     }
 
@@ -32,7 +36,11 @@ public class EmployeeQueryServiceImpl implements EmployeeQueryService {
         // fetch the employees from the database:
         Page<Employee> employees =
                 employeeRepository.findAll(pageable);
-        return employees.map(employee -> new EmployeeDetailsDto(employee, employee.getEmployeeBalance()));
+        return employees.map(employee -> {
+            // Fetch the balance:
+            EmployeeBalance balance = employee.getEmployeeBalance() != null ? employee.getEmployeeBalance() : employeeBalanceRepository.findByEmployee(employee).orElse(null);
+            return new EmployeeDetailsDto(employee, balance);
+        });
 
     }
 
