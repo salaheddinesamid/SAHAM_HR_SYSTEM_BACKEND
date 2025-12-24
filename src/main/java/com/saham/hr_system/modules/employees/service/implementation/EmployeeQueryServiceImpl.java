@@ -1,11 +1,11 @@
-package com.saham.hr_system.modules.administration.service.implementation;
+package com.saham.hr_system.modules.employees.service.implementation;
 
-import com.saham.hr_system.modules.administration.dto.EmployeeDetailsResponseDto;
-import com.saham.hr_system.modules.administration.service.EmployeeQueryService;
+import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.Role;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
+import com.saham.hr_system.modules.employees.service.EmployeeQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,11 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeQueryServiceImpl implements EmployeeQueryService {
-
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
 
@@ -28,13 +26,13 @@ public class EmployeeQueryServiceImpl implements EmployeeQueryService {
     }
 
     @Override
-    public Page<EmployeeDetailsResponseDto> getAllEmployees(int page, int size) {
+    public Page<EmployeeDetailsDto> getAllEmployees(int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         // fetch the employees from the database:
         Page<Employee> employees =
                 employeeRepository.findAll(pageable);
-        return employees.map(employee -> new EmployeeDetailsResponseDto(employee, employee.getEmployeeBalance()));
+        return employees.map(employee -> new EmployeeDetailsDto(employee, employee.getEmployeeBalance()));
 
     }
 
@@ -47,7 +45,7 @@ public class EmployeeQueryServiceImpl implements EmployeeQueryService {
         String lastName = fullName.split(" ")[1];
 
         return employeeRepository.existsByFirstNameAndLastName(
-                        firstName, lastName
+                firstName, lastName
         );
     }
 

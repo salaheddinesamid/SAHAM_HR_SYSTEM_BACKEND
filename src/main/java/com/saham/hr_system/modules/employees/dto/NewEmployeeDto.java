@@ -1,12 +1,11 @@
-package com.saham.hr_system.modules.administration.dto;
+package com.saham.hr_system.modules.employees.dto;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
 @Data
-public class NewEmployeeRequestDto {
+public class NewEmployeeDto {
     @NotNull
     private String firstName;
     @NotNull

@@ -1,7 +1,7 @@
-package com.saham.hr_system.modules.administration.mapper;
+package com.saham.hr_system.modules.employees.mapper;
 
-import com.saham.hr_system.modules.administration.dto.EmployeeBalanceDto;
-import com.saham.hr_system.modules.administration.dto.NewEmployeeRequestDto;
+import com.saham.hr_system.modules.employees.dto.EmployeeBalanceDto;
+import com.saham.hr_system.modules.employees.dto.NewEmployeeDto;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.employees.model.EmployeeStatus;
@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 
 @Component
 public class EmployeeMapper {
-
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -25,7 +24,7 @@ public class EmployeeMapper {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Employee mapToEmployee(NewEmployeeRequestDto requestDto) {
+    public Employee mapToEmployee(NewEmployeeDto requestDto) {
         Employee employee = new Employee();
         employee.setFirstName(requestDto.getFirstName());
         employee.setLastName(requestDto.getLastName());

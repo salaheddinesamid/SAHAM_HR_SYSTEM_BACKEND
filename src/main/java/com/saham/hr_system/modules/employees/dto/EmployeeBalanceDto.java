@@ -1,10 +1,9 @@
-package com.saham.hr_system.modules.administration.dto;
+package com.saham.hr_system.modules.employees.dto;
 
 import lombok.Data;
 
 @Data
-public class EmployeeBalanceDto{
-
+public class EmployeeBalanceDto {
     private int year;
     private double annualBalance; // the annual right
     private double currentBalance; // the current balance
