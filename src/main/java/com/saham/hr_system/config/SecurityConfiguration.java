@@ -36,6 +36,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/auth/**").permitAll() // this endpoint is open for every one to do the authentication
                         .requestMatchers("/api/v1/employees/get").hasAnyAuthority("ADMIN","EMPLOYEE","HR","MANAGER")
                         .requestMatchers("/api/v1/employees/subordinates").hasAnyAuthority("MANAGER")
+                        .requestMatchers("/api/v1/employees/get_all").permitAll()
+                        .requestMatchers("/api/v1/employees/new").hasAuthority("ADMIN")
                         /*
                             Configuration of Leave endpoints authorization
                          */

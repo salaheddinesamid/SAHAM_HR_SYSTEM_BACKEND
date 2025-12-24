@@ -47,7 +47,7 @@ public class EmployeeController {
                 .body(response);
     }
 
-    @GetMapping("employees/get_all")
+    @GetMapping("get_all")
     public ResponseEntity<?> getAllEmployees(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "5") int pageSize

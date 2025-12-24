@@ -71,6 +71,6 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
 
         // notify the employee and Manager:
 
-        return new EmployeeDetailsResponseDto(savedEmployee);
+        return new EmployeeDetailsDto(savedEmployee);
     }
 }
