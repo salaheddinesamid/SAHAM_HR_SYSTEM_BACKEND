@@ -43,7 +43,6 @@ public class EmployeeQueryServiceImpl implements EmployeeQueryService {
         });
 
     }
-
     @Override
     public boolean verifyManager(String fullName) {
         Role managerRole = roleRepository.findByRoleName("MANAGER")
