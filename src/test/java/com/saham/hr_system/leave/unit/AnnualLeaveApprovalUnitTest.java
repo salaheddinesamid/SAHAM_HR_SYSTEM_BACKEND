@@ -111,11 +111,12 @@ public class AnnualLeaveApprovalUnitTest {
     @Test
     void testApproveLeaveRequestByHR(){
         String refNumber = "LEAVEjohn.s202401010001";
-
+        leaveRequest.setApprovedByManager(true);
         // Arrange:
         when(leaveRequestRepository.findByReferenceNumber(refNumber)).thenReturn(Optional.of(leaveRequest));
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(leaveRequest));
         when(employeeRepository.findByEmail(employee.getEmail())).thenReturn(Optional.of(employee));
+        when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
         // Act:
         annualLeaveApproval.approve(1L);
         // verify:

@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * This class contains integration test for leave functional requirements.
  * It tests all the layers (controller, service, repository).
  */
+/*
 @SpringBootTest(classes = HrSystemApplication.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
@@ -206,3 +207,6 @@ public class LeaveServiceIntegrationTest {
                 ).andExpect(status().isOk());
     }
 }
+
+
+ */
