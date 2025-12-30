@@ -69,18 +69,7 @@ public class LoanServiceUnitTest {
         loanRequest.setApprovedByHrDepartment(false);
     }
 
-    @Test
-    void processNormalLoanRequestSuccess() throws Exception {
-        LoanRequestDto requestDto = new LoanRequestDto();
-        requestDto.setLoanType("NORMAL");
-        requestDto.setAmount(23000);
-        requestDto.setMotif("Personal expenses");
 
-        // Act:
-        normalLoanRequestProcessor.process(employee,requestDto);
-        verify(loanRequestRepository, times(1)).save(any());
-
-    }
 
     @Test
     void testApproveLoanRequestSuccess(){

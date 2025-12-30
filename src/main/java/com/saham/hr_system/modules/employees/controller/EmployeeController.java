@@ -4,10 +4,12 @@ import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
 import com.saham.hr_system.modules.employees.dto.NewEmployeeDto;
 import com.saham.hr_system.modules.employees.dto.SubordinateDetailsResponseDto;
+import com.saham.hr_system.modules.employees.dto.UpdateEmployeeDto;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.service.implementation.EmployeeAdderServiceImpl;
 import com.saham.hr_system.modules.employees.service.implementation.EmployeeQueryServiceImpl;
 import com.saham.hr_system.modules.employees.service.implementation.EmployeeServiceImpl;
+import com.saham.hr_system.modules.employees.service.implementation.EmployeeUpdateServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +23,13 @@ public class EmployeeController {
     private final EmployeeServiceImpl employeeService;
     private final EmployeeAdderServiceImpl employeeAdderService;
     private final EmployeeQueryServiceImpl employeeQueryService;
+    private final EmployeeUpdateServiceImpl employeeUpdateService;
 
-    public EmployeeController(EmployeeServiceImpl employeeService, EmployeeAdderServiceImpl employeeAdderService, EmployeeQueryServiceImpl employeeQueryService) {
+    public EmployeeController(EmployeeServiceImpl employeeService, EmployeeAdderServiceImpl employeeAdderService, EmployeeQueryServiceImpl employeeQueryService, EmployeeUpdateServiceImpl employeeUpdateService) {
         this.employeeService = employeeService;
         this.employeeAdderService = employeeAdderService;
         this.employeeQueryService = employeeQueryService;
+        this.employeeUpdateService = employeeUpdateService;
     }
 
     @GetMapping("get")
@@ -41,6 +45,16 @@ public class EmployeeController {
     public ResponseEntity<?> newEmployee(@RequestBody NewEmployeeDto newEmployee){
         EmployeeDetailsDto response = employeeAdderService
                 .add(newEmployee);
+
+        return ResponseEntity
+                .status(200)
+                .body(response);
+    }
+
+    @PatchMapping("update/{employeeId}")
+    public ResponseEntity<?> updateEmployee(@PathVariable Long employeeId, @RequestBody UpdateEmployeeDto updateEmployeeDto){
+        EmployeeDetailsDto response =
+                employeeUpdateService.updateEmployee(employeeId, updateEmployeeDto);
 
         return ResponseEntity
                 .status(200)

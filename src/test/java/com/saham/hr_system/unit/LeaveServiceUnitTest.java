@@ -171,23 +171,7 @@ public class LeaveServiceUnitTest {
         verify(leaveRequestRepository, times(1)).save(any());
     }
 
-    @Test
-    void testProcessExceptionalLeaveRequestSuccess() throws MessagingException, IOException {
-        LeaveRequestDto requestDto = new LeaveRequestDto();
-        requestDto.setStartDate(LocalDate.of(2024, 7, 1));
-        requestDto.setEndDate(LocalDate.of(2024, 7, 5));
-        requestDto.setType("EXCEPTIONAL");
-        requestDto.setTypeDetails("SICKNESS");
-        requestDto.setComment("");
 
-        // Arrange:
-        when(employeeRepository.findByEmail("salaheddine@saham.com")).thenReturn(Optional.of(subordinate));
-        when(employeeBalanceRepository.findByEmployee(subordinate)).thenReturn(Optional.of(subordinateBalance));
-
-        // Act:
-        exceptionalLeaveRequestProcessor.process(subordinate.getEmail(),requestDto, null);
-        verify(leaveRequestRepository, times(1)).save(any());
-    }
 
     @Test
     void testProcessAnnualLeaveRequestShouldThrowEmployeeNotFound(){

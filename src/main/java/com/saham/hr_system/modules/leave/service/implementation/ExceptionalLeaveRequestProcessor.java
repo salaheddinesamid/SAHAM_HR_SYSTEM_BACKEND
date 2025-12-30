@@ -27,19 +27,15 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
 
     private final EmployeeRepository employeeRepository;
     private final LeaveRequestRepository leaveRequestRepository;
-    private final EmployeeBalanceRepository employeeBalanceRepository;
     private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
-    private final LeaveDocumentStorageServiceImpl leaveDocumentStorageService;
     private final TotalDaysCalculator leaveDaysCalculator;
     private final LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator;
 
     @Autowired
-    public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveDocumentStorageServiceImpl leaveDocumentStorageService, TotalDaysCalculator leaveDaysCalculator, LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator) {
+    public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, TotalDaysCalculator leaveDaysCalculator, LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator) {
         this.employeeRepository = employeeRepository;
         this.leaveRequestRepository = leaveRequestRepository;
-        this.employeeBalanceRepository = employeeBalanceRepository;
         this.leaveRequestEmailSender = leaveRequestEmailSender;
-        this.leaveDocumentStorageService = leaveDocumentStorageService;
         this.leaveDaysCalculator = leaveDaysCalculator;
         this.leaveRequestRefNumberGenerator = leaveRequestRefNumberGenerator;
     }
@@ -54,17 +50,10 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
         // fetch the employee from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow();
-        // fetch the balance
-        EmployeeBalance balance = employeeBalanceRepository
-                .findByEmployee(employee).orElseThrow();
 
         // calculate the total leave days excluding the weekends and holidays
         double totalDays =
                 leaveDaysCalculator.calculateTotalDays(requestDto.getStartDate(), requestDto.getEndDate());
-
-        if(balance.getCurrentBalance() == 0){
-            throw new InsufficientBalanceException();
-        }
 
         // Otherwise:
         LeaveRequest leaveRequest = new LeaveRequest();

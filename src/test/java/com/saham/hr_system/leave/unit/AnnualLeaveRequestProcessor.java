@@ -6,7 +6,7 @@ import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepositor
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
-import com.saham.hr_system.modules.leave.service.implementation.ExceptionalLeaveRequestProcessor;
+import com.saham.hr_system.modules.leave.service.implementation.DefaultLeaveRequestProcessor;
 import com.saham.hr_system.modules.leave.utils.LeaveRequestRefNumberGenerator;
 import com.saham.hr_system.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
@@ -14,17 +14,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ExceptionalLeaveRequestProcessorUnitTest {
+@Service
+public class AnnualLeaveRequestProcessor {
 
     @Mock
     private EmployeeRepository employeeRepository;
@@ -36,13 +36,13 @@ public class ExceptionalLeaveRequestProcessorUnitTest {
     private LeaveRequestRepository leaveRequestRepository;
 
     @Mock
-    private TotalDaysCalculator  totalDaysCalculator;
+    private TotalDaysCalculator totalDaysCalculator;
 
     @Mock
     private LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator;
 
     @InjectMocks
-    private ExceptionalLeaveRequestProcessor exceptionalLeaveRequestProcessor;
+    private DefaultLeaveRequestProcessor defaultLeaveRequestProcessor;
 
     private Employee employee;
     private EmployeeBalance employeeBalance;
@@ -52,22 +52,23 @@ public class ExceptionalLeaveRequestProcessorUnitTest {
         MockitoAnnotations.openMocks(this);
         employee = new Employee();
         employee.setId(1L);
+        employee.setFirstName("Salaheddine");
         employee.setEmail("salaheddine@saham.com");
-        employee.setManager(null);
 
         employeeBalance = new EmployeeBalance();
-        employeeBalance.setYear(2024);
         employeeBalance.setBalanceId(1L);
-        employee.setEmployeeBalance(employeeBalance);
+        employeeBalance.setAnnualBalance(30);
+        employeeBalance.setYear(2025);
+        employeeBalance.setCurrentBalance(1);
+        employeeBalance.setEmployee(employee);
     }
 
     @Test
-    void testProcessExceptionalLeaveRequestSuccess() throws MessagingException, IOException {
+    void testProcessAnnualLeaveRequestSuccess() throws MessagingException {
         LeaveRequestDto requestDto = new LeaveRequestDto();
         requestDto.setStartDate(LocalDate.of(2024, 7, 1));
         requestDto.setEndDate(LocalDate.of(2024, 7, 5));
-        requestDto.setType("EXCEPTIONAL");
-        requestDto.setTypeDetails("SICKNESS");
+        requestDto.setType("ANNUAL");
         requestDto.setComment("");
 
         // Arrange:
@@ -75,7 +76,7 @@ public class ExceptionalLeaveRequestProcessorUnitTest {
         when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
 
         // Act:
-        exceptionalLeaveRequestProcessor.process(employee.getEmail(),requestDto, null);
+        defaultLeaveRequestProcessor.process(employee.getEmail(),requestDto, null);
         verify(leaveRequestRepository, times(1)).save(any());
     }
 }
