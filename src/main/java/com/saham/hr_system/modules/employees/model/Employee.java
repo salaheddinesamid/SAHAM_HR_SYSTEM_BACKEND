@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.employees.model;
 
+import com.saham.hr_system.modules.absence.model.Absence;
 import com.saham.hr_system.modules.leave.model.Leave;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -65,6 +66,9 @@ public class Employee implements UserDetails {
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Leave> leaves = new ArrayList<>();
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Absence> absences = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name= "managed_by")

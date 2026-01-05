@@ -127,6 +127,7 @@ public class RemoteWorkAbsenceRequestApproval implements AbsenceApproval {
 
         Absence absence = new Absence();
         absence.setReferenceNumber(request.getReferenceNumber());
+        absence.setType(request.getType()); // set type to REMOTE_WORK
         absence.setApprovedAt(LocalDateTime.now());
         absence.setStartDate(request.getStartDate());
         absence.setEndDate(request.getEndDate());
@@ -138,8 +139,8 @@ public class RemoteWorkAbsenceRequestApproval implements AbsenceApproval {
 
         CompletableFuture.runAsync(() -> {
             try {
-                absenceApprovalEmailSender.notifyEmployee(absence);
-                absenceApprovalEmailSender.notifyManager(absence);
+                //absenceApprovalEmailSender.notifyEmployee(absence);
+                //absenceApprovalEmailSender.notifyManager(absence);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

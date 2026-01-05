@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.employees.dto;
 
+import com.saham.hr_system.modules.absence.dto.AbsenceResponseDto;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.leave.dto.LeaveDetailsDto;
 import com.saham.hr_system.modules.leave.model.Leave;
@@ -19,6 +20,7 @@ public class SubordinateDetailsResponseDto {
     private String matriculation;
     private LocalDate joinDate;
     private List<LeaveDetailsDto> leaves;
+    private List<AbsenceResponseDto> absences;
     private String status;
 
     public SubordinateDetailsResponseDto(
@@ -33,5 +35,7 @@ public class SubordinateDetailsResponseDto {
         this.joinDate = employee.getJoinDate();
         this.status = employee.getStatus().toString();
         this.leaves = employee.getLeaves().stream().map(LeaveDetailsDto::new).collect(Collectors.toList());
+        this.absences =
+                employee.getAbsences().stream().map(AbsenceResponseDto::new).toList();
     }
 }

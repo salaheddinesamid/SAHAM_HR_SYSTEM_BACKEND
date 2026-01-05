@@ -138,6 +138,7 @@ public class SicknessAbsenceRequestApproval implements AbsenceApproval {
         absence.setStartDate(absenceRequest.getStartDate());
         absence.setEndDate(absenceRequest.getEndDate());
         absence.setEmployee(absenceRequest.getEmployee());
+        absence.setType(absenceRequest.getType()); // set type to SICKNESS
 
         absenceRequestRepo.save(absenceRequest);
         absenceRepository.save(absence);

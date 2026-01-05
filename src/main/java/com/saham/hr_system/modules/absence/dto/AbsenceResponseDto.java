@@ -1,6 +1,11 @@
 package com.saham.hr_system.modules.absence.dto;
 
+import com.saham.hr_system.modules.absence.model.Absence;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +17,7 @@ import java.time.LocalDateTime;
  * </p>
  */
 @Data
+@AllArgsConstructor
 public class AbsenceResponseDto {
 
     /** Unique identifier of the absence request. */
@@ -31,4 +37,12 @@ public class AbsenceResponseDto {
 
     /** Date and time when the request was created. */
     private LocalDateTime issueDate;
+
+    public AbsenceResponseDto(Absence absence){
+        this.absenceId = absence.getAbsenceId();
+        this.requestedBy = absence.getEmployee().getFullName();
+        this.absenceType = absence.getType() != null ? absence.getType().toString() : "";
+        this.startDate = absence.getStartDate();
+        this.endDate = absence.getEndDate();
+    }
 }
