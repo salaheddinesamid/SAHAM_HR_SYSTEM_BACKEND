@@ -70,6 +70,10 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/admin/**").permitAll()
 
                         .requestMatchers("/api/v1/holidays/**").permitAll()
+                        /*
+                         Analytics Configuration
+                         */
+                        .requestMatchers("/api/v1/analytics/**").permitAll()
 
                         .requestMatchers("/websocket").permitAll()
                         // Any other endpoint requires authentication
