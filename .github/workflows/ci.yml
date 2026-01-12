@@ -9,7 +9,6 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -21,4 +20,9 @@ jobs:
           java-version: '17'
 
       - name: Build and run tests
-        run: mvn clean test
+        run: mvn clean package
+  static-code-analysis:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout source code
+          uses: actions/checkout@v4
