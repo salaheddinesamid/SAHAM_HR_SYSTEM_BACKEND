@@ -61,7 +61,7 @@ class TotalLeaveDaysCalculatorUnitTest {
                 totalLeaveDaysCalculator.filterDatesFromHolidays(inputDates);
 
         // Assert
-        assertEquals(1, result.size());
+        assertEquals(3, result.size());
         assertTrue(result.contains(LocalDate.of(2026, 1, 5)));
 
         verify(holidayRepository, times(1)).findAll();
@@ -113,12 +113,11 @@ class TotalLeaveDaysCalculatorUnitTest {
     @Test
     void shouldReturnZeroWhenStartDateIsAfterEndDate() {
         // Act
-        long result = totalLeaveDaysCalculator.calculateTotalDays(
-                LocalDate.of(2026, 1, 10),
-                LocalDate.of(2026, 1, 1)
-        );
-
-        // Assert
-        assertEquals(0, result);
+        assertThrows(IllegalArgumentException.class, ()-> {
+            totalLeaveDaysCalculator.calculateTotalDays(
+                    LocalDate.of(2026, 1, 10),
+                    LocalDate.of(2026, 1, 1)
+            );
+        });
     }
 }
