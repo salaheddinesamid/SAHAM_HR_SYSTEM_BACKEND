@@ -26,7 +26,8 @@ public class HolidayModifierImpl implements HolidayModifier {
                         .orElseThrow(()-> new HolidayNotFoundException(name));
 
         holiday.setName(dto.getName());
-        holiday.setStartDate(dto.getDate());
+        holiday.setStartDate(dto.getStartDate());
+        holiday.setEndDate(dto.getEndDate());
         holiday.setLeaveDays(dto.getLeaveDays());
         holiday.setLastUpdate(LocalDateTime.now());
 

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 @Data
 public class HolidayModificationDto {
     private String name;
-    private LocalDate date;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private int leaveDays;
 }
