@@ -3,7 +3,6 @@ package com.saham.hr_system.leave.unit;
 import com.saham.hr_system.modules.holidays.model.Holiday;
 import com.saham.hr_system.modules.holidays.repository.HolidayRepository;
 import com.saham.hr_system.utils.TotalDaysCalculator;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,11 +12,10 @@ import org.mockito.MockitoAnnotations;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@Slf4j
-public class TotalLeaveDaysCalculatorUnitTest {
+class TotalLeaveDaysCalculatorUnitTest {
 
     @Mock
     private HolidayRepository holidayRepository;
@@ -25,52 +23,102 @@ public class TotalLeaveDaysCalculatorUnitTest {
     @InjectMocks
     private TotalDaysCalculator totalLeaveDaysCalculator;
 
-    Holiday holiday;
-    Holiday holiday2;
+    private Holiday holiday1;
+    private Holiday holiday2;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        holiday = new Holiday();
-        holiday.setName("New Year's Day");
-        holiday.setStartDate(LocalDate.of(2026, 1, 1));
-        holiday.setLeaveDays(2);
+        holiday1 = new Holiday();
+        holiday1.setName("New Year's Day");
+        holiday1.setStartDate(LocalDate.of(2026, 1, 1));
+        holiday1.setEndDate(LocalDate.of(2026, 1, 2));
+        holiday1.setLeaveDays(1); // Jan 1 & Jan 2
 
         holiday2 = new Holiday();
         holiday2.setName("Independence Day");
         holiday2.setStartDate(LocalDate.of(2026, 1, 3));
-        holiday2.setLeaveDays(2);
+        holiday2.setEndDate(LocalDate.of(2026, 1, 4));
+        holiday2.setLeaveDays(1); // Jan 3 & Jan 4
     }
 
     @Test
-    void testFilterDateListFromHolidays(){
+    void shouldFilterHolidayDatesFromDateList() {
         // Arrange
-        when(holidayRepository.findAll()).thenReturn(List.of(holiday, holiday2));
+        when(holidayRepository.findAll()).thenReturn(List.of(holiday1, holiday2));
 
-        // Act:
-        List<LocalDate> filteredDates = totalLeaveDaysCalculator.filterDatesFromHolidays(
-                List.of(
-                        LocalDate.of(2026, 1, 1),
-                        LocalDate.of(2026, 1, 2),
-                        LocalDate.of(2026, 1, 3),
-                        LocalDate.of(2026, 1, 4),
-                        LocalDate.of(2026, 1, 5)
-                )
+        List<LocalDate> inputDates = List.of(
+                LocalDate.of(2026, 1, 1),
+                LocalDate.of(2026, 1, 2),
+                LocalDate.of(2026, 1, 3),
+                LocalDate.of(2026, 1, 4),
+                LocalDate.of(2026, 1, 5)
         );
 
-        log.info("Filtered Dates: {}", filteredDates);
+        // Act
+        List<LocalDate> result =
+                totalLeaveDaysCalculator.filterDatesFromHolidays(inputDates);
+
+        // Assert
+        assertEquals(1, result.size());
+        assertTrue(result.contains(LocalDate.of(2026, 1, 5)));
+
+        verify(holidayRepository, times(1)).findAll();
     }
 
     @Test
-    void testCalculateTotalLeaveDays(){
-        // Arrange:
-        when(holidayRepository.findAll()).thenReturn(List.of(holiday, holiday2));
+    void shouldReturnSameListWhenNoHolidaysExist() {
+        // Arrange
+        when(holidayRepository.findAll()).thenReturn(List.of());
 
-        // Act and verify:
-        assertEquals(11, totalLeaveDaysCalculator.calculateTotalDays(
+        List<LocalDate> inputDates = List.of(
                 LocalDate.of(2026, 1, 1),
-                LocalDate.of(2026, 1, 15)
-        ));
+                LocalDate.of(2026, 1, 2)
+        );
+
+        // Act
+        List<LocalDate> result =
+                totalLeaveDaysCalculator.filterDatesFromHolidays(inputDates);
+
+        // Assert
+        assertEquals(2, result.size());
+        assertEquals(inputDates, result);
+    }
+
+    @Test
+    void shouldCalculateTotalLeaveDaysExcludingHolidays() {
+        LocalDate start = LocalDate.of(2026, 1, 1);
+        LocalDate end = LocalDate.of(2026, 1, 9);
+        // Arrange
+        when(holidayRepository.findAllByStartDateBetween(
+                start, end
+        )).thenReturn(List.of(holiday1, holiday2));
+
+        // Act
+        long totalDays =
+                totalLeaveDaysCalculator.calculateTotalDays(start, end);
+
+        // Total days: 9
+        // Holidays: 2 days (Jan 1–4)
+        // Week ends: 2 days (Jan 3, 4)
+        // Expected: 5 days
+        assertEquals(5, totalDays);
+
+        verify(holidayRepository, times(1)).findAllByStartDateBetween(
+                start, end
+        );
+    }
+
+    @Test
+    void shouldReturnZeroWhenStartDateIsAfterEndDate() {
+        // Act
+        long result = totalLeaveDaysCalculator.calculateTotalDays(
+                LocalDate.of(2026, 1, 10),
+                LocalDate.of(2026, 1, 1)
+        );
+
+        // Assert
+        assertEquals(0, result);
     }
 }

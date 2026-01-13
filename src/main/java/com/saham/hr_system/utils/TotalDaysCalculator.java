@@ -39,17 +39,12 @@ public class TotalDaysCalculator {
                 holidays
                         .stream().flatMap(h -> h.getStartDate().datesUntil(h.getEndDate().plusDays(1)))
                         .collect(Collectors.toSet());
-        List<LocalDate> dateList =
-                from.datesUntil(to.plusDays(1)).toList();
 
-        // Filter date list from weekends
-        List<LocalDate> dateListWithoutWeekEnds = filterDatesFromWeekEnds(dateList);
-        log.info("Excluded weekends : {}", dateListWithoutWeekEnds);
-
-        // Filter date list from holidays:
-        List<LocalDate> filteredDateList = filterDatesFromHolidays(dateListWithoutWeekEnds);
-        log.info("Filtered Leave Days : {}", filteredDateList);
-        return filteredDateList.size(); // the end date means the date when the leave will be over
+        return
+                from.datesUntil(to.plusDays(1))
+                        .filter(date-> !isWeekend(date))
+                        .filter(date -> !holidayDates.contains(date))
+                        .count();
     }
 
     /**
