@@ -2,12 +2,13 @@ package com.saham.hr_system.utils;
 
 import com.saham.hr_system.modules.holidays.model.Holiday;
 import com.saham.hr_system.modules.holidays.repository.HolidayRepository;
-import com.saham.hr_system.modules.leave.service.LeaveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class is responsible for calculating the number of leave days between two dates.
@@ -19,18 +20,25 @@ public class TotalDaysCalculator {
 
     private final HolidayRepository holidayRepository;
     private static final String[] weekEnds = {"SATURDAY", "SUNDAY"};
-    private final LeaveService leaveService;
 
 
     @Autowired
-    public TotalDaysCalculator(HolidayRepository holidayRepository, LeaveService leaveService) {
+    public TotalDaysCalculator(HolidayRepository holidayRepository) {
         this.holidayRepository = holidayRepository;
-        this.leaveService = leaveService;
     }
     public long calculateTotalDays(
             LocalDate from,
             LocalDate to
     ){
+
+        // Fetch the holidays from the database in range:
+        List<Holiday> holidays = holidayRepository
+                .findAllByStartDateBetween(from, to);
+        // Expand Holiday days into a Set
+        Set<LocalDate> holidayDates =
+                holidays
+                        .stream().flatMap(h -> h.getStartDate().datesUntil(h.getEndDate().plusDays(1)))
+                        .collect(Collectors.toSet());
         List<LocalDate> dateList =
                 from.datesUntil(to.plusDays(1)).toList();
 
@@ -69,11 +77,15 @@ public class TotalDaysCalculator {
                 // filter function, iterate through each date in the list
                 .filter(date -> holidays.stream().noneMatch(holiday -> {
                     // Get the dates that do not match the holiday dates
-                    List<LocalDate> holidayDates = holiday.getDate().datesUntil(
-                            holiday.getDate().plusDays(holiday.getLeaveDays())
+                    List<LocalDate> holidayDates = holiday.getStartDate().datesUntil(
+                            holiday.getStartDate().plusDays(holiday.getLeaveDays())
                     ).toList(); // Convert the holiday date into list of covered dates
                     return holidayDates.contains(date); // return a list of dates that does not contain holiday dates
                 }))
                 .toList();
+    }
+
+    private boolean isWeekend(LocalDate date){
+        return List.of(weekEnds).contains(date.getDayOfWeek().toString());
     }
 }

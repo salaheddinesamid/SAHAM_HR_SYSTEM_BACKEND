@@ -23,8 +23,8 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
      */
     Optional<Holiday> findByName(String name);
 
-    @Query("SELECT d.date FROM Holiday d")
+    @Query("SELECT d.startDate FROM Holiday d")
     List<LocalDate> findAllHolidayDates();
 
-    List<Holiday> findAllByDateBetween(LocalDate dateAfter, LocalDate dateBefore);
+    List<Holiday> findAllByStartDateBetween(LocalDate startDateAfter, LocalDate startDateBefore);
 }

@@ -27,7 +27,7 @@ public class HolidayAdderServiceImpl implements HolidayAdderService {
         } else {
             Holiday holiday = new Holiday();
             holiday.setName(dto.getName());
-            holiday.setDate(dto.getDate());
+            holiday.setStartDate(dto.getDate());
             holiday.setLeaveDays(dto.getLeaveDays());
 
             holiday.setLastUpdate(LocalDateTime.now());

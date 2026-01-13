@@ -32,7 +32,8 @@ public class HolidaysInitializer implements CommandLineRunner {
                     .forEach(h -> {
                         Holiday holiday = new Holiday();
                         holiday.setName(h.getName());
-                        holiday.setDate(h.getDate());
+                        holiday.setStartDate(h.getStartDate());
+                        holiday.setEndDate(h.getEndDate());
                         holiday.setLastUpdate(LocalDateTime.now());
                         holiday.setLeaveDays(h.getLeaveDays());
                         // save:
@@ -46,17 +47,26 @@ public class HolidaysInitializer implements CommandLineRunner {
 }
 
 class HolidayObject{
-    private LocalDate date;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String name;
     private String type;
     private int leaveDays;
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public String getName() {

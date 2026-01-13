@@ -5,6 +5,7 @@ import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveDocumentStorageServiceImpl;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
+import com.saham.hr_system.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -22,11 +24,13 @@ public class LeaveController {
 
     private final LeaveServiceImpl leaveService;
     private final LeaveDocumentStorageServiceImpl documentService;
+    private final TotalDaysCalculator totalDaysCalculator;
     private final JwtUtilities jwtUtilities;
 
-    public LeaveController(LeaveServiceImpl leaveService, LeaveDocumentStorageServiceImpl documentService, JwtUtilities jwtUtilities) {
+    public LeaveController(LeaveServiceImpl leaveService, LeaveDocumentStorageServiceImpl documentService, TotalDaysCalculator totalDaysCalculator, JwtUtilities jwtUtilities) {
         this.leaveService = leaveService;
         this.documentService = documentService;
+        this.totalDaysCalculator = totalDaysCalculator;
         this.jwtUtilities = jwtUtilities;
     }
 
@@ -52,6 +56,20 @@ public class LeaveController {
         return ResponseEntity
                 .status(200)
                 .body("Leave applied successfully");
+    }
+
+    @GetMapping("calculate-total-leave-days")
+    public ResponseEntity<?> getTotalLeaveDays(
+            @RequestParam LocalDate from,
+            @RequestParam LocalDate to
+    ){
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(totalDaysCalculator.calculateTotalDays(
+                                from,
+                                to
+                        ));
     }
 
     @GetMapping("employee-leaves/get_all")

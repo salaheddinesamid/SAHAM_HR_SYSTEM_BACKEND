@@ -34,12 +34,12 @@ public class TotalLeaveDaysCalculatorUnitTest {
 
         holiday = new Holiday();
         holiday.setName("New Year's Day");
-        holiday.setDate(LocalDate.of(2026, 1, 1));
+        holiday.setStartDate(LocalDate.of(2026, 1, 1));
         holiday.setLeaveDays(2);
 
         holiday2 = new Holiday();
         holiday2.setName("Independence Day");
-        holiday2.setDate(LocalDate.of(2026, 1, 3));
+        holiday2.setStartDate(LocalDate.of(2026, 1, 3));
         holiday2.setLeaveDays(2);
     }
 
