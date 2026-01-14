@@ -33,7 +33,5 @@ public class HolidayModifierImpl implements HolidayModifier {
 
         // save the holiday:
         return holidayRepository.save(holiday);
-
-
     }
 }
