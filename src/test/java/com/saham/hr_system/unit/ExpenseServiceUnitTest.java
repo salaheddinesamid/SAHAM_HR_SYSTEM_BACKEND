@@ -76,7 +76,6 @@ class ExpenseServiceUnitTest {
         requestDto.setIssueDate(LocalDate.of(2024, 12, 3));
         requestDto.setExpenseItems(List.of(item1, item2));
         requestDto.setCurrency("USD");
-        requestDto.setExchangeRate(9);
         requestDto.setLocation("OUTSIDE_MOROCCO");
 
         ExpenseItem expenseItem1 = new ExpenseItem();
@@ -92,7 +91,6 @@ class ExpenseServiceUnitTest {
         processedExpense.setTotalAmount(3000.0);
         processedExpense.setItems(List.of(expenseItem1, expenseItem2));
         processedExpense.setCurrency(Currency.USD);
-        processedExpense.setExchangeRate(9);
         processedExpense.setIssueDate(LocalDate.of(2024, 12, 3));
         processedExpense.setExpenseLocation(ExpenseLocation.OUTSIDE_MOROCCO);
     }
@@ -119,7 +117,6 @@ class ExpenseServiceUnitTest {
         assertEquals(3000.0,response.getTotalAmount());
         //assertEquals("USD", response.getCurrency());
         assertEquals("OUTSIDE_MOROCCO", response.getLocation());
-        assertEquals(9, response.getExchangeRate());
     }
 
     @Test

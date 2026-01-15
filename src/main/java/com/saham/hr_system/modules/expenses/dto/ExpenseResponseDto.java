@@ -19,7 +19,6 @@ public class ExpenseResponseDto {
     private String motif;
     private double totalAmount;
     private String currency;
-    private double exchangeRate;
     private String location;
 
     public ExpenseResponseDto(Expense expense) {
@@ -29,7 +28,6 @@ public class ExpenseResponseDto {
         this.createdAt = expense.getCreatedAt();
         this.totalAmount = expense.getTotalAmount();
         this.currency = expense.getCurrency().toString();
-        this.exchangeRate = expense.getExchangeRate();
         this.location = expense.getExpenseLocation().toString();
         this.motif = expense.getMotif();
         this.expenseItems =

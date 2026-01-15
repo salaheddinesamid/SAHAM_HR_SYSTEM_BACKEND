@@ -55,7 +55,6 @@ public class ExpenseRequestProcessor {
         expense.setItems(items); // set the items
         expense.setTotalAmount(expenseUtils.calculateTotalExpenseItems(items));
         expense.setCurrency(Currency.valueOf(expenseRequestDto.getCurrency())); // set the currency
-        expense.setExchangeRate(expenseRequestDto.getExchangeRate()); // set the exchange rate
         expense.setExpenseLocation(ExpenseLocation.valueOf(expenseRequestDto.getLocation())); // set the location
 
         return expenseRepository.save(expense);
