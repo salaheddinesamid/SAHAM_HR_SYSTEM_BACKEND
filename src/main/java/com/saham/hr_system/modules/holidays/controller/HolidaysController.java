@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.holidays.controller;
 
 import com.saham.hr_system.modules.holidays.dto.HolidayModificationDto;
+import com.saham.hr_system.modules.holidays.dto.HolidayResponseDto;
 import com.saham.hr_system.modules.holidays.dto.NewHolidayDto;
 import com.saham.hr_system.modules.holidays.model.Holiday;
 import com.saham.hr_system.modules.holidays.service.implementation.HolidayAdderServiceImpl;
@@ -32,9 +33,9 @@ public class HolidaysController {
      * @return
      */
     @GetMapping("get_all")
-    public ResponseEntity<List<Holiday>> getAllHolidays() {
-        List<Holiday> holidays = holidayQueryService.getAllHolidays();
-        return ResponseEntity.ok(holidays);
+    public ResponseEntity<?> getAllHolidays() {
+        HolidayResponseDto responseDto = holidayQueryService.getAllHolidays();
+        return ResponseEntity.ok(responseDto);
     }
 
 

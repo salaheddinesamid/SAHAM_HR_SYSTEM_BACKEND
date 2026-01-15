@@ -3,7 +3,11 @@ package com.saham.hr_system.initializer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saham.hr_system.modules.holidays.model.Holiday;
+import com.saham.hr_system.modules.holidays.model.HolidayStatus;
+import com.saham.hr_system.modules.holidays.model.HolidayType;
 import com.saham.hr_system.modules.holidays.repository.HolidayRepository;
+import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -31,11 +35,14 @@ public class HolidaysInitializer implements CommandLineRunner {
             holidays
                     .forEach(h -> {
                         Holiday holiday = new Holiday();
-                        holiday.setName(h.getName());
-                        holiday.setStartDate(h.getStartDate());
-                        holiday.setEndDate(h.getEndDate());
-                        holiday.setLastUpdate(LocalDateTime.now());
-                        holiday.setLeaveDays(h.getLeaveDays());
+                        holiday.setName(h.getName()); // set the name
+                        holiday.setStartDate(h.getStartDate()); // set the start date
+                        holiday.setEndDate(h.getEndDate()); // set the end date
+                        holiday.setFloating(h.isFloating()); // set if it's floating
+                        holiday.setType(HolidayType.valueOf(h.getType())); // set the type
+                        holiday.setLastUpdate(LocalDateTime.now()); // set the last update
+                        holiday.setLeaveDays(h.getLeaveDays()); // set the total leave days                        holiday.setStatus(HolidayStatus.valueOf(h.getStatus()));
+
                         // save:
                         holidayRepository.save(holiday);
                     });
@@ -46,50 +53,13 @@ public class HolidaysInitializer implements CommandLineRunner {
     }
 }
 
+@Data
 class HolidayObject{
     private LocalDate startDate;
     private LocalDate endDate;
     private String name;
     private String type;
+    private boolean isFloating;
     private int leaveDays;
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getLeaveDays() {
-        return leaveDays;
-    }
-
-    public void setLeaveDays(int leaveDays) {
-        this.leaveDays = leaveDays;
-    }
+    private String status;
 }

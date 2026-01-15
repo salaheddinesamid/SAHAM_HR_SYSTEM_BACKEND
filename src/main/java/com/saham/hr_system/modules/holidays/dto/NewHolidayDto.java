@@ -6,7 +6,11 @@ import java.time.LocalDate;
 
 @Data
 public class NewHolidayDto {
-    private LocalDate date;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private boolean floating;
+    private String type;
+    private String status;
     private String name;
     private int leaveDays;
 }

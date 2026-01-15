@@ -1,6 +1,6 @@
 package com.saham.hr_system.modules.holidays.model;
 
-public enum HolidayType {
-    PUBLIC,
-    RELIGIOUS,
+public enum HolidayStatus {
+    PENDING,
+    CONFIRMED
 }

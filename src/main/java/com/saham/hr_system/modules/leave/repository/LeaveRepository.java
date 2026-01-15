@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.leave.repository;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.leave.model.Leave;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,4 +31,8 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
      * @return
      */
     List<Leave> findAllByFromDateOrToDateIs(LocalDate fromDate, LocalDate toDate);
+    @Query("""
+SELECT l from Leave l WHERE l.fromDate <= :holidayEnd AND l.toDate >= :holidayStart
+""")
+    List<Leave> findOverlappingLeaves(LocalDate holidayStart, LocalDate holidayEnd);
 }

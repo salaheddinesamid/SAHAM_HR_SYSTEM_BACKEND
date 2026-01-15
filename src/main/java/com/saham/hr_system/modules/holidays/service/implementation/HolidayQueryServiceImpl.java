@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.holidays.service.implementation;
 
+import com.saham.hr_system.modules.holidays.dto.HolidayResponseDto;
 import com.saham.hr_system.modules.holidays.model.Holiday;
 import com.saham.hr_system.modules.holidays.repository.HolidayRepository;
 import com.saham.hr_system.modules.holidays.service.HolidayQueryService;
@@ -18,8 +19,22 @@ public class HolidayQueryServiceImpl implements HolidayQueryService {
     }
 
     @Override
-    public List<Holiday> getAllHolidays() {
-        return holidayRepository
-                .findAll();
+    public HolidayResponseDto getAllHolidays() {
+        // Fetch all the holidays from the db:
+        List<Holiday> holidayList = holidayRepository.findAll();
+        // Calculate the total leave days of the holidays:
+        long totalLeaveDays = getTotalHolidayLeaveDays(holidayList);
+
+        return new HolidayResponseDto(
+                holidayList,
+                totalLeaveDays
+        );
+    }
+
+    private long getTotalHolidayLeaveDays(List<Holiday> holidays){
+        return
+                holidays.stream()
+                        .map(Holiday::getLeaveDays)
+                        .reduce(0, Integer::sum);
     }
 }

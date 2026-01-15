@@ -1,11 +1,13 @@
 package com.saham.hr_system.modules.holidays.service.implementation;
 
 import com.saham.hr_system.modules.holidays.dto.HolidayModificationDto;
+import com.saham.hr_system.modules.holidays.dto.HolidayUpdatedEvent;
 import com.saham.hr_system.modules.holidays.exception.HolidayNotFoundException;
 import com.saham.hr_system.modules.holidays.model.Holiday;
 import com.saham.hr_system.modules.holidays.repository.HolidayRepository;
 import com.saham.hr_system.modules.holidays.service.HolidayModifier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,10 +15,12 @@ import java.time.LocalDateTime;
 @Service
 public class HolidayModifierImpl implements HolidayModifier {
     private final HolidayRepository holidayRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public HolidayModifierImpl(HolidayRepository holidayRepository) {
+    public HolidayModifierImpl(HolidayRepository holidayRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.holidayRepository = holidayRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -30,8 +34,15 @@ public class HolidayModifierImpl implements HolidayModifier {
         holiday.setEndDate(dto.getEndDate());
         holiday.setLeaveDays(dto.getLeaveDays());
         holiday.setLastUpdate(LocalDateTime.now());
+        Holiday updatedHoliday = holidayRepository.save(holiday);
+
+        // publish the event of holiday update:
+        applicationEventPublisher
+                .publishEvent(
+                        new HolidayUpdatedEvent(updatedHoliday)
+                );
 
         // save the holiday:
-        return holidayRepository.save(holiday);
+        return updatedHoliday;
     }
 }

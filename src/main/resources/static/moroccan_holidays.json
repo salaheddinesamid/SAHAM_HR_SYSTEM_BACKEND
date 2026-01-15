@@ -3,119 +3,120 @@
     "startDate": "2026-01-01",
     "endDate" : "2026-01-02",
     "name": "Nouvel An",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-01-11",
     "endDate" : "2026-01-12",
     "name": "Jour du Manifeste de l'Indépendance",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-01-14",
     "endDate" : "2026-01-15",
     "name": "Nouvel An Amazigh",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-03-20",
-    "endDate" : "2026-03-21",
-    "name": "Aïd el-Fitr (prévisionnel)",
-    "type": "PUBLIC_HOLIDAY",
-    "leaveDays": 1
-  },
-  {
-    "startDate": "2026-03-21",
     "endDate" : "2026-03-22",
-    "name": "Jour de l'Aïd el-Fitr (prévisionnel)",
-    "type": "PUBLIC_HOLIDAY",
-    "leaveDays": 1
+    "name": "Aïd el-Fitr (prévisionnel)",
+    "type": "RELIGIOUS",
+    "floating" : true,
+    "leaveDays": 2
   },
   {
     "startDate": "2026-05-01",
     "endDate" : "2026-05-02",
     "name": "Fête du Travail",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-05-27",
-    "endDate" : "2026-05-28",
+    "endDate" : "2026-05-29",
     "name": "Aïd al-Adha (prévisionnel)",
-    "type": "PUBLIC_HOLIDAY",
-    "leaveDays": 1
-  },
-  {
-    "startDate": "2026-05-28",
-    "endDate" : "2026-05-30",
-    "name": "Jour de l'Aïd al-Adha (prévisionnel)",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "RELIGIOUS",
+    "floating" : true,
     "leaveDays": 2
   },
   {
     "startDate": "2026-06-17",
     "endDate" : "2026-06-18",
     "name": "Nouvel An islamique (Hijra) (prévisionnel)",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "RELIGIOUS",
+    "floating" : true,
     "leaveDays": 1
   },
   {
     "startDate": "2026-07-30",
     "endDate" : "2026-07-31",
     "name": "Fête du Trône",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-08-14",
     "endDate" : "2026-08-15",
     "name": "Jour de Oued Ed-Dahab",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-08-20",
     "endDate" : "2026-08-21",
     "name": "Anniversaire de la Révolution du Roi et du Peuple",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-08-21",
     "endDate" : "2026-08-22",
     "name": "Fête de la Jeunesse",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-08-25",
     "endDate" : "2026-08-26",
     "name": "Anniversaire du Prophète Mohammed (prévisionnel)",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "RELIGIOUS",
+    "floating" : true,
     "leaveDays": 1
   },
   {
     "startDate": "2026-10-31",
     "endDate" : "2026-11-01",
     "name": "Jour de l’Unité",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-11-06",
     "endDate" : "2026-11-07",
     "name": "Marche Verte",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   },
   {
     "startDate": "2026-11-18",
     "endDate" : "2026-11-19",
     "name": "Fête de l'Indépendance",
-    "type": "PUBLIC_HOLIDAY",
+    "type": "PUBLIC",
+    "floating" : false,
     "leaveDays": 1
   }
 ]

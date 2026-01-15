@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.holidays.service.implementation;
 
 import com.saham.hr_system.modules.holidays.dto.NewHolidayDto;
 import com.saham.hr_system.modules.holidays.model.Holiday;
+import com.saham.hr_system.modules.holidays.model.HolidayType;
 import com.saham.hr_system.modules.holidays.repository.HolidayRepository;
 import com.saham.hr_system.modules.holidays.service.HolidayAdderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,11 @@ public class HolidayAdderServiceImpl implements HolidayAdderService {
         } else {
             Holiday holiday = new Holiday();
             holiday.setName(dto.getName());
-            holiday.setStartDate(dto.getDate());
+            holiday.setStartDate(dto.getStartDate());
+            holiday.setEndDate(dto.getEndDate());
             holiday.setLeaveDays(dto.getLeaveDays());
+            holiday.setFloating(dto.isFloating());
+            holiday.setType(HolidayType.valueOf(dto.getType()));
 
             holiday.setLastUpdate(LocalDateTime.now());
             return holidayRepository.save(holiday);
