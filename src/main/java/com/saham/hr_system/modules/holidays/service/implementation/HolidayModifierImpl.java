@@ -28,21 +28,46 @@ public class HolidayModifierImpl implements HolidayModifier {
         Holiday holiday =
                 holidayRepository.findByName(name)
                         .orElseThrow(()-> new HolidayNotFoundException(name));
+        if(dto.getName()!= null){
+            holiday.setName(dto.getName());
+        }
+        // Update the start and end dates of the holiday
+        if(dto.getStartDate() != null || dto.getEndDate() != null){
+            updateHolidayDates(holiday, dto);
+        }
+        if(dto.getLeaveDays() != 0){
+            holiday.setLeaveDays(dto.getLeaveDays());
 
-        holiday.setName(dto.getName());
-        holiday.setStartDate(dto.getStartDate());
-        holiday.setEndDate(dto.getEndDate());
-        holiday.setLeaveDays(dto.getLeaveDays());
+        }
         holiday.setLastUpdate(LocalDateTime.now());
         Holiday updatedHoliday = holidayRepository.save(holiday);
 
-        // publish the event of holiday update:
-        applicationEventPublisher
-                .publishEvent(
-                        new HolidayUpdatedEvent(updatedHoliday)
-                );
 
         // save the holiday:
         return updatedHoliday;
+    }
+    private void updateHolidayDates(Holiday holiday, HolidayModificationDto dto) {
+        // update the start date if not null
+        if(dto.getStartDate() != null) {
+            holiday.setStartDate(dto.getStartDate());
+        }
+        // update the end date if not null
+        if(dto.getEndDate() != null) {
+            holiday.setEndDate(dto.getEndDate());
+        }
+        // publish the event of holiday update:
+        applicationEventPublisher
+                .publishEvent(
+                        new HolidayUpdatedEvent(holiday, 0)
+                );
+    }
+    private void updateHolidayTotalLeaveDays(Holiday holiday, HolidayModificationDto dto) {
+        // update the total leave days if not null
+        /*
+        if(dto.getLeaveDays() != null) {
+            holiday.setLeaveDays(dto.getLeaveDays());
+        }
+
+         */
     }
 }

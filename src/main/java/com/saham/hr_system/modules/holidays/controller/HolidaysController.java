@@ -54,4 +54,11 @@ public class HolidaysController {
 
         return ResponseEntity.status(200).body(response);
     }
+    @PatchMapping("update/{name}")
+    public ResponseEntity<?> partiallyUpdateHoliday(@PathVariable String name, @RequestBody HolidayModificationDto holidayModificationDto) {
+        Holiday response =
+                holidayModifier.modifyHoliday(name, holidayModificationDto);
+
+        return ResponseEntity.status(200).body(response);
+    }
 }

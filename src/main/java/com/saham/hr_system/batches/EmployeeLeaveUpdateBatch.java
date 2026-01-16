@@ -61,40 +61,45 @@ public class EmployeeLeaveUpdateBatch {
                         .collect(Collectors.toSet());
 
         // recalculate and update the affected leaves
-        updateLeaves(overlappingLeaves);
-        updateBalances(employeeBalances);
+        updateEmployeeLeaveAndBalance(
+                overlappingLeaves,
+                employeeBalances
+        );
     };
 
     /**
-     * Update the total leave days
+     * Update the affected employee leaves and balances
+     * @param leaves: the overlapping leaves
+     * @param balances: the concerned employee balances
      */
-    private void updateLeaves(List<Leave> leaves){
-        leaves
-                .forEach(leave -> {
+    private void updateEmployeeLeaveAndBalance(
+            List<Leave> leaves, Set<EmployeeBalance> balances
+    ){
+        Set<Leave> updatedLeaves = leaves
+                .stream()
+                .map(leave -> {
+                    // Create new leave adjustment record to track the leave and balance changes
+                    LeaveBalanceAdjustment leaveBalanceAdjustment = new LeaveBalanceAdjustment();
+                    // Update the total leave days
                     leave.setTotalDays(
                             leave.getTotalDays() - 1
                     );
-                    leaveRepository.save(leave);
-                });
-    }
-
-    /**
-     * Update the employee balance, specifically the total balance used.
-     */
-    private void updateBalances(Set<EmployeeBalance> employeeBalances){
-        employeeBalances
-                . forEach(employeeBalance ->{
+                    Leave updatedLeave = leaveRepository.save(leave);
+                    leaveBalanceAdjustment.setLeave(updatedLeave);
+                    leaveBalanceAdjustment.setDelta(1);
+                    leaveBalanceAdjustment.setReason("Holiday update adjustment");
+                    leaveBalanceAdjustment.setEmployee(updatedLeave.getEmployee());
+                    leaveBalanceAdjustmentRepository.save(leaveBalanceAdjustment);
+                    return updatedLeave;
+                }).collect(Collectors.toSet());
+        Set<EmployeeBalance> updatedBalances  = balances
+                .stream()
+                .map(employeeBalance -> {
+                    // Update the used balance
                     employeeBalance.setUsedBalance(
-                            employeeBalance.getUsedBalance() - 1
+                            employeeBalance.getUsedBalance() + 1
                     );
-                    LeaveBalanceAdjustment leaveBalanceAdjustment = new LeaveBalanceAdjustment();
-                    leaveBalanceAdjustment.setEmployee(employeeBalance.getEmployee());
-                    //leaveBalanceAdjustment.setLeave();
-                    employeeBalanceRepository.save(employeeBalance);
-                });
-    }
-
-    private void createLeaveBalanceAdjustment(Employee employee){
-
+                    return employeeBalanceRepository.save(employeeBalance);
+                }).collect(Collectors.toSet());
     }
 }

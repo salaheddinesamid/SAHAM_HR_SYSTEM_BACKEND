@@ -8,9 +8,14 @@ import com.saham.hr_system.modules.holidays.model.Holiday;
 public class HolidayUpdatedEvent {
 
     private final Holiday holiday;
+    private final long totalLeaveDaysUpdated;
 
-    public HolidayUpdatedEvent(Holiday holiday){
+    public HolidayUpdatedEvent(Holiday holiday, long totalLeaveDaysUpdated) {
         this.holiday = holiday;
+        this.totalLeaveDaysUpdated = totalLeaveDaysUpdated;
+    }
+    public long getTotalLeaveDaysUpdated(){
+        return totalLeaveDaysUpdated;
     }
     public Holiday getHoliday() {
         return holiday;
