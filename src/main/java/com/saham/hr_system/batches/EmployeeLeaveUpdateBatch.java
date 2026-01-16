@@ -43,7 +43,7 @@ public class EmployeeLeaveUpdateBatch {
      * Inc/Dec the employee balance affected.
      * @param event: the holiday updated event
      */
-    @EventListener
+    @EventListener(HolidayUpdatedEvent.class)
     public void updateEmployeesLeaveAndBalance(HolidayUpdatedEvent event){
         // Fetch the overlapping leaves:
         List<Leave> overlappingLeaves =
