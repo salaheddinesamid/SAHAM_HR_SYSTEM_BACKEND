@@ -27,7 +27,7 @@ public interface PayrollFileService {
      * @throws IOException
      * @return: a map of employee identifier to their respective PDDocument payslip
      */
-    Map<String, PDDocument> processPayrollPDF(List<PDDocument> document) throws IOException;
+    Map<Integer, PDDocument> processPayrollPDF(List<PDDocument> document) throws IOException;
 
     /**
      * Save individual employee payroll PDF document.

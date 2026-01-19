@@ -41,34 +41,49 @@ public class PayrollProcessorImpl implements PayrollProcessor {
     ) throws IOException {
         PayrollHistory payrollHistory = new PayrollHistory();
         try{
+            int succeedPayrollCount = 0;
+            int failedPayrollCount = 0;
             payrollHistory.setStatus(PayrollHistoryStatus.EXECUTED);
             // Load the Payroll PDF:
             PDDocument document = payrollFileService.loadPayrollPDF(file);
             // Split the PDF into individual employee payrolls:
             List<PDDocument> employeeDocs = payrollFileService.splitPayrollPDF(document);
             // Extract matriculation and map documents
-            Map<String, PDDocument> employeesPayrollMap = payrollFileService
+            Map<Integer, PDDocument> employeesPayrollMap = payrollFileService
                     .processPayrollPDF(employeeDocs);
-            System.out.println(employeesPayrollMap.keySet());
-            /*
-            for(String key: employeesPayrollMap.keySet()){
-                // Check if the employee exists by the Matriculation number
-                if(employeeRepository.existsByMatriculation(key)){
-                    // Save the payroll file for the employee
-                    payrollFileService.savePayrollPDF(
-                            payrollPdfPathGenerator.generatePath(
-                                    key,
-                                    month,
-                                    year
-                            )
-
+            // Iterate over each employee payroll map, save the payroll PDF file, and update counts
+            for (Integer matriculation : employeesPayrollMap.keySet()){
+                try{
+                    String fileName = payrollPdfFileNameGenerator.generateUniqueFileName(
+                            matriculation,
+                            month,
+                            year
                     );
+                    PDDocument employeePayrollDoc = employeesPayrollMap.get(matriculation);
+                    payrollFileService
+                            .savePayrollPDF(
+                                    matriculation,
+                                    month,
+                                    year,
+                                    fileName,
+                                    employeePayrollDoc
+                            );
+                    succeedPayrollCount += 1;
+
+                }catch (IOException exception){
+                    throw new IOException();
                 }
             }
-
-             */
+            // set the payroll history details:
+            payrollHistory.setSucceededPayrolls(succeedPayrollCount);
+            payrollHistory.setFailedPayrolls(failedPayrollCount);
+            // set the total number of payrolls
+            payrollHistory.setTotalPayrolls(employeesPayrollMap.size());
+            // set the month and year of the payroll:
+            payrollHistory.setPayrollMonth(month);
+            payrollHistory.setPayrollYear(year);
             payrollHistory.setStatus(PayrollHistoryStatus.SUCCEED);
-            // Save the payroll history
+            // save the payroll in the db:
             payrollHistoryRepository.save(payrollHistory);
         }catch (RuntimeException exception){
             payrollHistory.setStatus(PayrollHistoryStatus.FAILED);

@@ -2,9 +2,6 @@ package com.saham.hr_system.modules.payroll.service.implementation;
 
 
 import com.saham.hr_system.modules.payroll.service.PayrollFileService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -57,15 +54,15 @@ public class PayrollFileServiceImpl implements PayrollFileService {
 
 
     @Override
-    public Map<String, PDDocument> processPayrollPDF(List<PDDocument> documents) throws IOException {
-        Map<String, PDDocument> employeesPayrollMap =
+    public Map<Integer, PDDocument> processPayrollPDF(List<PDDocument> documents) throws IOException {
+        Map<Integer, PDDocument> employeesPayrollMap =
                 new HashMap<>();
         PDFTextStripper stripper = new PDFTextStripper();
         documents
                 .forEach(document -> {
                     try {
                         String text = stripper.getText(document);
-                        String matriculation = extractEmployeeMatriculationNumber(text);
+                        Integer matriculation = extractEmployeeMatriculationNumber(text);
                         log.info("Extracted matriculation number: {}", matriculation);
                         employeesPayrollMap.put(matriculation, document);
                     } catch (IOException e) {
@@ -75,7 +72,7 @@ public class PayrollFileServiceImpl implements PayrollFileService {
         return employeesPayrollMap;
     }
 
-    private String extractEmployeeMatriculationNumber(String fullText) {
+    private int extractEmployeeMatriculationNumber(String fullText) {
         String[] splitText = fullText.split("\n");
         String matriculation = "";
         for(int i = 0; i < splitText.length; i++) {
@@ -84,7 +81,7 @@ public class PayrollFileServiceImpl implements PayrollFileService {
                 matriculation = parts[2];
             }
         }
-        return matriculation;
+        return Integer.parseInt(matriculation);
     }
     @Override
     public void savePayrollPDF(int matriculationNumber,
