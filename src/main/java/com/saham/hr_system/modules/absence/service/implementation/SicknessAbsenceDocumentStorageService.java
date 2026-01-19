@@ -29,7 +29,6 @@ public class SicknessAbsenceDocumentStorageService implements DocumentStorageSer
     public SicknessAbsenceDocumentStorageService(@Value("${file.upload.medical-certificates}") String path) {
         this.uploadPath = Paths.get(path).toAbsolutePath().normalize();
     }
-
     /**
      * This method implements the upload of medical certificates for sickness absence requests.
      * @param file

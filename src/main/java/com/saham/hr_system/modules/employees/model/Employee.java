@@ -42,7 +42,7 @@ public class Employee implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "matriculation", nullable = false)
+    @Column(name = "matriculation", nullable = false, unique = true)
     private String matriculation;
 
     @Column(name = "join_date")

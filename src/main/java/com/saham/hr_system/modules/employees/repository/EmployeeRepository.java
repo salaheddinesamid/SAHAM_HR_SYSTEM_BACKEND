@@ -40,9 +40,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     boolean existsByEmail(String email);
 
     /**
-     *
-     * @param matriculation
-     * @return
+     * Check if an employee exists by matriculation number.
+     * @param matriculation: Matriculation number of the employee.
+     * @return true if an employee with the given matriculation number exists, false otherwise.
      */
     boolean existsByMatriculation(String matriculation);
 

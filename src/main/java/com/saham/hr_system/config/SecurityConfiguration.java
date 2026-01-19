@@ -76,7 +76,10 @@ public class SecurityConfiguration {
                          Analytics Configuration
                          */
                         .requestMatchers("/api/v1/analytics/**").permitAll()
-
+                        /*
+                          Configuration of Payroll Management endpoints authorization
+                         */
+                        .requestMatchers("/api/v1/payrolls/**").permitAll()
                         .requestMatchers("/websocket").permitAll()
                         // Any other endpoint requires authentication
                         .anyRequest().authenticated()
