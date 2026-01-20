@@ -117,17 +117,19 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
         String refNumber = absenceReferenceNumberGenerator.generate(absenceRequest);
         absenceRequest.setReferenceNumber(refNumber);
 
+        // save the absence request:
+        AbsenceRequest savedAbsenceRequest = absenceRequestRepository.save(absenceRequest);
         // asynchronous email notifications:
         CompletableFuture.runAsync(() -> {
             try {
-                absenceRequestEmailSender.notifyEmployee(absenceRequest);
-                absenceRequestEmailSender.notifyManager(absenceRequest);
+                absenceRequestEmailSender.notifyEmployee(savedAbsenceRequest);
+                absenceRequestEmailSender.notifyManager(savedAbsenceRequest);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
 
         // save to database:
-        return absenceRequestRepository.save(absenceRequest);
+        return savedAbsenceRequest;
     }
 }
