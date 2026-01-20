@@ -15,6 +15,7 @@ target/
 
 # Ignore temporary custom folders
 src/main/resources/folders/
+src/main/resources/payrolls/**
 
 
 ############################################
