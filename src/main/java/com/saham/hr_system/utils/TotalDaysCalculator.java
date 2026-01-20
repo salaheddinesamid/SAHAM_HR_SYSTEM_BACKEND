@@ -37,7 +37,7 @@ public class TotalDaysCalculator {
         // Expand Holiday days into a Set
         Set<LocalDate> holidayDates =
                 holidays
-                        .stream().flatMap(h -> h.getStartDate().datesUntil(h.getEndDate().plusDays(1)))
+                        .stream().flatMap(h -> h.getStartDate().datesUntil(h.getEndDate()))
                         .collect(Collectors.toSet());
 
         return
