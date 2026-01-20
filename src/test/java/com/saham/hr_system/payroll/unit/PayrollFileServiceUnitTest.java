@@ -81,8 +81,8 @@ public class PayrollFileServiceUnitTest {
         List<PDDocument> employeesDocs = payrollFileService.splitPayrollPDF(document);
 
         // Act:
-        Map<String, PDDocument> results = payrollFileService.processPayrollPDF(employeesDocs);
+        Map<Integer, PDDocument> results = payrollFileService.processPayrollPDF(employeesDocs);
         // Verify:
-        assertEquals(3, results.keySet().size());
+        assertEquals(3, results.size());
     }
 }

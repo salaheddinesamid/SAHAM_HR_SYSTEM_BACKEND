@@ -80,7 +80,8 @@ public class PayrollFileServiceImpl implements PayrollFileService {
                 matriculation = parts[2];
             }
         }
-        return Integer.parseInt(matriculation);
+        log.info("Extracted matriculation number: {}", matriculation);
+        return 0;
     }
     @Override
     public void savePayrollPDF(int matriculationNumber,
