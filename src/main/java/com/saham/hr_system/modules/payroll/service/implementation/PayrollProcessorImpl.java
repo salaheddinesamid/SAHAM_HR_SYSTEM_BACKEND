@@ -6,6 +6,7 @@ import com.saham.hr_system.modules.payroll.model.PayrollHistoryStatus;
 import com.saham.hr_system.modules.payroll.repository.PayrollHistoryRepository;
 import com.saham.hr_system.modules.payroll.service.PayrollProcessor;
 import com.saham.hr_system.modules.payroll.utils.PayrollPdfFileNameGenerator;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+@Slf4j
 @Service
 public class PayrollProcessorImpl implements PayrollProcessor {
     private final PayrollFileServiceImpl payrollFileService;
@@ -40,6 +43,7 @@ public class PayrollProcessorImpl implements PayrollProcessor {
             MultipartFile file
     ) throws IOException {
         PayrollHistory payrollHistory = new PayrollHistory();
+        payrollHistory.setExecutionDate(LocalDateTime.now());
         try{
             int succeedPayrollCount = 0;
             int failedPayrollCount = 0;
@@ -49,10 +53,11 @@ public class PayrollProcessorImpl implements PayrollProcessor {
             // Split the PDF into individual employee payrolls:
             List<PDDocument> employeeDocs = payrollFileService.splitPayrollPDF(document);
             // Extract matriculation and map documents
-            Map<Integer, PDDocument> employeesPayrollMap = payrollFileService
+            Map<String, PDDocument> employeesPayrollMap = payrollFileService
                     .processPayrollPDF(employeeDocs);
             // Iterate over each employee payroll map, save the payroll PDF file, and update counts
-            for (Integer matriculation : employeesPayrollMap.keySet()){
+            for (String matriculation : employeesPayrollMap.keySet()){
+                log.info("Processing payroll for employee matriculation: " + matriculation);
                 try{
                     String fileName = payrollPdfFileNameGenerator.generateUniqueFileName(
                             matriculation,
@@ -69,7 +74,7 @@ public class PayrollProcessorImpl implements PayrollProcessor {
                                     employeePayrollDoc
                             );
                     succeedPayrollCount += 1;
-
+                    log.info("Successfully processed payroll for employee matriculation: " + matriculation);
                 }catch (IOException exception){
                     throw new IOException();
                 }

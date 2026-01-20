@@ -53,15 +53,15 @@ public class PayrollFileServiceImpl implements PayrollFileService {
 
 
     @Override
-    public Map<Integer, PDDocument> processPayrollPDF(List<PDDocument> documents) throws IOException {
-        Map<Integer, PDDocument> employeesPayrollMap =
+    public Map<String, PDDocument> processPayrollPDF(List<PDDocument> documents) throws IOException {
+        Map<String, PDDocument> employeesPayrollMap =
                 new HashMap<>();
         PDFTextStripper stripper = new PDFTextStripper();
         documents
                 .forEach(document -> {
                     try {
                         String text = stripper.getText(document);
-                        Integer matriculation = extractEmployeeMatriculationNumber(text);
+                        String matriculation = extractEmployeeMatriculationNumber(text);
                         log.info("Extracted matriculation number: {}", matriculation);
                         employeesPayrollMap.put(matriculation, document);
                     } catch (IOException e) {
@@ -71,28 +71,29 @@ public class PayrollFileServiceImpl implements PayrollFileService {
         return employeesPayrollMap;
     }
 
-    private int extractEmployeeMatriculationNumber(String fullText) {
+    private String extractEmployeeMatriculationNumber(String fullText) {
         String[] splitText = fullText.split("\n");
         String matriculation = "";
         for(int i = 0; i < splitText.length; i++) {
             if(splitText[i].contains("Matriculation")) {
                 String[] parts = splitText[i].split(" ");
                 matriculation = parts[2];
+                matriculation = matriculation.replace("\r", "").trim();
             }
         }
         log.info("Extracted matriculation number: {}", matriculation);
-        return 0;
+        return matriculation;
     }
     @Override
-    public void savePayrollPDF(int matriculationNumber,
+    public void savePayrollPDF(String matriculationNumber,
                                int month,
                                int year,
-                               String filName, PDDocument document) throws IOException {
+                               String fileName, PDDocument document) throws IOException {
         // Check if the file is empty:
         if(document == null) {
             throw new IllegalArgumentException("The payroll document is null.");
         }
-        Path target = uploadPath.resolve(String.valueOf(matriculationNumber))
+        Path target = uploadPath.resolve(matriculationNumber)
                         .resolve(String.valueOf(year))
                                 .resolve(String.valueOf(month));
         // Check if the directory already exists:
@@ -100,7 +101,10 @@ public class PayrollFileServiceImpl implements PayrollFileService {
             Files.createDirectories(target);
         }
 
-        document.save(target.toFile());
+        Path copyPath = target
+                .resolve(fileName);
+
+        document.save(copyPath.toFile());
         document.close();
         log.info("Saved payroll file {}", target);
     }

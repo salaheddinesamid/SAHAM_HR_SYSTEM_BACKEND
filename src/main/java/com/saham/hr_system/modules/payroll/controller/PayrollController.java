@@ -33,7 +33,7 @@ public class PayrollController {
                 year,
                 file
         );
-        return ResponseEntity.ok(null);
+        return ResponseEntity.status(200).build();
     }
 
     @GetMapping("history/get_all")

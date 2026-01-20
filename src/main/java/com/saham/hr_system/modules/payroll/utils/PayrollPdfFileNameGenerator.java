@@ -7,7 +7,7 @@ import java.util.Base64;
 @Component
 public class PayrollPdfFileNameGenerator {
     public String generateUniqueFileName(
-            int matriculationNumber,
+            String matriculationNumber,
             int month,
             int year
     ){
