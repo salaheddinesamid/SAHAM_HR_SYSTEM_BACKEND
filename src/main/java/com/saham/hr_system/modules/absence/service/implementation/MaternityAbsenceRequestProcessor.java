@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
  *
  */
 @Service
-public class PaternityAbsenceRequestProcessor implements AbsenceRequestProcessor {
+public class MaternityAbsenceRequestProcessor implements AbsenceRequestProcessor {
     private final AbsenceRequestRepo absenceRequestRepo;
     private final EmployeeRepository employeeRepository;
     private final AbsenceRequestValidatorImpl absenceRequestValidator;
@@ -28,7 +28,7 @@ public class PaternityAbsenceRequestProcessor implements AbsenceRequestProcessor
     private final AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;
     private final AbsenceRequestEmailSenderImpl absenceRequestEmailSender;
     @Autowired
-    public PaternityAbsenceRequestProcessor(AbsenceRequestRepo absenceRequestRepo, EmployeeRepository employeeRepository, AbsenceRequestValidatorImpl absenceRequestValidator, AbsenceRequestMapperImpl absenceRequestMapper, TotalDaysCalculator absenceTotalDaysCalculator, AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator, AbsenceRequestEmailSenderImpl absenceRequestEmailSender) {
+    public MaternityAbsenceRequestProcessor(AbsenceRequestRepo absenceRequestRepo, EmployeeRepository employeeRepository, AbsenceRequestValidatorImpl absenceRequestValidator, AbsenceRequestMapperImpl absenceRequestMapper, TotalDaysCalculator absenceTotalDaysCalculator, AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator, AbsenceRequestEmailSenderImpl absenceRequestEmailSender) {
         this.absenceRequestRepo = absenceRequestRepo;
         this.employeeRepository = employeeRepository;
         this.absenceRequestValidator = absenceRequestValidator;

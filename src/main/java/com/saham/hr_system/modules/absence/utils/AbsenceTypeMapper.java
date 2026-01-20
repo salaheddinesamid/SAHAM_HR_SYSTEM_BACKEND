@@ -9,6 +9,7 @@ public class AbsenceTypeMapper {
         return switch (absenceType) {
             case "SICKNESS" -> "Absence Maladie";
             case "REMOTE_WORK" -> "Télétravail";
+            case "MATERNITY" -> "Maternité";
             default -> "Unknown Absence Type";
         };
     }
