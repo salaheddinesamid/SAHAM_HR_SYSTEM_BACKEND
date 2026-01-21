@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 public class EmployeeDetailsDto {
-
+    private long employeeId;
     private String fullName;
     private String email;
     private String entity;
@@ -23,6 +23,7 @@ public class EmployeeDetailsDto {
     private String managerName;
 
     public EmployeeDetailsDto(Employee employee, EmployeeBalance balance) {
+        this.employeeId = employee.getId();
         this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
         this.email = employee.getEmail();
         this.entity = employee.getEntity();
