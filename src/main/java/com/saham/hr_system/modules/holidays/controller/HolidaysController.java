@@ -6,7 +6,6 @@ import com.saham.hr_system.modules.holidays.dto.NewHolidayDto;
 import com.saham.hr_system.modules.holidays.model.Holiday;
 import com.saham.hr_system.modules.holidays.service.HolidayModifier;
 import com.saham.hr_system.modules.holidays.service.implementation.HolidayAdderServiceImpl;
-import com.saham.hr_system.modules.holidays.service.implementation.HolidayModifierImpl;
 import com.saham.hr_system.modules.holidays.service.implementation.HolidayQueryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +19,12 @@ public class HolidaysController {
 
     private final HolidayQueryServiceImpl holidayQueryService;
     private final HolidayAdderServiceImpl holidayAdderService;
-    private final HolidayModifierImpl holidayModifier;
     private final List<HolidayModifier> holidayModifiers;
 
     @Autowired
-    public HolidaysController(HolidayQueryServiceImpl holidayQueryService, HolidayAdderServiceImpl holidayAdderService, HolidayModifierImpl holidayModifier, List<HolidayModifier> holidayModifiers) {
+    public HolidaysController(HolidayQueryServiceImpl holidayQueryService, HolidayAdderServiceImpl holidayAdderService, List<HolidayModifier> holidayModifiers) {
         this.holidayQueryService = holidayQueryService;
         this.holidayAdderService = holidayAdderService;
-        this.holidayModifier = holidayModifier;
         this.holidayModifiers = holidayModifiers;
     }
 
@@ -49,7 +46,7 @@ public class HolidaysController {
                 .body(response);
     }
 
-    @PutMapping("update/{name}/{type}")
+    @PatchMapping("update/{name}/{type}")
     public ResponseEntity<?> updateHoliday(@PathVariable String name, @PathVariable String type, @RequestBody HolidayModificationDto holidayModificationDto) {
         HolidayModifier modifier =
             holidayModifiers.stream()
@@ -57,13 +54,6 @@ public class HolidaysController {
                     .findFirst().orElseThrow();
         Holiday response =
                 modifier.modifyHoliday(name, holidayModificationDto);
-
-        return ResponseEntity.status(200).body(response);
-    }
-    @PatchMapping("update/{name}")
-    public ResponseEntity<?> partiallyUpdateHoliday(@PathVariable String name, @RequestBody HolidayModificationDto holidayModificationDto) {
-        Holiday response =
-                holidayModifier.modifyHoliday(name, holidayModificationDto);
 
         return ResponseEntity.status(200).body(response);
     }

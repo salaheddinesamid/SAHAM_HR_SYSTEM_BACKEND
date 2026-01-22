@@ -24,6 +24,11 @@ public class HolidayModifierImpl implements HolidayModifier {
     }
 
     @Override
+    public boolean supports(String type) {
+        return false;
+    }
+
+    @Override
     public Holiday modifyHoliday(String name, HolidayModificationDto dto) {
         Holiday holiday =
                 holidayRepository.findByName(name)

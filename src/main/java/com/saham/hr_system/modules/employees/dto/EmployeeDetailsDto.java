@@ -13,6 +13,8 @@ import java.util.List;
 public class EmployeeDetailsDto {
     private long employeeId;
     private String fullName;
+    private String firstName;
+    private String lastName;
     private String email;
     private String entity;
     private String occupation;
@@ -25,6 +27,8 @@ public class EmployeeDetailsDto {
     public EmployeeDetailsDto(Employee employee, EmployeeBalance balance) {
         this.employeeId = employee.getId();
         this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
+        this.firstName = employee.getFirstName();
+        this.lastName = employee.getLastName();
         this.email = employee.getEmail();
         this.entity = employee.getEntity();
         this.joinDate = employee.getJoinDate();
