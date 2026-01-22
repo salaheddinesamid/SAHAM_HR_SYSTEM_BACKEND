@@ -1,6 +1,5 @@
 package com.saham.hr_system.jwt;
 
-import com.saham.hr_system.exception.ExpiredJwtTokenException;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

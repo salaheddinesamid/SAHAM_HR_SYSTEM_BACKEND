@@ -1,19 +1,24 @@
 package com.saham.hr_system.modules.payroll.service.implementation;
 
+import com.saham.hr_system.modules.payroll.dto.EmployeePayrollDetailsDto;
+import com.saham.hr_system.modules.payroll.dto.PayrollDetailsDto;
 import com.saham.hr_system.modules.payroll.service.PayrollFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -22,9 +27,11 @@ public class PayrollFileServiceImpl implements PayrollFileService {
     private final Path uploadPath;
     private static List<String> allowedExtension = List.of("pdf");
     private static final String password = "T315730"; // for testing purposes
+    private final PayrollTokenServiceImpl payrollTokenService;
 
-    public PayrollFileServiceImpl(@Value("${file.upload.payrolls}") String path) {
+    public PayrollFileServiceImpl(@Value("${file.upload.payrolls}") String path, PayrollTokenServiceImpl payrollTokenService) {
         this.uploadPath = Paths.get(path).toAbsolutePath().normalize();
+        this.payrollTokenService = payrollTokenService;
     }
 
     @Override
@@ -107,5 +114,43 @@ public class PayrollFileServiceImpl implements PayrollFileService {
         document.save(copyPath.toFile());
         document.close();
         log.info("Saved payroll file {}", target);
+    }
+
+    @Override
+    public List<PayrollDetailsDto> getPayrollsOverview(String matriculation, int year) throws IOException {
+        Path path = uploadPath
+                .resolve(matriculation)
+                .resolve(String.valueOf(year));
+        if(!Files.exists(path)){
+            return List.of();
+        }
+
+        try(Stream<Path> months = Files.list(path)){
+            return
+                    months
+                            .filter(Files::isDirectory)
+                            .map(m-> {
+                                int month = Integer.parseInt(m.getFileName().toString());
+
+                                String downloadToken = payrollTokenService.generateToken(
+                                        matriculation,
+                                        month,
+                                        year
+                                );
+                                return new PayrollDetailsDto(
+                                        month,
+                                        "/api/v1/payrolls/download/" + downloadToken
+                                );
+                            })
+                            .toList();
+        }
+    }
+
+    @Override
+    public Resource downloadPayroll(String token) {
+        // Verify the token:
+        // Extract the claims (matriculation, month, year):
+        // return the file as Resource:
+        return null;
     }
 }

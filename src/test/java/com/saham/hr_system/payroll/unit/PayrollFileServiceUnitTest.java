@@ -1,6 +1,7 @@
 package com.saham.hr_system.payroll.unit;
 
 import com.saham.hr_system.modules.payroll.service.implementation.PayrollFileServiceImpl;
+import com.saham.hr_system.modules.payroll.service.implementation.PayrollTokenServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -23,8 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class PayrollFileServiceUnitTest {
     @Mock
     private Splitter splitter;
-
-    private final PayrollFileServiceImpl payrollFileService = new PayrollFileServiceImpl("");
+    @Mock
+    private PayrollTokenServiceImpl payrollTokenService;
+    private final PayrollFileServiceImpl payrollFileService = new PayrollFileServiceImpl("", payrollTokenService);
     private File file;
 
     @BeforeEach

@@ -1,6 +1,8 @@
 package com.saham.hr_system.modules.payroll.service;
 
+import com.saham.hr_system.modules.payroll.dto.PayrollDetailsDto;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -39,4 +41,18 @@ public interface PayrollFileService {
      * @throws IOException
      */
     void savePayrollPDF(String matriculation, int month, int year, String fileName, PDDocument document) throws IOException;
+
+    /**
+     *
+     * @param matriculation
+     * @param year
+     * @return
+     */
+    List<PayrollDetailsDto> getPayrollsOverview(String matriculation, int year) throws IOException;
+    /**
+     *
+     * @param URL
+     * @return
+     */
+    Resource downloadPayroll(String URL);
 }
