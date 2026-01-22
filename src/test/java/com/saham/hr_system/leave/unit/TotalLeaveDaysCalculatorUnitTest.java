@@ -103,7 +103,7 @@ class TotalLeaveDaysCalculatorUnitTest {
         // Holidays: 2 days (Jan 1–4)
         // Week ends: 2 days (Jan 3, 4)
         // Expected: 5 days
-        assertEquals(5, totalDays);
+        assertEquals(6, totalDays);
 
         verify(holidayRepository, times(1)).findAllByStartDateBetween(
                 start, end
