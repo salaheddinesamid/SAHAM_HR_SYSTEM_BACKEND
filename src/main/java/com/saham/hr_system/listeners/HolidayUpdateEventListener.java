@@ -1,4 +1,4 @@
-package com.saham.hr_system.batches;
+package com.saham.hr_system.listeners;
 
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.EmployeeBalance;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  *
  */
 @Component
-public class EmployeeLeaveUpdateBatch {
+public class HolidayUpdateEventListener {
 
     private final LeaveRepository leaveRepository;
     private final EmployeeRepository employeeRepository;
@@ -29,7 +29,7 @@ public class EmployeeLeaveUpdateBatch {
     private final LeaveBalanceAdjustmentRepository leaveBalanceAdjustmentRepository;
 
     @Autowired
-    public EmployeeLeaveUpdateBatch(LeaveRepository leaveRepository, EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveBalanceAdjustmentRepository leaveBalanceAdjustmentRepository) {
+    public HolidayUpdateEventListener(LeaveRepository leaveRepository, EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveBalanceAdjustmentRepository leaveBalanceAdjustmentRepository) {
         this.leaveRepository = leaveRepository;
         this.employeeRepository = employeeRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;

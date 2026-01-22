@@ -14,4 +14,10 @@ public class HolidayExceptionController {
         return ResponseEntity.status(200)
                 .body(Map.of("message", "Holiday not found"));
     }
+
+    @ExceptionHandler(HolidayDateCannotBeUpdated.class)
+    public ResponseEntity<?> handleHolidayDateCannotBeUpdated(){
+        return ResponseEntity.status(409)
+                .body(Map.of("message", "Holiday date cannot be updated"));
+    }
 }

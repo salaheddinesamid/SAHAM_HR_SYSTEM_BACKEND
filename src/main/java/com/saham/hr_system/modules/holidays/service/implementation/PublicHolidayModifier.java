@@ -2,50 +2,49 @@ package com.saham.hr_system.modules.holidays.service.implementation;
 
 import com.saham.hr_system.modules.holidays.dto.HolidayModificationDto;
 import com.saham.hr_system.modules.holidays.dto.HolidayUpdatedEvent;
-import com.saham.hr_system.modules.holidays.exception.HolidayNotFoundException;
 import com.saham.hr_system.modules.holidays.model.Holiday;
+import com.saham.hr_system.modules.holidays.model.HolidayType;
 import com.saham.hr_system.modules.holidays.repository.HolidayRepository;
 import com.saham.hr_system.modules.holidays.service.HolidayModifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
-public class HolidayModifierImpl implements HolidayModifier {
+public class PublicHolidayModifier implements HolidayModifier {
     private final HolidayRepository holidayRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public HolidayModifierImpl(HolidayRepository holidayRepository, ApplicationEventPublisher applicationEventPublisher) {
+    public PublicHolidayModifier(HolidayRepository holidayRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.holidayRepository = holidayRepository;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
+    public boolean supports(String type) {
+        return HolidayType.PUBLIC.equals(HolidayType.valueOf(type));
+    }
+
+    @Override
     public Holiday modifyHoliday(String name, HolidayModificationDto dto) {
+        // fetch the holiday from the db:
         Holiday holiday =
                 holidayRepository.findByName(name)
-                        .orElseThrow(()-> new HolidayNotFoundException(name));
-        if(dto.getName()!= null){
-            holiday.setName(dto.getName());
-        }
-        // Update the start and end dates of the holiday
+                        .orElseThrow();
         if(dto.getStartDate() != null || dto.getEndDate() != null){
             updateHolidayDates(holiday, dto);
         }
+        if(dto.getName() != null){
+            holiday.setName(dto.getName());
+        }
         if(dto.getLeaveDays() != 0){
             holiday.setLeaveDays(dto.getLeaveDays());
-
         }
-        holiday.setLastUpdate(LocalDateTime.now());
-        Holiday updatedHoliday = holidayRepository.save(holiday);
-
-
-        // save the holiday:
-        return updatedHoliday;
+        // save and return the updated holiday:
+        return holidayRepository.save(holiday);
     }
+
     private void updateHolidayDates(Holiday holiday, HolidayModificationDto dto) {
         // update the start date if not null
         if (dto.getStartDate() != null) {
@@ -60,6 +59,5 @@ public class HolidayModifierImpl implements HolidayModifier {
                 .publishEvent(
                         new HolidayUpdatedEvent(holiday, 0)
                 );
-        // save the holdiay update
     }
 }
