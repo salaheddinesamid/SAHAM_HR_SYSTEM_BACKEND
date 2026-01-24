@@ -60,10 +60,6 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
         double totalDays =
                 leaveDaysCalculator.calculateTotalDays(requestDto.getStartDate(), requestDto.getEndDate());
 
-        if(balance.getCurrentBalance() == 0){
-            throw new InsufficientBalanceException();
-        }
-
         // Otherwise:
         LeaveRequest leaveRequest = new LeaveRequest();
         leaveRequest.setStartDate(requestDto.getStartDate());
