@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * DTO representing the full details of an absence request.
  * <p>
  * This class is used to expose processed absence information to the client,
- * including request metadata, approver status, and attached medical documents.
+ * including request metadata, approve status, and attached medical documents.
  * </p>
  */
 @Data

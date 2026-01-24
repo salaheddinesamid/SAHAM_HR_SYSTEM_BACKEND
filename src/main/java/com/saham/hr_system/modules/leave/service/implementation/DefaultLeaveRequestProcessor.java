@@ -83,32 +83,17 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
         leaveRequest.setReferenceNumber(refNumber);
         LeaveRequest savedRequest = leaveRequestRepository.save(leaveRequest); // save the leave request before sending the emails
 
-
-        // notify the employee:
-        /*
-        CompletableFuture.runAsync(() ->
-                {
-                    try {
-                        leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
-                    } catch (MessagingException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        );
-
         // notify the manager:
         CompletableFuture.runAsync(() ->
                 {
                     try {
+                        leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
                         leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest);
                     } catch (MessagingException e) {
                         throw new RuntimeException(e);
                     }
                 }
         );
-
-         */
-
         // return the saved request:
         return savedRequest;
     }

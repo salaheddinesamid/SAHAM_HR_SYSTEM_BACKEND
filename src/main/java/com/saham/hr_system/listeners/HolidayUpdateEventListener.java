@@ -9,6 +9,7 @@ import com.saham.hr_system.modules.employees.repository.LeaveBalanceAdjustmentRe
 import com.saham.hr_system.modules.holidays.dto.HolidayUpdatedEvent;
 import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  *
  */
 @Component
+@Slf4j
 public class HolidayUpdateEventListener {
 
     private final LeaveRepository leaveRepository;
@@ -45,6 +47,7 @@ public class HolidayUpdateEventListener {
      */
     @EventListener(HolidayUpdatedEvent.class)
     public void updateEmployeesLeaveAndBalance(HolidayUpdatedEvent event){
+        log.info("Received HolidayUpdatedEvent for holiday Name: {}", event.getHoliday().getName());
         // Fetch the overlapping leaves:
         List<Leave> overlappingLeaves =
                 leaveRepository.findOverlappingLeaves(
@@ -59,7 +62,10 @@ public class HolidayUpdateEventListener {
         Set<EmployeeBalance> employeeBalances =
                 employees.stream().map(Employee::getEmployeeBalance)
                         .collect(Collectors.toSet());
+        // recalculate the total leave days
+        log.info("Recalculating leaves and balances for {} affected leaves.", overlappingLeaves.size());
 
+        long totalLeaveDays = 0;
         // recalculate and update the affected leaves
         updateEmployeeLeaveAndBalance(
                 overlappingLeaves,
