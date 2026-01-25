@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,7 +113,7 @@ public class LeaveServiceImpl implements LeaveService {
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow();
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("requestDate").descending());
 
         Page<LeaveRequest> requests = leaveRequestRepository.findAllByEmployee(employee, pageable);
 
@@ -128,7 +129,7 @@ public class LeaveServiceImpl implements LeaveService {
         // Fetch the subordinates
         List<Employee> subordinates = employeeRepository.findAllByManagerId(manager.getId());
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("requestDate").descending());
         // Fetch leave requests (IN PROCESS ONLY):
         Page<LeaveRequest> requests = leaveRequestRepository
                 .findByEmployeeInAndStatusAndApprovedByManager(
@@ -143,7 +144,7 @@ public class LeaveServiceImpl implements LeaveService {
     @Override
     public Page<LeaveRequestResponse> getAllLeaveRequestsForHR(int page, int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("requestDate").descending());
         // Fetch all leave requests for HR:
         Page<LeaveRequest> requests =
                 leaveRequestRepository.findAllByApprovedByManagerOrStatusOrStatus(

@@ -53,7 +53,7 @@ public class DocumentServiceImpl implements DocumentService {
         // notify the employee and HR:
         CompletableFuture.runAsync(()->{
             try{
-                documentRequestEmailSender.notifyEmployee(documentRequest);
+                //documentRequestEmailSender.notifyEmployee(documentRequest);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

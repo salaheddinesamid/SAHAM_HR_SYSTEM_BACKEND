@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("issueDate").descending());
         Page<AbsenceRequest> absenceRequests =
                 absenceRequestRepo.findAllByEmployee(employee, pageable);
 
@@ -52,7 +53,7 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
         List<Employee> subordinates =
                 employeeRepository.findAllByManagerId(manager.getId());
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("issueDate").descending());
 
         Page<AbsenceRequest> absenceRequests =
                 absenceRequestRepo.findAllByEmployeeIn(subordinates, pageable);
@@ -62,7 +63,7 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
 
     @Override
     public Page<AbsenceRequestDetails> getAllForHR(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("issueDate").descending());
         Page<AbsenceRequest> absenceRequests =
                 absenceRequestRepo.findAllByStatusOrStatusOrApprovedByManager(
                         AbsenceRequestStatus.APPROVED,

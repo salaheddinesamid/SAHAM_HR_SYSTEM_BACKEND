@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,7 +34,7 @@ public class DocumentRequestQueryImpl implements DocumentRequestQuery {
                     .orElseThrow(() -> new UserNotFoundException(email));
 
 
-            Pageable pageable = PageRequest.of(page, size);
+            Pageable pageable = PageRequest.of(page, size, Sort.by("requestDate").descending());
             Page<DocumentRequest> requests =
                     documentRequestRepository.findAllByEmployee(employee, pageable);
 
@@ -47,7 +48,7 @@ public class DocumentRequestQueryImpl implements DocumentRequestQuery {
     @Override
     public Page<DocumentRequestResponseDto> getAllEmployeesRequests(int page, int size) {
         Page<DocumentRequest> requests =
-                documentRequestRepository.findAllByStatus(DocumentRequestStatus.IN_PROCESS,PageRequest.of(page, size));
+                documentRequestRepository.findAllByStatus(DocumentRequestStatus.IN_PROCESS,PageRequest.of(page, size, Sort.by("requestDate").descending()));
 
         return requests
                 .map(DocumentRequestResponseDto::new);
