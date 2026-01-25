@@ -1,5 +1,6 @@
 package com.saham.hr_system.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.saham.hr_system.exception.ExpiredJwtTokenException;
 import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.auth.service.implementation.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -62,7 +63,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException ex) {
             log.warn("JWT expired: {}", ex.getMessage());
-            filterChain.doFilter(request, response); // ⬅ IMPORTANT
+            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, ex.getMessage(), "JWT_EXPIRED");
         } catch (Exception ex) {
             log.error("JWT authentication failed", ex);
             filterChain.doFilter(request, response); // ⬅ IMPORTANT
