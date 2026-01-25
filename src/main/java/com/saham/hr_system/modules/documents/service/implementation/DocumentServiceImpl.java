@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class DocumentServiceImpl implements DocumentService {
 
-    private final EmployeeRepository employeeRepository;;
+    private final EmployeeRepository employeeRepository;
     private final DocumentRequestRepository documentRequestRepository;
     private final DocumentRequestEmailSenderImpl documentRequestEmailSender;
     private final DocumentRefNumberGenerator documentRefNumberGenerator;

@@ -4,6 +4,7 @@ import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveDocumentStorageServiceImpl;
+import com.saham.hr_system.modules.leave.service.implementation.LeaveRequestQueryImpl;
 import com.saham.hr_system.modules.leave.service.implementation.LeaveServiceImpl;
 import com.saham.hr_system.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
@@ -25,12 +26,14 @@ public class LeaveController {
     private final LeaveServiceImpl leaveService;
     private final LeaveDocumentStorageServiceImpl documentService;
     private final TotalDaysCalculator totalDaysCalculator;
+    private final LeaveRequestQueryImpl leaveRequestQuery;
     private final JwtUtilities jwtUtilities;
 
-    public LeaveController(LeaveServiceImpl leaveService, LeaveDocumentStorageServiceImpl documentService, TotalDaysCalculator totalDaysCalculator, JwtUtilities jwtUtilities) {
+    public LeaveController(LeaveServiceImpl leaveService, LeaveDocumentStorageServiceImpl documentService, TotalDaysCalculator totalDaysCalculator, LeaveRequestQueryImpl leaveRequestQuery, JwtUtilities jwtUtilities) {
         this.leaveService = leaveService;
         this.documentService = documentService;
         this.totalDaysCalculator = totalDaysCalculator;
+        this.leaveRequestQuery = leaveRequestQuery;
         this.jwtUtilities = jwtUtilities;
     }
 
@@ -56,6 +59,15 @@ public class LeaveController {
         return ResponseEntity
                 .status(200)
                 .body("Leave applied successfully");
+    }
+
+    @GetMapping("/requests/search")
+    public ResponseEntity<?> searchByRefNumber(
+            @RequestParam String refNumber
+    ){
+        return ResponseEntity
+                .status(200)
+                .body(leaveRequestQuery.getLeaveRequestByReference(refNumber));
     }
 
     @GetMapping("calculate-total-leave-days")

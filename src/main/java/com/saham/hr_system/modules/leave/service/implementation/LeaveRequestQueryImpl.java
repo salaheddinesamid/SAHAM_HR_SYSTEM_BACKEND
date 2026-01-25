@@ -2,6 +2,8 @@ package com.saham.hr_system.modules.leave.service.implementation;
 
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.leave.dto.LeaveRequestResponse;
+import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveRequestQuery;
@@ -39,5 +41,15 @@ public class LeaveRequestQueryImpl implements LeaveRequestQuery {
                                 sub,
                                 LeaveRequestStatus.IN_PROCESS
                         )).reduce(0L, Long::sum);
+    }
+
+    @Override
+    public LeaveRequestResponse getLeaveRequestByReference(String reference) {
+        LeaveRequest leaveRequest =
+                leaveRequestRepository.findByReferenceNumber(reference)
+                        .orElseThrow();
+        return new LeaveRequestResponse(
+                leaveRequest
+        );
     }
 }

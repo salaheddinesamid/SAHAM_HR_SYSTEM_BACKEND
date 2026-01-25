@@ -47,7 +47,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/leaves/requests/subordinates/**").hasAuthority("MANAGER") // The manager of a team is the only one who can see the leave requests of his subordinates, approved and reject.
                         .requestMatchers("/api/v1/leaves/requests/hr/**").hasAuthority("HR")
                         .requestMatchers("/api/v1/leaves/calculate-total-leave-days/**").permitAll()
-                        .requestMatchers("/api/v1/leaves/**").hasAnyAuthority("HR","MANAGER","EMPLOYEE")
+                        //.requestMatchers("/api/v1/leaves/**").hasAnyAuthority("HR","MANAGER","EMPLOYEE")
+                        .requestMatchers("/api/v1/leaves/requests/search").permitAll()
 
                         /*
                           Configuration of Absence endpoints authorization
