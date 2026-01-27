@@ -135,10 +135,10 @@ public class AbsenceController {
      */
     @PutMapping("/requests/subordinates/reject-request")
     public ResponseEntity<?> rejectSubordinateRequest(
-            @RequestParam String rejectedBy,
+            Authentication authentication,
             @RequestParam String refNumber
     ) throws Exception {
-
+        String rejectedBy = authentication.getName();
         absenceRejection.rejectSubordinate(rejectedBy, refNumber);
         return ResponseEntity.status(200).body("Absence request has been rejected");
     }
