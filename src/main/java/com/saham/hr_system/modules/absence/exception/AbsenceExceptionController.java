@@ -13,4 +13,11 @@ public class AbsenceExceptionController {
                 .status(404)
                 .body(ex.getMessage());
     }
+
+    @ExceptionHandler(MedicalCerificateNotFoundException.class)
+    public ResponseEntity<?> handleMedicalCertificateNotFound(MedicalCerificateNotFoundException ex) {
+        return ResponseEntity
+                .status(404)
+                .body("Medical Certificate not found with path: " + ex.getMessage());
+    }
 }

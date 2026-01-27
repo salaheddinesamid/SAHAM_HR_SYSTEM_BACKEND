@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.absence.service.implementation;
 
+import com.saham.hr_system.modules.absence.exception.MedicalCerificateNotFoundException;
 import com.saham.hr_system.modules.absence.service.DocumentStorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,9 +92,13 @@ public class SicknessAbsenceDocumentStorageService implements DocumentStorageSer
 
     @Override
     public Resource download(String filePath) throws IOException {
-        // resolve the file:
-        File targetPath = uploadPath.resolve(filePath).toFile();
-        // converting the file path to file:
-        return new UrlResource(targetPath.toURI());
+        try{
+            // resolve the file:
+            File targetPath = uploadPath.resolve(filePath).toFile();
+            // converting the file path to file:
+            return new UrlResource(targetPath.toURI());
+        }catch (IOException exception){
+            throw new MedicalCerificateNotFoundException(filePath);
+        }
     }
 }
