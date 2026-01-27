@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Data
 public class LeaveDetailsDto {
     private Long leaveId;
+    private String refNumber;
     private LocalDate fromDate;
     private LocalDate toDate;
     private String leaveType;
@@ -15,6 +16,7 @@ public class LeaveDetailsDto {
 
     public LeaveDetailsDto(Leave leave) {
         this.leaveId = leave.getLeaveId();
+        this.refNumber = leave.getReferenceNumber();
         this.fromDate = leave.getFromDate();
         this.toDate = leave.getToDate();
         this.leaveType = leave.getLeaveType().toString();
