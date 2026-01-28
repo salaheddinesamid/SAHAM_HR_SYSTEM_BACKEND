@@ -72,7 +72,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){
             throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());
         }
-        // Check if the request has already been declined:
+        // Check if the request has already been rejected:
         if(leaveRequest.getStatus().equals(LeaveRequestStatus.REJECTED)){
             throw new LeaveRequestAlreadyApprovedException(leaveRequest.getEmployee().getEmail());
         }
@@ -108,14 +108,8 @@ public class AnnualLeaveApproval implements LeaveApproval {
         CompletableFuture.runAsync(()->{
             try {
                 leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        // notify the Manager:
-        CompletableFuture.runAsync(()->{
-            try {
                 leaveApprovalEmailSender.sendHRApprovalEmailToManager(leaveRequest);
+
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
@@ -200,14 +194,8 @@ public class AnnualLeaveApproval implements LeaveApproval {
         CompletableFuture.runAsync(()->{
             try {
                 leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        // notify the manager:
-        CompletableFuture.runAsync(()->{
-            try {
                 leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
