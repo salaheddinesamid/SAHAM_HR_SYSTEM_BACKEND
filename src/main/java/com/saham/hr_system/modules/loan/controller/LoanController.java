@@ -26,8 +26,8 @@ public class LoanController {
     @GetMapping("/requests/employee/get-all")
     public ResponseEntity<?> getAllEmployeeRequests(
             @RequestParam String email,
-            @RequestParam int pageNumber,
-            @RequestParam int pageSize
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize
     ){
         return
                 ResponseEntity

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class LoanRequestResponseDto {
     private Long id;
+    private String refNumber;
     private String requestedBy;
     private double amount;
     private String type;
@@ -22,6 +23,7 @@ public class LoanRequestResponseDto {
             LoanRequest loanRequest
     ){
         this.id = loanRequest.getRequestId();
+        this.refNumber = loanRequest.getReferenceNumber();
         this.requestedBy = loanRequest.getEmployee().getFullName();
         this.amount = loanRequest.getAmount();
         this.type = loanRequest.getType().toString();
