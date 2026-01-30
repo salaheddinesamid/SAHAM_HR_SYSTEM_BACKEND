@@ -12,6 +12,6 @@ class HrSystemApplicationTests {
 
 	@Test
 	void contextLoads() {
-	}
 
+	}
 }

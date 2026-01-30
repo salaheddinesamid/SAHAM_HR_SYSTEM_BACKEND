@@ -9,6 +9,13 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      image: mysql:8.0
+      env:
+        MYSQL_ROOT_PASSWORD: medjool
+        MYSQL_DATABASE: saham_hr_db_test
+      ports:
+        - 3306:3306
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4

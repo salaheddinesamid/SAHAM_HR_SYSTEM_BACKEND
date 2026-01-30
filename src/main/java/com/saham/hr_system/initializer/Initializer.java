@@ -15,6 +15,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+
 public class Initializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
