@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,34 +29,32 @@ public class LoanRequestQueryServiceImpl implements LoanRequestQueryService {
     }
 
     @Override
-    public List<LoanRequestResponseDto> getAllEmployeeRequests(String email, int page, int size) {
+    public Page<LoanRequestResponseDto> getAllEmployeeRequests(String email, int page, int size) {
         // fetch the employee requests from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("issueDate").descending());
         // fetch the requests from db:
-        List<LoanRequest> requests =
+        Page<LoanRequest> requests =
                 loanRequestRepository.findAllByEmployee(employee, pageable);
 
         // map the loan requests:
         return
-                requests.stream().map(LoanRequestResponseDto::new).toList();
+                requests.map(LoanRequestResponseDto::new);
     }
 
     @Override
-    public List<LoanRequestResponseDto> getAllRequests(
+    public Page<LoanRequestResponseDto> getAllRequests(
             int page, int size
     ) {
-
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("issueDate").descending());
         // fetch the requests from db:
         Page<LoanRequest> requests = loanRequestRepository.findAll(
                 pageable
         );
-
         // map the loan requests:
         return
-                requests.stream().map(LoanRequestResponseDto::new).toList();
+                requests.map(LoanRequestResponseDto::new);
     }
 }

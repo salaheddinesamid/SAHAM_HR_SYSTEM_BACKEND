@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.loan.service;
 
 import com.saham.hr_system.modules.loan.dto.LoanRequestResponseDto;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,11 +13,11 @@ public interface LoanRequestQueryService {
      * This method returns all employee loan requests.
      * @return list of loan request details
      */
-    List<LoanRequestResponseDto> getAllEmployeeRequests(String email, int page, int size);
+    Page<LoanRequestResponseDto> getAllEmployeeRequests(String email, int page, int size);
 
     /**
      *
      * @return
      */
-    List<LoanRequestResponseDto> getAllRequests(int page , int size);
+    Page<LoanRequestResponseDto> getAllRequests(int page , int size);
 }

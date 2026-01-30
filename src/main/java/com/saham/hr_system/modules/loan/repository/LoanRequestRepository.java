@@ -23,7 +23,7 @@ public interface LoanRequestRepository extends JpaRepository<LoanRequest,Long> {
      * @param employee
      * @return
      */
-    List<LoanRequest> findAllByEmployee(Employee employee, Pageable pageable);
+    Page<LoanRequest> findAllByEmployee(Employee employee, Pageable pageable);
 
     /**
      * 
