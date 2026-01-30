@@ -11,3 +11,8 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
+file:
+  upload:
+    medical-certificates: src/main/resources/folders
+    payrolls: src/main/resources/payrolls
+
