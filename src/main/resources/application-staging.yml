@@ -9,6 +9,11 @@ spring:
     username: ${DB_USERNAME}
     password: :${DB_PASSWORD}
 
+  flyway:
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    enabled: true
+
   jpa:
     hibernate:
       ddl-auto: update
