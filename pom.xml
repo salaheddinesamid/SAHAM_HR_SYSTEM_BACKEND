@@ -137,13 +137,6 @@
 			<artifactId>flyway-core</artifactId>
 		</dependency>
 
-		<!-- Source: https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql -->
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-mysql</artifactId>
-			<version>11.20.3</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
