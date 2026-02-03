@@ -21,6 +21,7 @@ src/main/resources/**
 
 src/main/resources/application-prod.properties
 src/main/resources/application-test.yml
+src/main/resources/application-staging.yml
 
 
 ############################################
