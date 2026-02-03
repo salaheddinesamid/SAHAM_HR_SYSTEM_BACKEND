@@ -15,7 +15,7 @@ target/
 **/application-prod.properties
 
 # Ignore temporary custom folders
-src/main/resources/folders/
+src/main/resources/folders/**
 src/main/resources/payrolls/**
 
 src/main/resources/application-prod.properties
