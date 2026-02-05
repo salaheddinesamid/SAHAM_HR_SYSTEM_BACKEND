@@ -10,5 +10,6 @@ public class LoanRequestDto {
     private String loanType;
     private double amount;
     private String motif;
+    private LocalDate dateOfCollection;
 
 }

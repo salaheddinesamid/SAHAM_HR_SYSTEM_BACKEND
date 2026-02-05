@@ -50,6 +50,7 @@ public class NormalLoanRequestProcessor implements LoanRequestProcessor {
         loanRequest.setApprovedByHrDepartment(false);
         loanRequest.setApprovedByHrDepartment(true);
         loanRequest.setType(LoanType.valueOf(requestDto.getLoanType()));
+        loanRequest.setDateOfCollection(requestDto.getDateOfCollection());
         loanRequest.setStatus(LoanRequestStatus.IN_PROCESS);
 
         String refNumber = loanReferenceNumberGenerator
@@ -60,8 +61,8 @@ public class NormalLoanRequestProcessor implements LoanRequestProcessor {
         // notify the employee and HR ASYNC:
         CompletableFuture.runAsync(()->{
             try{
-                loanRequestEmailSender.notifyEmployee(loanRequest);
-                loanRequestEmailSender.notifyHR(loanRequest);
+                //loanRequestEmailSender.notifyEmployee(loanRequest);
+                //loanRequestEmailSender.notifyHR(loanRequest);
             }catch (RuntimeException e){
                 e.printStackTrace();
             }

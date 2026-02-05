@@ -4,6 +4,7 @@ import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,6 +15,7 @@ public class LoanRequestResponseDto {
     private String type;
     private String motif;
     private LocalDateTime issueDate;
+    private LocalDate dateOfCollection;
     private boolean isApprovedByHr;
     private boolean isApprovedByFinanceDepartment;
     private String status;
@@ -28,6 +30,7 @@ public class LoanRequestResponseDto {
         this.amount = loanRequest.getAmount();
         this.type = loanRequest.getType().toString();
         this.motif = loanRequest.getMotif();
+        this.dateOfCollection = loanRequest.getDateOfCollection();
         this.isApprovedByHr = loanRequest.isApprovedByHrDepartment();
         this.isApprovedByFinanceDepartment = loanRequest.isApprovedByFinanceDepartment();
         this.status = loanRequest.getStatus().toString();

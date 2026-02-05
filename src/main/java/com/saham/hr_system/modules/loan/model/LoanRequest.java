@@ -36,6 +36,9 @@ public class LoanRequest {
     @Enumerated(EnumType.STRING)
     private LoanType type;
 
+    @Column(name = "date_of_collection", nullable = true, columnDefinition = "DATE default NULL")
+    private LocalDate dateOfCollection;
+
     @Column(name = "approved_by_hr_department")
     private boolean approvedByHrDepartment;
 
