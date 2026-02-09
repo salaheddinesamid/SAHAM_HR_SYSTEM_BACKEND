@@ -39,12 +39,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
      */
     boolean existsByEmail(String email);
 
-    /**
-     * Check if an employee exists by matriculation number.
-     * @param matriculation: Matriculation number of the employee.
-     * @return true if an employee with the given matriculation number exists, false otherwise.
-     */
-    boolean existsByMatriculation(String matriculation);
+    boolean existsByEmployeeProfessionalDetails_Matriculation(String employeeProfessionalDetailsMatriculation);
 
     Optional<Employee> findByRolesAndFirstNameAndLastName(List<Role> roles, String firstName, String lastName);
 
@@ -57,10 +52,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     boolean existsByFirstNameAndLastName(String firstName, String lastName);
 
-    /**
-     *
-     * @param matriculation
-     * @return
-     */
-    Optional<Employee> findByMatriculation(String matriculation);
+    Optional<Employee> findByEmployeeProfessionalDetails_Matriculation(String employeeProfessionalDetailsMatriculation);
+
 }

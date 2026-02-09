@@ -3,10 +3,9 @@ package com.saham.hr_system.modules.employees.service.implementation;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.dto.EmployeeBalanceDto;
 import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
+import com.saham.hr_system.modules.employees.dto.EmployeeProfileDetails;
 import com.saham.hr_system.modules.employees.dto.UpdateEmployeeDto;
-import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.model.EmployeeBalance;
-import com.saham.hr_system.modules.employees.model.Role;
+import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
@@ -45,27 +44,6 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         // update the new email:
         if(updateEmployeeDto.getEmail() != null){
             employee.setEmail(updateEmployeeDto.getEmail());
-        }
-        /*
-        if(updateEmployeeDto.getPassword() != null){
-            employee.setPassword(updateEmployeeDto.getPassword());
-        }
-
-         */
-        if(updateEmployeeDto.getMatriculation() != null){
-            employee.setMatriculation(updateEmployeeDto.getMatriculation());
-        }
-        // update the entity
-        if(updateEmployeeDto.getEntity() != null){
-            employee.setEntity(updateEmployeeDto.getEntity());
-        }
-        // update the occupation:
-        if(updateEmployeeDto.getOccupation() != null){
-            employee.setOccupation(updateEmployeeDto.getOccupation());
-        }
-        // update the join date:
-        if(updateEmployeeDto.getJoinDate() != null){
-            employee.setJoinDate(updateEmployeeDto.getJoinDate());
         }
         // update the new manager:
         if(updateEmployeeDto.getManagerName() != null){
@@ -113,4 +91,8 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
 
         return employeeBalanceRepository.save(employeeBalance);
     }
+
+    private EmployeeProfileDetails updateProfessionalDetails(){return null;}
+    private EmployeeSocialDetails updateSocialDetails(){return null;}
+    private EmployeeContactDetails updateContactDetails(){return null;}
 }

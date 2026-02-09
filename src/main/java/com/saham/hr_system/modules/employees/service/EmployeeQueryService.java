@@ -25,4 +25,11 @@ public interface EmployeeQueryService {
      * @return
      */
     Employee getManager(String fullName);
+
+    /**
+     *
+     * @param email
+     * @return
+     */
+    Employee getEmployeeProfileDetails(String email);
 }

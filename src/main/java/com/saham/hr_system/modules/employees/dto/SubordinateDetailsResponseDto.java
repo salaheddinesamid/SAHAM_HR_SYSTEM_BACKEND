@@ -3,7 +3,6 @@ package com.saham.hr_system.modules.employees.dto;
 import com.saham.hr_system.modules.absence.dto.AbsenceResponseDto;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.leave.dto.LeaveDetailsDto;
-import com.saham.hr_system.modules.leave.model.Leave;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -29,10 +28,10 @@ public class SubordinateDetailsResponseDto {
         this.employeeId = employee.getId();
         this.email = employee.getEmail();
         this.fullName = employee.getFullName();
-        this.entity = employee.getEntity();
-        this.occupation = employee.getOccupation();
-        this.matriculation = employee.getMatriculation();
-        this.joinDate = employee.getJoinDate();
+        this.entity = employee.getEmployeeProfessionalDetails().getEntity().toString();
+        this.occupation = employee.getEmployeeProfessionalDetails().getOccupation();
+        this.matriculation = employee.getEmployeeProfessionalDetails().getMatriculation();
+        this.joinDate = employee.getEmployeeProfessionalDetails().getJoinDate();
         this.status = employee.getStatus().toString();
         this.leaves = employee.getLeaves().stream().map(LeaveDetailsDto::new).collect(Collectors.toList());
         this.absences =

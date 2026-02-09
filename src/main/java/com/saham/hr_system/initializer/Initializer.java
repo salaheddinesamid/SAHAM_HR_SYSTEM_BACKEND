@@ -4,13 +4,12 @@ import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
+import com.saham.hr_system.modules.employees.service.implementation.EmployeeAdderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -22,6 +21,7 @@ public class Initializer implements CommandLineRunner {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmployeeBalanceRepository employeeBalanceRepository;
+    private final EmployeeAdderServiceImpl employeeAdderService;
 
     private static final List<RoleName> DEFAULT_ROLES = List.of(
             RoleName.EMPLOYEE,
@@ -33,7 +33,8 @@ public class Initializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         initializeRoles();
-        initializeEmployees();
+        initializeAdmin();
+        // initializeEmployees();
     }
 
     private void initializeRoles() {
@@ -47,6 +48,28 @@ public class Initializer implements CommandLineRunner {
         }
     }
 
+    private void initializeAdmin(){
+        Employee admin = new Employee();
+        Role adminRole  = roleRepository.findByRoleName("ADMIN")
+                        .orElseThrow();
+        if(!employeeRepository.existsByEmail("admin.hr@saham.com")){
+            admin.setFirstName("Admin");
+            admin.setLastName("Admin");
+            admin.setCIN("");
+            admin.setEmail("admin.hr@saham.com");
+            admin.setPassword(passwordEncoder.encode("admin2025"));
+            admin.setRoles(List.of(adminRole));
+            admin.setStatus(EmployeeStatus.AVAILABLE);
+
+            employeeRepository.save(admin);
+        }
+
+    }
+
+    private void initializeCEO(){
+        // TODO: implement the initialization of the CEO with the manager role and a specific balance
+    }
+    /*
     private void initializeEmployees() {
 
         Role employeeRole = roleRepository.findByRoleName(RoleName.EMPLOYEE.name()).orElseThrow();
@@ -153,4 +176,6 @@ public class Initializer implements CommandLineRunner {
             employeeBalanceRepository.save(balance);
         }
     }
+
+     */
 }

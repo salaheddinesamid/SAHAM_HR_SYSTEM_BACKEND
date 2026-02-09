@@ -2,46 +2,47 @@ package com.saham.hr_system.modules.employees.mapper;
 
 import com.saham.hr_system.modules.employees.dto.EmployeeBalanceDto;
 import com.saham.hr_system.modules.employees.dto.NewEmployeeDto;
-import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.model.EmployeeBalance;
-import com.saham.hr_system.modules.employees.model.EmployeeStatus;
-import com.saham.hr_system.modules.employees.model.Role;
+import com.saham.hr_system.modules.employees.dto.NewEmployeeProfessionalDetailsDto;
+import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
+import com.saham.hr_system.modules.employees.utils.EmployeePasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Component
 public class EmployeeMapper {
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final EmployeePasswordGenerator employeePasswordGenerator;
 
     @Autowired
-    public EmployeeMapper(RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public EmployeeMapper(RoleRepository roleRepository, EmployeePasswordGenerator employeePasswordGenerator) {
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.employeePasswordGenerator = employeePasswordGenerator;
     }
 
-    public Employee mapToEmployee(NewEmployeeDto requestDto) {
+    public Map<String, Object> mapToEmployee(NewEmployeeDto requestDto) {
         Employee employee = new Employee();
         employee.setFirstName(requestDto.getFirstName());
         employee.setLastName(requestDto.getLastName());
-        employee.setMatriculation(requestDto.getMatriculation());
+        employee.setCIN(requestDto.getCIN());
         employee.setEmail(requestDto.getEmail());
-        // set the encoded password:
-        employee.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        Map<String, String> generatedPassword = employeePasswordGenerator.generatePassword(employee.getFullName());
+         // set the encoded password:
+        employee.setPassword(generatedPassword.get("encodedPassword"));
         // set the roles:
         requestDto.getRoles().forEach(r -> {
             Role role = roleRepository.findByRoleName(r).orElseThrow();
             employee.getRoles().add(role);
         });
         employee.setStatus(EmployeeStatus.AVAILABLE);
-        employee.setEntity(requestDto.getEntity());
-        employee.setOccupation(requestDto.getOccupation());
-
-        return employee;
+        return Map.of(
+                "mappedEmployee", employee,
+                "rawPassword" , generatedPassword.get("rawPassword")
+        );
     }
 
     public EmployeeBalance mapToEmployeeBalanceDto(EmployeeBalanceDto balanceDto) {

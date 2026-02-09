@@ -40,6 +40,14 @@ public class EmployeeController {
                 .status(200)
                 .body(employee);
     }
+    @GetMapping("profile")
+    public ResponseEntity<Object> getEmployeeProfile(@RequestParam String email){
+        EmployeeDetailsDto employee = employeeService.getEmployeeDetails(email);
+
+        return ResponseEntity
+                .status(200)
+                .body(employee);
+    }
 
     @PostMapping("new")
     public ResponseEntity<?> newEmployee(@RequestBody NewEmployeeDto newEmployee){

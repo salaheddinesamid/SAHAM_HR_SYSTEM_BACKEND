@@ -30,27 +30,37 @@ public class Employee implements UserDetails {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "CIN", nullable = false, unique = true)
+    private String CIN;
+
+    @Column(name = "family_status")
+    @Enumerated(EnumType.STRING)
+    private EmployeeFamilyStatus familyStatus;
+
+    @Column(name = "number_of_children")
+    private Integer numberOfChildren;
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "entity")
-    private String entity;
-
-    @Column(name = "occupation",nullable = true)
-    private String occupation;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "matriculation", nullable = false, unique = true)
-    private String matriculation;
-
-    @Column(name = "join_date")
-    private LocalDate joinDate;
-
     @JoinColumn(name = "balance_id")
     @OneToOne(fetch = FetchType.EAGER)
     private EmployeeBalance employeeBalance;
+
+    @JoinColumn(name = "professional_details_id")
+    @OneToOne
+    private EmployeeProfessionalDetails employeeProfessionalDetails;
+
+    @JoinColumn(name = "social_details_id")
+    @OneToOne
+    private EmployeeSocialDetails employeeSocialDetails;
+
+    @JoinColumn(name = "contact_details_id")
+    @OneToOne
+    private EmployeeContactDetails employeeContactDetails;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

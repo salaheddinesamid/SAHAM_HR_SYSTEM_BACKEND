@@ -11,21 +11,23 @@ public class NewEmployeeDto {
     @NotNull
     private String lastName;
     @NotNull
+    private String CIN;
+    @NotNull
+    private String familyStatus;
+    @NotNull
+    private Integer numberOfChildren;
+    @NotNull
     private String email;
+
     @NotNull
-    private String password;
+    private NewEmployeeProfessionalDetailsDto professionalDetailsDto; // professional details
     @NotNull
-    private String matriculation;
+    private NewEmployeeSocialDetails employeeSocialDetailsDto; // social details
     @NotNull
-    private String entity;
-    @NotNull
-    private String occupation;
-    @NotNull
-    private String joinDate;
-    @NotNull
-    private String managerName;
+    private NewEmployeeContactDetails employeeContactDetailsDto; // contact details
     @NotNull
     private List<String> roles;
     @NotNull
     private EmployeeBalanceDto employeeBalance;
 }
+

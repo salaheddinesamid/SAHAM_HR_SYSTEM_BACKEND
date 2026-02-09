@@ -47,8 +47,8 @@ class EmployeeDetails{
 
     public EmployeeDetails(Employee employee){
         this.employeeName = employee.getFullName();
-        this.employeeMatriculation = employee.getMatriculation();
-        this.occupation = employee.getOccupation();
-        this.entity = employee.getEntity();
+        this.employeeMatriculation = employee.getEmployeeProfessionalDetails().getMatriculation();
+        this.occupation = employee.getEmployeeProfessionalDetails().getOccupation();
+        this.entity = employee.getEmployeeProfessionalDetails().getEntity().toString();
     }
 }

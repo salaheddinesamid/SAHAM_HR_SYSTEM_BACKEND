@@ -1,8 +1,6 @@
 package com.saham.hr_system.modules.employees.dto;
 
-import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.model.EmployeeBalance;
-import com.saham.hr_system.modules.employees.model.Role;
+import com.saham.hr_system.modules.employees.model.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -16,13 +14,11 @@ public class EmployeeDetailsDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String entity;
-    private String occupation;
-    private String matriculation;
-    private LocalDate joinDate;
+    private ProfessionalDetailsDto professionalDetails;
+    private SocialDetailsDto socialDetails;
+    private ContactDetailsDto contactDetails;
     private BalanceDetails balanceDetails;
     private List<String> roles;
-    private String managerName;
 
     public EmployeeDetailsDto(Employee employee, EmployeeBalance balance) {
         this.employeeId = employee.getId();
@@ -30,22 +26,14 @@ public class EmployeeDetailsDto {
         this.firstName = employee.getFirstName();
         this.lastName = employee.getLastName();
         this.email = employee.getEmail();
-        this.entity = employee.getEntity();
-        this.joinDate = employee.getJoinDate();
-        this.occupation = employee.getOccupation();
-        this.matriculation = employee.getMatriculation();
-        this.balanceDetails = new BalanceDetails(balance);
+        this.professionalDetails = employee.getEmployeeProfessionalDetails() != null ? new ProfessionalDetailsDto(employee.getEmployeeProfessionalDetails()) : null;
+        this.balanceDetails = employee.getEmployeeBalance() != null ? new BalanceDetails(employee.getEmployeeBalance()) : null;
         this.roles = employee.getRoles().stream().map(Role::getRoleName).toList();
-        this.managerName = employee.getManager() != null ?
-                String.format("%s %s", employee.getManager().getFirstName(), employee.getManager().getLastName())
-                : null;
     }
     public EmployeeDetailsDto(Employee employee) {
         this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
         this.email = employee.getEmail();
-        this.entity = employee.getEntity();
-        this.joinDate = employee.getJoinDate();
-        this.occupation = employee.getMatriculation();
+        this.professionalDetails = new ProfessionalDetailsDto(employee.getEmployeeProfessionalDetails());
     }
 
 }
@@ -74,3 +62,65 @@ class BalanceDetails{
         this.lastUpdated = employeeBalance.getLastUpdated();
     }
 }
+
+@Data
+class ProfessionalDetailsDto{
+    private String matriculation;
+    private String occupation;
+    private String department;
+    private String entity;
+    private String managerName;
+    private LocalDate joinDate;
+    private String site;
+    private String professionalPhoneNumber;
+    private String professionalEmail;
+    private String professionalFixedPhoneNumber;
+    private String extension;
+
+    public ProfessionalDetailsDto(EmployeeProfessionalDetails professionalDetails){
+        this.matriculation = professionalDetails.getMatriculation();
+        this.occupation = professionalDetails.getOccupation();
+        this.department = professionalDetails.getDepartment();
+        this.entity = professionalDetails.getEntity().toString();
+        this.managerName = professionalDetails.getManager() != null ?
+                String.format("%s %s", professionalDetails.getManager().getFirstName(), professionalDetails.getManager().getLastName())
+                : null;
+        this.joinDate = professionalDetails.getJoinDate();
+        this.site = professionalDetails.getSite();
+        this.professionalPhoneNumber = professionalDetails.getProfessionalPhoneNumber();
+        this.professionalEmail = professionalDetails.getProfessionalEmail();
+        this.professionalFixedPhoneNumber = professionalDetails.getProfessionalFixedPhoneNumber();
+        this.extension = professionalDetails.getExtension();
+
+    }
+}
+
+@Data
+class SocialDetailsDto{
+    private String cnssNumner;
+    private String cimrNumber;
+    private String insuranceNumber;
+    private String insuranceProvider;
+
+    public SocialDetailsDto(
+            EmployeeSocialDetails socialDetails
+    ){
+        this.cnssNumner = socialDetails.getCnssNumber();
+        this.cimrNumber = socialDetails.getCimrNumber();
+        this.insuranceNumber = socialDetails.getInsuranceNumber();
+        this.insuranceProvider = socialDetails.getInsuranceProvider();
+    }
+}
+
+@Data
+class ContactDetailsDto{
+    private String personToContactInCaseOfEmergency;
+    private String emergencyContactPhoneNumber;
+
+    public ContactDetailsDto(EmployeeContactDetails contactDetails){
+        this.personToContactInCaseOfEmergency = contactDetails.getPersonToContactInCaseOfEmergency();
+        this.emergencyContactPhoneNumber = contactDetails.getEmergencyContactNumber();
+    }
+}
+
+

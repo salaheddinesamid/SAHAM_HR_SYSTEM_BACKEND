@@ -31,7 +31,7 @@ public class LeaveRequestRefNumberGeneratorUnitTest {
         // set the employee:
         employee = new Employee();
         employee.setId(1L);
-        employee.setMatriculation("EMP020");
+        employee.getEmployeeProfessionalDetails().setMatriculation("EMP020");
         leaveRequest = new LeaveRequest();
 
         leaveRequest.setLeaveRequestId(1L);

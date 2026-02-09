@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.auth.service.implementation;
 
 import com.saham.hr_system.exception.BadCredentialsException;
+import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.auth.dto.BearerToken;
 import com.saham.hr_system.modules.auth.dto.LoginRequestDto;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -39,12 +41,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public LoginResponseDto authenticate(LoginRequestDto requestDto) {
         // Fetch employee from db:
-        Employee employee = employeeRepository.findByEmail(requestDto.getEmail()).orElse(null);
+        Employee employee = employeeRepository.findByEmail(requestDto.getEmail()).orElseThrow(()-> new UserNotFoundException(requestDto.getEmail()));
 
         // Fetch balance:
         assert employee != null;
-        EmployeeBalance balance = employee.getEmployeeBalance() != null ? employee.getEmployeeBalance() : employeeBalanceRepository.findByEmployee(employee).orElse(null);
-
+        EmployeeBalance balance = Optional.ofNullable(employee.getEmployeeBalance())
+                .orElseGet(() -> employeeBalanceRepository.findByEmployee(employee).orElse(null));
         // In case the user does not exist:
         // Verify credentials:
         if(!passwordEncoder.matches(requestDto.getPassword(), employee.getPassword())) {
