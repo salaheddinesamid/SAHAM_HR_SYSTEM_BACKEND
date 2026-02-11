@@ -8,12 +8,14 @@ import com.saham.hr_system.modules.auth.service.PasswordReinitializationService;
 import com.saham.hr_system.modules.auth.utils.ResetPasswordTokenGenerator;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -23,12 +25,14 @@ public class EmployeePasswordReinitialization implements PasswordReinitializatio
     private final PasswordEncoder passwordEncoder;
     private final ResetPasswordTokenGenerator tokenGenerator;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmployeeResetPasswordEmailSender employeeResetPasswordEmailSender;
     @Autowired
-    public EmployeePasswordReinitialization(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, ResetPasswordTokenGenerator tokenGenerator, PasswordResetTokenRepository passwordResetTokenRepository) {
+    public EmployeePasswordReinitialization(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, ResetPasswordTokenGenerator tokenGenerator, PasswordResetTokenRepository passwordResetTokenRepository, EmployeeResetPasswordEmailSender employeeResetPasswordEmailSender) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenGenerator = tokenGenerator;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.employeeResetPasswordEmailSender = employeeResetPasswordEmailSender;
     }
 
     @Override
@@ -45,6 +49,17 @@ public class EmployeePasswordReinitialization implements PasswordReinitializatio
         passwordResetTokenRepository.save(passwordResetToken);
 
         // notify the employee by email (this part is not implemented here, but you can use an email service to send the reset token to the employee's email address)
+        CompletableFuture.runAsync(()->{
+            try{
+                employeeResetPasswordEmailSender.sendEmail(email, resetToken);
+            }catch (MessagingException exception){
+                try {
+                    throw new MessagingException();
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     @Override
