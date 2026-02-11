@@ -27,6 +27,8 @@ public class EmployeeDetailsDto {
         this.lastName = employee.getLastName();
         this.email = employee.getEmail();
         this.professionalDetails = employee.getEmployeeProfessionalDetails() != null ? new ProfessionalDetailsDto(employee.getEmployeeProfessionalDetails()) : null;
+        this.socialDetails = employee.getEmployeeSocialDetails() != null ? new SocialDetailsDto(employee.getEmployeeSocialDetails()) : null;
+        this.contactDetails = employee.getEmployeeContactDetails() != null ? new ContactDetailsDto(employee.getEmployeeContactDetails()) : null;
         this.balanceDetails = employee.getEmployeeBalance() != null ? new BalanceDetails(employee.getEmployeeBalance()) : null;
         this.roles = employee.getRoles().stream().map(Role::getRoleName).toList();
     }
