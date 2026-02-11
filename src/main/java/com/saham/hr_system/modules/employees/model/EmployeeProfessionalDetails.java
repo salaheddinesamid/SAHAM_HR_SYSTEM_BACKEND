@@ -29,7 +29,7 @@ public class EmployeeProfessionalDetails {
     private EmployeeEntity entity;
 
     @ManyToOne
-    @JoinColumn(name = "manager_id", nullable = true, unique = true)
+    @JoinColumn(name = "manager_id")
     private Employee manager;
 
     @Column(name = "join_date")

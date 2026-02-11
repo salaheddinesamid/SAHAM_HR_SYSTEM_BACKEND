@@ -1,7 +1,7 @@
 package com.saham.hr_system.modules.employees.model;
 
 import jakarta.persistence.*;
-import lombok.Generated;
+
 import lombok.Getter;
 import lombok.Setter;
 

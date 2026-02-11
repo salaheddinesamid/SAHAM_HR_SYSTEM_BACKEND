@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.auth.controller;
 import com.saham.hr_system.modules.auth.dto.LoginRequestDto;
 import com.saham.hr_system.modules.auth.service.implementation.AuthenticationServiceImpl;
 import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordReinitialization;
+import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordSetupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +14,13 @@ public class AuthenticationController {
 
     private final AuthenticationServiceImpl authenticationServiceImpl;
     private final EmployeePasswordReinitialization employeePasswordReinitialization;
+    private final EmployeePasswordSetupService employeePasswordSetupService;
 
     @Autowired
-    public AuthenticationController(AuthenticationServiceImpl authenticationServiceImpl, EmployeePasswordReinitialization employeePasswordReinitialization) {
+    public AuthenticationController(AuthenticationServiceImpl authenticationServiceImpl, EmployeePasswordReinitialization employeePasswordReinitialization, EmployeePasswordSetupService employeePasswordSetupService) {
         this.authenticationServiceImpl = authenticationServiceImpl;
         this.employeePasswordReinitialization = employeePasswordReinitialization;
+        this.employeePasswordSetupService = employeePasswordSetupService;
     }
 
     @PostMapping("")
@@ -36,6 +39,12 @@ public class AuthenticationController {
     @PostMapping("reset-password")
     public ResponseEntity<Object> resetPassword(@RequestParam String token, @RequestParam String newPassword){
         employeePasswordReinitialization.resetPassword(token, newPassword);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("setup-password")
+    public ResponseEntity<Object> setupPassword(@RequestParam String email, @RequestParam String token, @RequestParam String newPassword){
+        employeePasswordSetupService.setupPassword(email, token, newPassword);
         return ResponseEntity.ok().build();
     }
 }

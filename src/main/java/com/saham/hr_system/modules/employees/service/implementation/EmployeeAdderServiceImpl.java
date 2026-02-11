@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.employees.service.implementation;
 
+import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordSetupService;
 import com.saham.hr_system.modules.employees.dto.*;
 import com.saham.hr_system.modules.employees.mapper.EmployeeContactDetailsMapper;
 import com.saham.hr_system.modules.employees.mapper.EmployeeMapper;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 
 @Service
@@ -25,26 +27,28 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
     private final EmployeeProfessionalDetailsRepository employeeProfessionalDetailsRepository;
     private final EmployeeSocialDetailsRepository employeeSocialDetailsRepository;
     private final EmployeeContactDetailsRepository employeeContactDetailsRepository;
-    private final RoleRepository roleRepository;
     private final EmployeeMapper employeeMapper;
     private final EmployeeProfessionalDetailsMapper employeeProfessionalDetailsMapper;
     private final EmployeeSocialDetailMapper employeeSocialDetailMapper;
     private final EmployeeContactDetailsMapper employeeContactDetailsMapper;
     private final EmployeeQueryServiceImpl employeeQueryService;
+    private final EmployeePasswordSetupService employeePasswordSetupService;
+    private final NewEmployeeEmailSenderImpl newEmployeeEmailSender;
 
     @Autowired
-    public EmployeeAdderServiceImpl(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, EmployeeProfessionalDetailsRepository employeeProfessionalDetailsRepository, EmployeeSocialDetailsRepository employeeSocialDetailsRepository, EmployeeContactDetailsRepository employeeContactDetailsRepository, RoleRepository roleRepository, EmployeeMapper employeeMapper, EmployeeProfessionalDetailsMapper employeeProfessionalDetailsMapper, EmployeeSocialDetailMapper employeeSocialDetailMapper, EmployeeContactDetailsMapper employeeContactDetailsMapper, EmployeeQueryServiceImpl employeeQueryService) {
+    public EmployeeAdderServiceImpl(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, EmployeeProfessionalDetailsRepository employeeProfessionalDetailsRepository, EmployeeSocialDetailsRepository employeeSocialDetailsRepository, EmployeeContactDetailsRepository employeeContactDetailsRepository, RoleRepository roleRepository, EmployeeMapper employeeMapper, EmployeeProfessionalDetailsMapper employeeProfessionalDetailsMapper, EmployeeSocialDetailMapper employeeSocialDetailMapper, EmployeeContactDetailsMapper employeeContactDetailsMapper, EmployeeQueryServiceImpl employeeQueryService, EmployeePasswordSetupService employeePasswordSetupService, NewEmployeeEmailSenderImpl newEmployeeEmailSender) {
         this.employeeRepository = employeeRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
         this.employeeProfessionalDetailsRepository = employeeProfessionalDetailsRepository;
         this.employeeSocialDetailsRepository = employeeSocialDetailsRepository;
         this.employeeContactDetailsRepository = employeeContactDetailsRepository;
-        this.roleRepository = roleRepository;
         this.employeeMapper = employeeMapper;
         this.employeeProfessionalDetailsMapper = employeeProfessionalDetailsMapper;
         this.employeeSocialDetailMapper = employeeSocialDetailMapper;
         this.employeeContactDetailsMapper = employeeContactDetailsMapper;
         this.employeeQueryService = employeeQueryService;
+        this.employeePasswordSetupService = employeePasswordSetupService;
+        this.newEmployeeEmailSender = newEmployeeEmailSender;
     }
 
     @Override
@@ -112,6 +116,16 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
 
         Employee savedEmployee = employeeRepository.save(employee);
 
+        // initiate setup of the employee password:
+        String link = employeePasswordSetupService.initiatePasswordSetup(savedEmployee.getEmail());
+        // notify the employee:
+        CompletableFuture.runAsync(()->{
+                try{
+                    newEmployeeEmailSender.sendWelcomeEmail(employee.getEmail(), employee, link);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+        });
         // notify the employee and Manager:
         return new EmployeeDetailsDto(savedEmployee);
     }
