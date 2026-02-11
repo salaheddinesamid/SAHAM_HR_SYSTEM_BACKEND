@@ -92,16 +92,14 @@ public class EmployeeController {
                 .body(exists);
     }
 
-    @GetMapping("managers/get")
-    public ResponseEntity<?> getManager(
-            @RequestParam String fullName
-    ){
+    @GetMapping("managers/get_all")
+    public ResponseEntity<?> getAllManagers(){
         try{
-            Employee manager =
-                    employeeQueryService.getManager(fullName);
+            List<Employee> managers =
+                    employeeQueryService.getAllManagers();
             return ResponseEntity
                     .status(200)
-                    .body(manager);
+                    .body(managers);
         }catch (UserNotFoundException ex){
             throw new UserNotFoundException(ex.getMessage());
         }

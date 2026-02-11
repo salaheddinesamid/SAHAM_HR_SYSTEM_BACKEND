@@ -1,29 +1,33 @@
 package com.saham.hr_system.initializer;
 
+import com.saham.hr_system.modules.employees.dto.*;
 import com.saham.hr_system.modules.employees.model.*;
-import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
-import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
-import com.saham.hr_system.modules.employees.repository.RoleRepository;
+import com.saham.hr_system.modules.employees.repository.*;
+import com.saham.hr_system.modules.employees.service.implementation.CeoAdderServiceImpl;
 import com.saham.hr_system.modules.employees.service.implementation.EmployeeAdderServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Year;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-
+@Slf4j
 public class Initializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmployeeBalanceRepository employeeBalanceRepository;
-    private final EmployeeAdderServiceImpl employeeAdderService;
+    private final CeoAdderServiceImpl ceoAdderService;
 
     private static final List<RoleName> DEFAULT_ROLES = List.of(
+            RoleName.CEO,
             RoleName.EMPLOYEE,
             RoleName.MANAGER,
             RoleName.HR,
@@ -31,9 +35,11 @@ public class Initializer implements CommandLineRunner {
     );
 
     @Override
+    @Transactional
     public void run(String... args) {
         initializeRoles();
         initializeAdmin();
+        initializeCEO();
         // initializeEmployees();
     }
 
@@ -66,11 +72,64 @@ public class Initializer implements CommandLineRunner {
 
     }
 
-    private void initializeCEO(){
-        // TODO: implement the initialization of the CEO with the manager role and a specific balance
+    @Transactional
+    protected void initializeCEO() {
+
+        Role ceoRole = roleRepository.findByRoleName("CEO")
+                .orElseThrow(() -> new IllegalStateException("ROLE_CEO not found"));
+        Role managerRole = roleRepository.findByRoleName("MANAGER")
+                .orElseThrow(() -> new IllegalStateException("ROLE_CEO not found"));
+
+        // 1️⃣ Check if CEO already exists
+        boolean existingCEO =
+                employeeRepository.existsByFirstNameAndLastName(
+                        "Moulay Mhamed", "Elalamy"
+                );
+
+        if (existingCEO) {
+            return; // CEO already initialized
+        }
+
+        // CEO professional details
+        NewEmployeeProfessionalDetailsDto ceoProfessionalDetails = new NewEmployeeProfessionalDetailsDto();
+        ceoProfessionalDetails.setProfessionalEmail("ceo@saham.com");
+        ceoProfessionalDetails.setMatriculation("CEO001");
+        ceoProfessionalDetails.setEntity("SAHAM_HORIZON");
+        ceoProfessionalDetails.setManagerId(null);
+
+        // CEO social details
+        NewEmployeeSocialDetails ceoSocialDetails = new NewEmployeeSocialDetails();
+        // CEO contact details
+        NewEmployeeContactDetails ceoContactDetails = new NewEmployeeContactDetails();
+
+        // CEO balance details
+        EmployeeBalanceDto balanceDto = new EmployeeBalanceDto();
+        balanceDto.setYear(Year.now().getValue());
+        balanceDto.setAnnualBalance(30);
+        balanceDto.setAccumulatedBalance(30);
+        balanceDto.setUsedBalance(0);
+
+        NewEmployeeDto newEmployeeDto = new NewEmployeeDto(
+                "Moulay Mhamed",
+                "Elalamy",
+                "AAAAA",
+                "SINGLE",
+                0,
+                "ceo@saham.com",
+                ceoProfessionalDetails,
+                ceoSocialDetails,
+                ceoContactDetails,
+                List.of("CEO","MANAGER", "EMPLOYEE"),
+                balanceDto
+
+        );
+
+        ceoAdderService.add(newEmployeeDto);
     }
+
     /*
-    private void initializeEmployees() {
+    @Transactional
+    protected void initializeEmployees() {
 
         Role employeeRole = roleRepository.findByRoleName(RoleName.EMPLOYEE.name()).orElseThrow();
         Role managerRole = roleRepository.findByRoleName(RoleName.MANAGER.name()).orElseThrow();
@@ -83,20 +142,60 @@ public class Initializer implements CommandLineRunner {
         // Ciryane EL KHIATI - Manager
         if (employeeRepository.findByEmail("cyriane.elkhiati@Saham.com").isEmpty()) {
 
-            // Default manager
-            Employee manager = new Employee();
-            manager.setFirstName("Ciryane"); // first name
-            manager.setLastName("EL KHIATI"); // last name
-            manager.setEmail("cyriane.elkhiati@Saham.com"); // email
-            manager.setMatriculation("SAHAMEMP006"); // Matriculation:
-            manager.setPassword(passwordEncoder.encode("cyriane2025"));
-            manager.setRoles(List.of(employeeRole, managerRole)); // employee and manager role
-            manager.setEntity("Saham Horizon"); // Entity
-            manager.setOccupation("Directrice du Capital Humain"); // Occupation
-            manager.setJoinDate(LocalDate.of(2025, 4, 7)); // join date
-            manager.setManager(null);
-            manager.setStatus(EmployeeStatus.AVAILABLE);
-            ciryane = employeeRepository.save(manager);
+            // Professional Details:
+            NewEmployeeProfessionalDetailsDto professionalDetailsDto = new NewEmployeeProfessionalDetailsDto(
+                    "SAHAMEMP006",
+                    "Directrice du Capital Humain",
+                    "Ressources Humaines",
+                    "SAHAM_HORIZON",
+                    "Moulay Mhammed Elalamy",
+                    LocalDate.of(2025,07,10),
+                    "Casablanca",
+                    "00",
+                    "cyriane.elkhiati@Saham.com",
+                    "00",
+                    ""
+            );
+
+            // Social Details:
+            NewEmployeeSocialDetails socialDetails = new NewEmployeeSocialDetails(
+                    "CNSS654321",
+                    "CIMR654321",
+                    "INS654321",
+                    ""
+            );
+
+            // Contact Details:
+            NewEmployeeContactDetails contactDetails = new NewEmployeeContactDetails(
+                    "Dad",
+                    "+212612345678"
+            );
+
+            // Balance Details:
+            EmployeeBalanceDto balanceDetails = new EmployeeBalanceDto(
+                    2025,
+                    30,
+                    30,
+                    0,
+                    0
+            );
+
+            // Default Details:
+            NewEmployeeDto employeeDto = new NewEmployeeDto(
+                    "Ciryane",
+                    "EL KHIATI",
+                    "AAAAAA",
+                    "MARRIED",
+                    0,
+                    "cyriane.elkhiati@Saham.com",
+                    professionalDetailsDto,
+                    socialDetails,
+                    contactDetails,
+                    List.of("EMPLOYEE", "MANAGER"),
+                    balanceDetails
+            );
+            // Create new employee:
+            EmployeeDetailsDto employeeDetailsDto = employeeAdderService.add(employeeDto);
 
             // Default Balance:
             EmployeeBalance managerBalance = new EmployeeBalance();

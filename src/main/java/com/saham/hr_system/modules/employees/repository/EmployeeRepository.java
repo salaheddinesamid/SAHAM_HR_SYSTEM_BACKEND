@@ -43,6 +43,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByRolesAndFirstNameAndLastName(List<Role> roles, String firstName, String lastName);
 
+    Optional<Employee> findByRolesAndId(List<Role> roles, Long id);
     /**
      *
      * @param pageable

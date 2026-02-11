@@ -8,13 +8,16 @@ import com.saham.hr_system.modules.employees.mapper.EmployeeSocialDetailMapper;
 import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.*;
 import com.saham.hr_system.modules.employees.service.EmployeeAdderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
 
 @Service
+@Slf4j
 public class EmployeeAdderServiceImpl implements EmployeeAdderService {
 
     private final EmployeeRepository employeeRepository;
@@ -64,6 +67,7 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
      * @return
      */
     @Override
+    @Transactional
     public EmployeeDetailsDto add(NewEmployeeDto newEmployeeRequestDto) {
         // Check if the employee already exists by matriculation
         if(employeeRepository.existsByEmployeeProfessionalDetails_Matriculation(newEmployeeRequestDto.getProfessionalDetailsDto().getMatriculation())) {
@@ -72,9 +76,13 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
         // Create new employee
         Map<String, Object> mappedEmployee = employeeMapper.mapToEmployee(newEmployeeRequestDto);
         Employee employee = mappedEmployee.get("mappedEmployee") != null ? (Employee) mappedEmployee.get("mappedEmployee") : null;
+        log.info("Mapped employee: " + employee + "with raw password: " + mappedEmployee.get("rawPassword"));
+
+        assert employee != null;
         // Create and save employee professional details
         EmployeeProfessionalDetails employeeProfessionalDetails =
-                employeeProfessionalDetailsMapper.mapToEmployeeProfessionalDetails(newEmployeeRequestDto.getProfessionalDetailsDto());
+                employeeProfessionalDetailsMapper.mapToEmployeeProfessionalDetails(newEmployeeRequestDto.getProfessionalDetailsDto(), false);
+        employee.setEmail(employeeProfessionalDetails.getProfessionalEmail());
         EmployeeProfessionalDetails savedProfessionalDetails = employeeProfessionalDetailsRepository.save(employeeProfessionalDetails);
         // Create and save employee social details
         EmployeeSocialDetails employeeSocialDetails = employeeSocialDetailMapper.mapToEmployeeSocialDetails(
@@ -87,16 +95,13 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
                 newEmployeeRequestDto.getEmployeeContactDetailsDto()
         );
         EmployeeContactDetails savedContactDetails = employeeContactDetailsRepository.save(employeeContactDetails);
-        // create new balance:
+        // create  and save new balance:
         EmployeeBalance employeeBalance =
                 employeeMapper.mapToEmployeeBalanceDto(newEmployeeRequestDto.getEmployeeBalance());
-        // save the balance:
-
         EmployeeBalance savedBalance =
                 employeeBalanceRepository.save(employeeBalance);
 
         // attach the balance to the employee:
-        assert employee != null;
         employee.setEmployeeBalance(savedBalance);
         // attach the professional details to the employee:
         employee.setEmployeeProfessionalDetails(savedProfessionalDetails);

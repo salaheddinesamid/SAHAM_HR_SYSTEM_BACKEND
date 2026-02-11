@@ -1,10 +1,14 @@
 package com.saham.hr_system.modules.employees.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 @Data
+@AllArgsConstructor
 public class NewEmployeeDto {
     @NotNull
     private String firstName;
@@ -16,9 +20,7 @@ public class NewEmployeeDto {
     private String familyStatus;
     @NotNull
     private Integer numberOfChildren;
-    @NotNull
     private String email;
-
     @NotNull
     private NewEmployeeProfessionalDetailsDto professionalDetailsDto; // professional details
     @NotNull

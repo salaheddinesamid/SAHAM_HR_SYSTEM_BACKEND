@@ -1,19 +1,29 @@
 package com.saham.hr_system.employee.unit;
 
-import com.saham.hr_system.modules.employees.mapper.EmployeeContactDetailsMapper;
-import com.saham.hr_system.modules.employees.mapper.EmployeeMapper;
-import com.saham.hr_system.modules.employees.mapper.EmployeeProfessionalDetailsMapper;
-import com.saham.hr_system.modules.employees.mapper.EmployeeSocialDetailMapper;
-import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import com.saham.hr_system.modules.employees.dto.*;
+import com.saham.hr_system.modules.employees.mapper.*;
+import com.saham.hr_system.modules.employees.model.*;
+import com.saham.hr_system.modules.employees.repository.*;
 import com.saham.hr_system.modules.employees.service.implementation.EmployeeAdderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-public class EmployeeAdderUnitTest {
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class CeoAdderServiceImplTest {
+
+    @InjectMocks
+    private EmployeeAdderServiceImpl employeeAdderService;
 
     @Mock
     private EmployeeRepository employeeRepository;
@@ -25,30 +35,158 @@ public class EmployeeAdderUnitTest {
     private EmployeeProfessionalDetailsMapper employeeProfessionalDetailsMapper;
 
     @Mock
+    private EmployeeProfessionalDetailsRepository employeeProfessionalDetailsRepository;
+
+    @Mock
     private EmployeeSocialDetailMapper employeeSocialDetailMapper;
+
+    @Mock
+    private EmployeeSocialDetailsRepository employeeSocialDetailsRepository;
 
     @Mock
     private EmployeeContactDetailsMapper employeeContactDetailsMapper;
 
-    @InjectMocks
-    private EmployeeAdderServiceImpl employeeAdderService;
+    @Mock
+    private EmployeeContactDetailsRepository employeeContactDetailsRepository;
 
-    Employee existingEmployee = new Employee();
+    @Mock
+    private EmployeeBalanceRepository employeeBalanceRepository;
+
+    private NewEmployeeDto newEmployeeDto;
 
     @BeforeEach
-    void setUp(){
-        MockitoAnnotations.openMocks(this);
-        existingEmployee.setId(2L);
-        existingEmployee.getEmployeeProfessionalDetails().setMatriculation("MAT123456");
+    void setUp() {
+
+        NewEmployeeProfessionalDetailsDto professionalDetailsDto = new NewEmployeeProfessionalDetailsDto(
+                "MAT123456",
+                "Software Engineer",
+                "IT",
+                "SAHAM_HORIZON",
+                2L,
+                LocalDate.of(2025,11,22),
+                "Casablanca",
+                "00",
+                "salaheddine@saham.com",
+                "00",
+                "00"
+        );
+        NewEmployeeSocialDetails socialDetailsDto = new NewEmployeeSocialDetails(
+                "CNSS123456",
+                "CIMR123456",
+                "INS123456",
+                ""
+        );
+        NewEmployeeContactDetails contactDetails = new NewEmployeeContactDetails(
+                "Dad",
+                "+212612345678"
+        );
+        EmployeeBalanceDto balanceDto = new EmployeeBalanceDto(
+                2025,
+                25,
+                25,
+                2,
+                0
+        );
+        newEmployeeDto = new NewEmployeeDto(
+                "Salaheddine",
+                "Samid",
+                "T573GH",
+                "SINGLE",
+                0,
+                "salaheddine@saham.com",
+                professionalDetailsDto,
+                socialDetailsDto,
+                contactDetails,
+                List.of("EMPLOYEE", "MANAGER"),
+                balanceDto
+        );
     }
 
     @Test
-    void testAddNewEmployeeSuccess(){
-        // TODO: implement the test for adding a new employee successfully
+    void shouldCreateEmployeeSuccessfully() {
+        // GIVEN
+        String matricule = "MAT001";
+
+        NewEmployeeProfessionalDetailsDto professionalDetailsDto = new NewEmployeeProfessionalDetailsDto();
+        professionalDetailsDto.setMatriculation(matricule);
+        newEmployeeDto.setProfessionalDetailsDto(professionalDetailsDto);
+
+        when(employeeRepository.existsByEmployeeProfessionalDetails_Matriculation(matricule))
+                .thenReturn(false);
+
+        Employee employee = new Employee();
+        Map<String, Object> map = new HashMap<>();
+        map.put("mappedEmployee", employee);
+        map.put("rawPassword", "123456");
+
+        when(employeeMapper.mapToEmployee(newEmployeeDto)).thenReturn(map);
+
+        EmployeeProfessionalDetails professionalDetails = new EmployeeProfessionalDetails();
+        professionalDetails.setProfessionalEmail("test@saham.com");
+        professionalDetails.setEntity(EmployeeEntity.SAHAM_HORIZON);
+
+        when(employeeProfessionalDetailsMapper
+                .mapToEmployeeProfessionalDetails(any(), eq(false)))
+                .thenReturn(professionalDetails);
+
+        when(employeeProfessionalDetailsRepository.save(any()))
+                .thenReturn(professionalDetails);
+
+        EmployeeSocialDetails socialDetails = new EmployeeSocialDetails();
+        when(employeeSocialDetailMapper.mapToEmployeeSocialDetails(any()))
+                .thenReturn(socialDetails);
+        when(employeeSocialDetailsRepository.save(any()))
+                .thenReturn(socialDetails);
+
+        EmployeeContactDetails contactDetails = new EmployeeContactDetails();
+        when(employeeContactDetailsMapper.mapToEmployeeContactDetails(any()))
+                .thenReturn(contactDetails);
+        when(employeeContactDetailsRepository.save(any()))
+                .thenReturn(contactDetails);
+
+        EmployeeBalance balance = new EmployeeBalance();
+        when(employeeMapper.mapToEmployeeBalanceDto(any()))
+                .thenReturn(balance);
+        when(employeeBalanceRepository.save(any()))
+                .thenReturn(balance);
+
+        when(employeeRepository.save(any())).thenReturn(employee);
+
+        // WHEN
+        EmployeeDetailsDto result = employeeAdderService.add(newEmployeeDto);
+
+        // THEN
+        assertNotNull(result);
+
+        verify(employeeRepository).existsByEmployeeProfessionalDetails_Matriculation(matricule);
+        verify(employeeProfessionalDetailsRepository).save(any());
+        verify(employeeSocialDetailsRepository).save(any());
+        verify(employeeContactDetailsRepository).save(any());
+        verify(employeeBalanceRepository).save(any());
+        verify(employeeRepository).save(employee);
     }
 
     @Test
-    void testAddNewEmployeeDThrowDuplicate(){
-        // TODO: implement the test for adding a new employee with a duplicate matriculation number, which should throw an exception
+    void shouldThrowExceptionWhenMatriculeAlreadyExists() {
+
+        // GIVEN
+        String matricule = "MAT001";
+
+        NewEmployeeProfessionalDetailsDto professionalDetailsDto = new NewEmployeeProfessionalDetailsDto();
+        professionalDetailsDto.setMatriculation(matricule);
+        newEmployeeDto.setProfessionalDetailsDto(professionalDetailsDto);
+
+        when(employeeRepository.existsByEmployeeProfessionalDetails_Matriculation(matricule))
+                .thenReturn(true);
+
+        // WHEN + THEN
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> employeeAdderService.add(newEmployeeDto)
+        );
+
+        assertTrue(exception.getMessage().contains("already exists"));
+
+        verify(employeeRepository, never()).save(any());
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -51,16 +50,19 @@ public class Employee implements UserDetails {
     private EmployeeBalance employeeBalance;
 
     @JoinColumn(name = "professional_details_id")
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private EmployeeProfessionalDetails employeeProfessionalDetails;
 
     @JoinColumn(name = "social_details_id")
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private EmployeeSocialDetails employeeSocialDetails;
 
     @JoinColumn(name = "contact_details_id")
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private EmployeeContactDetails employeeContactDetails;
+
+    @Column(name = "profile_picture_url", nullable = true, unique = true, columnDefinition = "TEXT default ''")
+    private String profilePictureUrl;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

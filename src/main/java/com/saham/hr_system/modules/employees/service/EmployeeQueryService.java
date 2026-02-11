@@ -4,6 +4,8 @@ import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
 import com.saham.hr_system.modules.employees.model.Employee;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface EmployeeQueryService {
     /**
      *
@@ -21,10 +23,16 @@ public interface EmployeeQueryService {
     boolean verifyManager(String fullName);
     /**
      *
-     * @param fullName
+     * @param id
      * @return
      */
-    Employee getManager(String fullName);
+    Employee getManager(Long id);
+
+    /**
+     *
+     * @return
+     */
+    List<Employee> getAllManagers();
 
     /**
      *

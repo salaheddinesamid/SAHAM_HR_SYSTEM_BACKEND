@@ -45,9 +45,10 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         if(updateEmployeeDto.getEmail() != null){
             employee.setEmail(updateEmployeeDto.getEmail());
         }
+        /*
         // update the new manager:
-        if(updateEmployeeDto.getManagerName() != null){
-            if(!employeeQueryService.verifyManager(updateEmployeeDto.getManagerName())){
+        if(updateEmployeeDto.getManagerId() != null){
+            if(!employeeQueryService.verifyManager(updateEmployeeDto.getManagerId())){
                 throw new UserNotFoundException("Manager with name " + updateEmployeeDto.getManagerName() + " not found.");
             } else {
                 Employee manager = employeeQueryService.getManager(updateEmployeeDto.getManagerName());
@@ -55,6 +56,8 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
             }
 
         }
+
+         */
         // update the new roles:
         if(updateEmployeeDto.getRoles() != null && !updateEmployeeDto.getRoles().isEmpty()){
             List<Role> roles =

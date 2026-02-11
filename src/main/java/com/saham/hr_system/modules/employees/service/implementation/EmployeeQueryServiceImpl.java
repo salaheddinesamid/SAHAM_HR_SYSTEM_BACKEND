@@ -57,22 +57,21 @@ public class EmployeeQueryServiceImpl implements EmployeeQueryService {
     }
 
     @Override
-    public Employee getManager(String fullName) {
-
-        String[] fullNameSplit = splitFullName(fullName);
-        String firstName = fullNameSplit[0];
-        String lastName = fullNameSplit[1];
-
+    public Employee getManager(Long id) {
         Role managerRole = roleRepository.findByRoleName("MANAGER")
                 .orElseThrow(()-> new RuntimeException("Manager role not found"));
 
         return
                 employeeRepository
-                        .findByRolesAndFirstNameAndLastName(
-                                List.of(managerRole),
-                                firstName,
-                                lastName
-                        ).orElseThrow(()-> new RuntimeException("Manager not found"));
+                        .findByRolesAndId(List.of(managerRole),id).orElseThrow(()-> new RuntimeException("Manager not found"));
+    }
+
+    @Override
+    public List<Employee> getAllManagers() {
+        Role managerRole = roleRepository.findByRoleName("MANAGER")
+                .orElseThrow(()-> new RuntimeException("Manager role not found"));
+        return
+                employeeRepository.findAllByRoles(List.of(managerRole));
     }
 
     @Override

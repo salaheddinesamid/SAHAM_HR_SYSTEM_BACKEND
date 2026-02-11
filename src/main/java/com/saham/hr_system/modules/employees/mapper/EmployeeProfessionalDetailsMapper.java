@@ -17,22 +17,40 @@ public class EmployeeProfessionalDetailsMapper {
         this.employeeQueryService = employeeQueryService;
     }
 
-    public EmployeeProfessionalDetails mapToEmployeeProfessionalDetails(NewEmployeeProfessionalDetailsDto dto){
+    public EmployeeProfessionalDetails mapToEmployeeProfessionalDetails(NewEmployeeProfessionalDetailsDto dto, boolean isCeo){
         EmployeeProfessionalDetails employeeProfessionalDetails = new EmployeeProfessionalDetails();
-        // Fetch the manager:
-        Employee manager = employeeQueryService
-                .getManager(dto.getManagerName());
-        assert manager != null;
-        employeeProfessionalDetails.setManager(manager);
-        employeeProfessionalDetails.setProfessionalPhoneNumber(dto.getProfessionalPhoneNumber());
-        employeeProfessionalDetails.setEntity(EmployeeEntity.valueOf(dto.getEntity()));
-        employeeProfessionalDetails.setOccupation(dto.getOccupation());
-        employeeProfessionalDetails.setJoinDate(dto.getJoinDate());
-        employeeProfessionalDetails.setDepartment(dto.getDepartment());
-        employeeProfessionalDetails.setMatriculation(dto.getMatriculation());
-        employeeProfessionalDetails.setSite(dto.getSite());
-        employeeProfessionalDetails.setExtension(dto.getExtension());
 
+
+        if(isCeo){
+            employeeProfessionalDetails.setManager(null);
+            employeeProfessionalDetails.setProfessionalPhoneNumber(dto.getProfessionalPhoneNumber());
+            employeeProfessionalDetails.setEntity(EmployeeEntity.valueOf(dto.getEntity()));
+            employeeProfessionalDetails.setOccupation(dto.getOccupation());
+            employeeProfessionalDetails.setJoinDate(dto.getJoinDate());
+            employeeProfessionalDetails.setDepartment(dto.getDepartment());
+            employeeProfessionalDetails.setMatriculation(dto.getMatriculation());
+            employeeProfessionalDetails.setSite(dto.getSite());
+            employeeProfessionalDetails.setProfessionalEmail(dto.getProfessionalEmail());
+            employeeProfessionalDetails.setProfessionalFixedPhoneNumber(dto.getProfessionalFixedPhoneNumber());
+            employeeProfessionalDetails.setExtension(dto.getExtension());
+        }
+        else {
+            // Fetch the manager:
+            Employee manager = employeeQueryService
+                    .getManager(dto.getManagerId());
+            assert manager != null;
+            employeeProfessionalDetails.setManager(manager);
+            employeeProfessionalDetails.setProfessionalPhoneNumber(dto.getProfessionalPhoneNumber());
+            employeeProfessionalDetails.setEntity(EmployeeEntity.valueOf(dto.getEntity()));
+            employeeProfessionalDetails.setOccupation(dto.getOccupation());
+            employeeProfessionalDetails.setJoinDate(dto.getJoinDate());
+            employeeProfessionalDetails.setDepartment(dto.getDepartment());
+            employeeProfessionalDetails.setMatriculation(dto.getMatriculation());
+            employeeProfessionalDetails.setSite(dto.getSite());
+            employeeProfessionalDetails.setProfessionalEmail(dto.getProfessionalEmail());
+            employeeProfessionalDetails.setProfessionalFixedPhoneNumber(dto.getProfessionalFixedPhoneNumber());
+            employeeProfessionalDetails.setExtension(dto.getExtension());
+        }
         return employeeProfessionalDetails;
 
     }

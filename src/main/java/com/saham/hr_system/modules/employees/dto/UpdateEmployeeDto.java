@@ -15,7 +15,7 @@ public class UpdateEmployeeDto {
     private String entity;
     private String occupation;
     private LocalDate joinDate;
-    private String managerName;
+    private Long managerId;
     private List<String> roles;
     private EmployeeBalanceDto employeeBalance;
 }
