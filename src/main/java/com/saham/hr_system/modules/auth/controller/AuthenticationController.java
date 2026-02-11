@@ -2,22 +2,22 @@ package com.saham.hr_system.modules.auth.controller;
 
 import com.saham.hr_system.modules.auth.dto.LoginRequestDto;
 import com.saham.hr_system.modules.auth.service.implementation.AuthenticationServiceImpl;
+import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordReinitialization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
     private final AuthenticationServiceImpl authenticationServiceImpl;
+    private final EmployeePasswordReinitialization employeePasswordReinitialization;
 
     @Autowired
-    public AuthenticationController(AuthenticationServiceImpl authenticationServiceImpl) {
+    public AuthenticationController(AuthenticationServiceImpl authenticationServiceImpl, EmployeePasswordReinitialization employeePasswordReinitialization) {
         this.authenticationServiceImpl = authenticationServiceImpl;
+        this.employeePasswordReinitialization = employeePasswordReinitialization;
     }
 
     @PostMapping("")
@@ -25,5 +25,17 @@ public class AuthenticationController {
         return ResponseEntity
                 .status(200)
                 .body(authenticationServiceImpl.authenticate(requestDto));
+    }
+
+    @PostMapping("forgot-password")
+    public ResponseEntity<Object> forgotPassword(@RequestParam String email){
+        employeePasswordReinitialization.initiatePasswordReset(email);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("reset-password")
+    public ResponseEntity<Object> resetPassword(@RequestParam String token, @RequestParam String newPassword){
+        employeePasswordReinitialization.resetPassword(token, newPassword);
+        return ResponseEntity.ok().build();
     }
 }
