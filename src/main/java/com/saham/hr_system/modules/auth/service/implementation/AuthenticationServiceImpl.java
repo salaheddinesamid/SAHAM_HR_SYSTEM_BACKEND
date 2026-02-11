@@ -52,6 +52,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(!passwordEncoder.matches(requestDto.getPassword(), employee.getPassword())) {
             throw new BadCredentialsException("Invalid credentials for user: " + requestDto.getEmail());
         }
+        // Check if the account is not locked
+        if(employee.isAccountNonLocked()){
+            throw new BadCredentialsException("Account is locked for user: " + requestDto.getEmail());
+        }
 
         // Fetch the roles:
         List<Role> roles = employee.getRoles();

@@ -66,6 +66,7 @@ public class EmployeePasswordSetupService implements PasswordSetupService {
 
         // Update the employee's password (you would typically hash the password before saving it)
         employee.setPassword(newPassword); // In a real application, make sure to hash the password!
+        employee.setAccountLocked(false);
         employeeRepository.save(employee);
 
         // Invalidate the token after successful password setup

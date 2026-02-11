@@ -86,6 +86,9 @@ public class Employee implements UserDetails {
     @JoinColumn(name= "managed_by")
     private Employee manager;
 
+    @Column(name = "is_account_locked")
+    private boolean isAccountLocked = true;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName())).toList();
@@ -103,7 +106,7 @@ public class Employee implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return this.isAccountLocked;
     }
 
 
