@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.auth.service.implementation;
 
+import com.saham.hr_system.exception.PasswordResetTokenExpiredException;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.auth.model.PasswordResetToken;
 import com.saham.hr_system.modules.auth.repository.PasswordResetTokenRepository;
@@ -31,7 +32,7 @@ public class EmployeePasswordReinitialization implements PasswordReinitializatio
     }
 
     @Override
-    public String initiatePasswordReset(String email) {
+    public void initiatePasswordReset(String email) {
         // Check if the email exists in the system and belongs to an employee
         Employee employee  = employeeRepository.findByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException(email));
@@ -44,7 +45,6 @@ public class EmployeePasswordReinitialization implements PasswordReinitializatio
         passwordResetTokenRepository.save(passwordResetToken);
 
         // notify the employee by email (this part is not implemented here, but you can use an email service to send the reset token to the employee's email address)
-        return "";
     }
 
     @Override
@@ -54,11 +54,11 @@ public class EmployeePasswordReinitialization implements PasswordReinitializatio
                 .orElseThrow(()-> new RuntimeException("Invalid token"));
         Employee employee = t.getEmployee();
         if(t.isExpired()){
-            throw new RuntimeException("Token expired");
+            throw new PasswordResetTokenExpiredException("");
         }
         // Check if the new password is not the same as the old one
         if(passwordEncoder.matches(employee.getPassword(), passwordEncoder.encode(newPassword))){
-            throw new RuntimeException("New password cannot be the same as the old one");
+            throw new PasswordResetTokenExpiredException("");
         };
         // Otherwise, reset the employee's password and invalidate the token
         String hashedPassword = passwordEncoder.encode(newPassword);
