@@ -14,6 +14,7 @@ public class EmployeeDetailsDto {
     private String firstName;
     private String lastName;
     private String email;
+
     private ProfessionalDetailsDto professionalDetails;
     private SocialDetailsDto socialDetails;
     private ContactDetailsDto contactDetails;
