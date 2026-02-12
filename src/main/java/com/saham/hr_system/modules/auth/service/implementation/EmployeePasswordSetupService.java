@@ -4,6 +4,7 @@ import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.auth.model.PasswordSetupToken;
 import com.saham.hr_system.modules.auth.repository.PasswordSetupTokenRepository;
 import com.saham.hr_system.modules.auth.service.PasswordSetupService;
+import com.saham.hr_system.modules.auth.utils.PasswordSetupUtils;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,12 @@ public class EmployeePasswordSetupService implements PasswordSetupService {
     private final static Long PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES = 60L; // Token valid for 60 minutes
     private final EmployeeRepository employeeRepository;
     private final PasswordSetupTokenRepository passwordSetupTokenRepository;
+    private final PasswordSetupUtils passwordSetupUtils;
     @Autowired
-    public EmployeePasswordSetupService(EmployeeRepository employeeRepository, PasswordSetupTokenRepository passwordSetupTokenRepository) {
+    public EmployeePasswordSetupService(EmployeeRepository employeeRepository, PasswordSetupTokenRepository passwordSetupTokenRepository, PasswordSetupUtils passwordSetupUtils) {
         this.employeeRepository = employeeRepository;
         this.passwordSetupTokenRepository = passwordSetupTokenRepository;
+        this.passwordSetupUtils = passwordSetupUtils;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class EmployeePasswordSetupService implements PasswordSetupService {
 
         passwordSetupTokenRepository.save(passwordSetupToken);
         // return the token to be sent to the employee's email:
-        return String.format("%s/setup-password?token=%s", PASSWORD_RESET_URL, token);
+        return passwordSetupUtils.generatePasswordSetupLink(token);
     }
 
     @Override
