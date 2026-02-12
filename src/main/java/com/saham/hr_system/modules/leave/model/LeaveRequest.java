@@ -8,7 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "leave_requests")
+@Table(name = "leave_requests", indexes = {
+        @Index(name = "idx_reference_number", columnList = "reference_number"),
+        @Index(name = "idx_employee_id", columnList = "employee_id"), @Index(name = "idx_status", columnList = "status")
+})
 @Getter
 @Setter
 public class LeaveRequest {

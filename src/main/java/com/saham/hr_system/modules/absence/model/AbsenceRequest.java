@@ -11,6 +11,11 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Table(name = "absence_request", indexes = {
+        @Index(name = "idx_reference_number", columnList = "reference_number"),
+        @Index(name = "idx_employee_id", columnList = "employee_id"),
+        @Index(name = "idx_status", columnList = "status")
+})
 public class AbsenceRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

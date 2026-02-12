@@ -16,7 +16,11 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "employees")
+@Table(name = "employees", indexes = {
+        @Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_cin", columnList = "CIN"),
+        @Index(name = "idx_manager_id", columnList = "managed_by")
+})
 public class Employee implements UserDetails {
 
     @Id

@@ -10,7 +10,11 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-@Table(name = "leaves")
+@Table(name = "leaves", indexes = {
+        @Index(name = "idx_employee_from_date", columnList = "employee_id, from_date"), @Index(name = "idx_employee_to_date", columnList = "employee_id, to_date"),
+        @Index(name = "idx_reference_number", columnList = "reference_number"),
+        @Index(name = "idx_employee_id", columnList = "employee_id")
+})
 public class Leave {
 
     @Id
