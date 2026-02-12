@@ -10,8 +10,13 @@ import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepositor
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
 import com.saham.hr_system.modules.employees.service.EmployeeUpdateService;
+import com.saham.hr_system.modules.employees.utils.EmployeeProfilePictureUploader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -21,12 +26,14 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
     private final EmployeeBalanceRepository employeeBalanceRepository;
     private final EmployeeQueryServiceImpl employeeQueryService;
     private final RoleRepository roleRepository;
+    private final EmployeeProfilePictureUploader employeeProfilePictureUploader;
 
-    public EmployeeUpdateServiceImpl(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, EmployeeQueryServiceImpl employeeQueryService, RoleRepository roleRepository) {
+    public EmployeeUpdateServiceImpl(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, EmployeeQueryServiceImpl employeeQueryService, RoleRepository roleRepository, EmployeeProfilePictureUploader employeeProfilePictureUploader) {
         this.employeeRepository = employeeRepository;
         this.employeeBalanceRepository = employeeBalanceRepository;
         this.employeeQueryService = employeeQueryService;
         this.roleRepository = roleRepository;
+        this.employeeProfilePictureUploader = employeeProfilePictureUploader;
     }
 
     @Override
@@ -73,6 +80,19 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         Employee savedEmployee = employeeRepository.save(employee);
 
         return new EmployeeDetailsDto(savedEmployee);
+    }
+
+    @Override
+    public void updateEmployeeProfilePicture(Long employeeId, MultipartFile picture) {
+        // Check if the employee exists:
+        Employee employee = employeeRepository
+                .findById(employeeId).orElseThrow(()-> new UserNotFoundException("Employee with ID " + employeeId + " not found."));
+
+        // Upload the profile picture and get the URL:
+        //String url = employeeProfilePictureUploader.uploadProfilePicture();
+        // Set the URL in employee entity and save:
+        //employee.setProfilePictureUrl(url);
+        employeeRepository.save(employee);
     }
 
     private EmployeeBalance updateBalance(EmployeeBalance employeeBalance, EmployeeBalanceDto employeeBalanceDto) {

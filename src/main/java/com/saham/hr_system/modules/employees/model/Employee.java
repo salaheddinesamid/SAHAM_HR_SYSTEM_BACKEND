@@ -43,6 +43,9 @@ public class Employee implements UserDetails {
     @Column(name = "number_of_children")
     private Integer numberOfChildren;
 
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -64,9 +67,6 @@ public class Employee implements UserDetails {
     @JoinColumn(name = "contact_details_id")
     @OneToOne(cascade = CascadeType.ALL)
     private EmployeeContactDetails employeeContactDetails;
-
-    @Column(name = "profile_picture_url", nullable = true, unique = true, columnDefinition = "TEXT default ''")
-    private String profilePictureUrl;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

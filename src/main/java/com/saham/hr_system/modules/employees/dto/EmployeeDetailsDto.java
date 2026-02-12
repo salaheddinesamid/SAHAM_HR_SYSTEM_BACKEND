@@ -14,7 +14,10 @@ public class EmployeeDetailsDto {
     private String firstName;
     private String lastName;
     private String email;
-
+    private String familyStatus;
+    private Integer numberOfChildren;
+    private String CIN;
+    private String profilePictureUrl;
     private ProfessionalDetailsDto professionalDetails;
     private SocialDetailsDto socialDetails;
     private ContactDetailsDto contactDetails;
@@ -27,6 +30,10 @@ public class EmployeeDetailsDto {
         this.firstName = employee.getFirstName();
         this.lastName = employee.getLastName();
         this.email = employee.getEmail();
+        this.familyStatus = employee.getFamilyStatus() != null ? employee.getFamilyStatus().toString() : null;
+        this.CIN = employee.getCIN();
+        this.numberOfChildren = employee.getNumberOfChildren();
+        this.profilePictureUrl = employee.getProfilePictureUrl();
         this.professionalDetails = employee.getEmployeeProfessionalDetails() != null ? new ProfessionalDetailsDto(employee.getEmployeeProfessionalDetails()) : null;
         this.socialDetails = employee.getEmployeeSocialDetails() != null ? new SocialDetailsDto(employee.getEmployeeSocialDetails()) : null;
         this.contactDetails = employee.getEmployeeContactDetails() != null ? new ContactDetailsDto(employee.getEmployeeContactDetails()) : null;
