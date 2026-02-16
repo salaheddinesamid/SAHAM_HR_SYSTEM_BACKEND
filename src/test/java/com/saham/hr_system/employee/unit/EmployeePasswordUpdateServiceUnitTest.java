@@ -47,7 +47,7 @@ public class EmployeePasswordUpdateServiceUnitTest {
         updateDto.setNewPassword("emp2027@");
         // Arrange:
         when(employeeRepository.findByEmail("emp@saham.com")).thenReturn(Optional.of(employee));
-
+        when(passwordEncoder.encode("emp2026@")).thenReturn("encodedNewPassword");
         // Act and verify:
         employeePasswordUpdateService.updatePassword("emp@saham.com", updateDto);
         verify(employeeRepository, times(1)).save(any());

@@ -37,19 +37,6 @@ public class LeaveController {
         this.jwtUtilities = jwtUtilities;
     }
 
-    /*
-    @PostMapping("apply")
-    public ResponseEntity<?> applyForLeave(@RequestParam String email,
-                                           @RequestBody LeaveRequestDto leaveRequestDto
-                                           ){
-        leaveService.requestLeave(email,leaveRequestDto);
-        return ResponseEntity
-                .status(200)
-                .body("Leave applied successfully");
-    }
-
-
-     */
     @PostMapping("apply")
     public ResponseEntity<?> applyForLeave(@RequestParam String email,
                                            @RequestPart("requestDto") LeaveRequestDto requestDto,
