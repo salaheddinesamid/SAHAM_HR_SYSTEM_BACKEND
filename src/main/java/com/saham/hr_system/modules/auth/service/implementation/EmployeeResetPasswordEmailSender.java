@@ -26,10 +26,10 @@ public class EmployeeResetPasswordEmailSender implements ResetPasswordEmailSende
     @Override
     public void sendEmail(String recipientEmail, String resetToken) throws MessagingException {
         Context context = new Context();
-        String resetLink = String.format("%s%s", redirectionUrl, "?token=" + resetToken);
+        String resetLink = String.format("%s%s", redirectionUrl, "/reset-password?token=" + resetToken);
         context.setVariable("resetLink", resetLink);
 
-        String content = templateEngine.process("reset-password-email",context);
-        outlookEmailService.sendEmail(content, recipientEmail, "");
+        String content = templateEngine.process("password-reinitialization.html",context);
+        outlookEmailService.sendEmail(recipientEmail, content, "");
     }
 }
