@@ -80,6 +80,11 @@ public class EmployeeController {
                 .body(response);
     }
 
+    @PatchMapping("update/password/{email}")
+    public ResponseEntity<Object> updateEmployeePassword(){
+        return null;
+    }
+
     @PatchMapping("update/profile-picture/{employeeId}")
     public ResponseEntity<Object> updateEmployeeProfilePicture(@PathVariable Long employeeId, @RequestBody MultipartFile multipartFile){
         return ResponseEntity
