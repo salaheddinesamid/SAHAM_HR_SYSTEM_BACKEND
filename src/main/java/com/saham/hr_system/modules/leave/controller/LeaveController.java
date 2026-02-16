@@ -39,10 +39,9 @@ public class LeaveController {
 
     @PostMapping("apply")
     public ResponseEntity<?> applyForLeave(@RequestParam String email,
-                                           @RequestPart("requestDto") LeaveRequestDto requestDto,
-                                           @RequestPart(value = "file", required = false) MultipartFile file
+                                           @RequestBody LeaveRequestDto requestDto
     ) throws IOException, MessagingException {
-        leaveService.requestLeave(email,requestDto, file);
+        leaveService.requestLeave(email,requestDto);
         return ResponseEntity
                 .status(200)
                 .body("Leave applied successfully");

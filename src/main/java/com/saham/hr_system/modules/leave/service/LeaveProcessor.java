@@ -10,5 +10,5 @@ import java.io.IOException;
 public interface LeaveProcessor {
 
     boolean supports(String leaveType);
-    LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) throws IOException, MessagingException;
+    LeaveRequest process(String email, LeaveRequestDto requestDto) throws IOException, MessagingException;
 }

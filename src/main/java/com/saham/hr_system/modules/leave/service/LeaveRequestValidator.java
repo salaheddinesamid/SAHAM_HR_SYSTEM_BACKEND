@@ -8,5 +8,5 @@ public interface LeaveRequestValidator {
      * This method is responsible for validating the request dto, for each leave type and sub leave type
      * @param leaveRequestDto
      */
-    void validate(LeaveRequestDto leaveRequestDto, MultipartFile file);
+    void validate(LeaveRequestDto leaveRequestDto);
 }

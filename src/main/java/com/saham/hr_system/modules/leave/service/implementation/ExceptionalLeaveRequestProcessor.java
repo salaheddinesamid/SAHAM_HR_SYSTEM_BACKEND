@@ -46,7 +46,7 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
     }
 
     @Override
-    public LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) throws IOException, MessagingException {
+    public LeaveRequest process(String email, LeaveRequestDto requestDto) throws IOException, MessagingException {
         // fetch the employee from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow();

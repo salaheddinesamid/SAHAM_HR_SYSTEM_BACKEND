@@ -58,16 +58,16 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Override
     @Transactional
-    public void requestLeave(String email , LeaveRequestDto leaveRequestDto, MultipartFile file) throws IOException, MessagingException {
+    public void requestLeave(String email , LeaveRequestDto leaveRequestDto) throws IOException, MessagingException {
         // validate the request fields:
-        leaveRequestValidator.validate(leaveRequestDto, file);
+        leaveRequestValidator.validate(leaveRequestDto);
         // process the request
         LeaveProcessor processor =
                 processors.stream().filter(p-> p.supports(leaveRequestDto.getType()))
                         .findFirst().orElse(null);
 
         assert processor != null;
-        processor.process(email,leaveRequestDto, file);
+        processor.process(email,leaveRequestDto);
     }
 
     /**

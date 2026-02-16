@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Component
 public class LeaveRequestValidatorImpl implements LeaveRequestValidator {
     @Override
-    public void validate(LeaveRequestDto leaveRequestDto, MultipartFile file) {
+    public void validate(LeaveRequestDto leaveRequestDto) {
         if (leaveRequestDto == null) throw new IllegalArgumentException("dto cannot be null");
         if (leaveRequestDto.getStartDate() == null || leaveRequestDto.getEndDate() == null)
             throw new IllegalArgumentException("startDate and endDate are required");
@@ -18,7 +18,5 @@ public class LeaveRequestValidatorImpl implements LeaveRequestValidator {
             throw new IllegalArgumentException("endDate must not be before startDate");
         if (leaveRequestDto.getStartDate().isBefore(LocalDate.now().minusYears(1)))
             throw new IllegalArgumentException("startDate too old");
-        if(leaveRequestDto.getType().equals("EXCEPTIONAL") && leaveRequestDto.getTypeDetails().equals("SICKNESS") && file == null)
-            throw new IllegalArgumentException("Medical Certificate cannot be null");
     }
 }

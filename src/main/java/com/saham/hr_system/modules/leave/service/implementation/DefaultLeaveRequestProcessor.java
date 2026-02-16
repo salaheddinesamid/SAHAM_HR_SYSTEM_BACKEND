@@ -48,13 +48,10 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     }
 
     @Override
-    public LeaveRequest process(String email, LeaveRequestDto requestDto, MultipartFile file) throws MessagingException {
+    public LeaveRequest process(String email, LeaveRequestDto requestDto) throws MessagingException {
         // fetch the employee from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
-        // fetch the balance
-        EmployeeBalance balance = employeeBalanceRepository
-                .findByEmployee(employee).orElseThrow();
 
         // calculate the total days excluding the weekends and holidays
         double totalDays =

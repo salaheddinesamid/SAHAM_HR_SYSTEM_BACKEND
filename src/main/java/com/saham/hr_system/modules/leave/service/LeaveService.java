@@ -19,7 +19,7 @@ public interface LeaveService {
      * Request leave for an employee.
      * @param leaveRequestDto
      */
-    void requestLeave(String email, LeaveRequestDto leaveRequestDto, MultipartFile file) throws IOException, MessagingException;
+    void requestLeave(String email, LeaveRequestDto leaveRequestDto) throws IOException, MessagingException;
 
     /**
      * Get all leave requests made by an employee.

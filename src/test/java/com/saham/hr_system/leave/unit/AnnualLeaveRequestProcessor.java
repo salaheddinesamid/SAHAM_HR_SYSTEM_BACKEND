@@ -79,7 +79,7 @@ public class AnnualLeaveRequestProcessor {
         when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
 
         // Act:
-        defaultLeaveRequestProcessor.process(employee.getEmail(),requestDto, null);
+        defaultLeaveRequestProcessor.process(employee.getEmail(),requestDto);
         verify(leaveRequestRepository, times(1)).save(any());
     }
     @Test
@@ -96,7 +96,7 @@ public class AnnualLeaveRequestProcessor {
 
         // Act:
         assertThrows(UserNotFoundException.class, ()->
-                defaultLeaveRequestProcessor.process("test@example.com", leaveRequestDto, null));
+                defaultLeaveRequestProcessor.process("test@example.com", leaveRequestDto));
         verify(leaveRequestRepository, never()).save(any());
 
     }

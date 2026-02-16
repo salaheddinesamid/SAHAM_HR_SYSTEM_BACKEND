@@ -75,7 +75,7 @@ public class ExceptionalLeaveRequestProcessorUnitTest {
         when(employeeBalanceRepository.findByEmployee(employee)).thenReturn(Optional.of(employeeBalance));
 
         // Act:
-        exceptionalLeaveRequestProcessor.process(employee.getEmail(),requestDto, null);
+        exceptionalLeaveRequestProcessor.process(employee.getEmail(),requestDto);
         verify(leaveRequestRepository, times(1)).save(any());
     }
 }
