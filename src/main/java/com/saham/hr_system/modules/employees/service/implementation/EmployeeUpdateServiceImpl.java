@@ -1,10 +1,7 @@
 package com.saham.hr_system.modules.employees.service.implementation;
 
 import com.saham.hr_system.exception.UserNotFoundException;
-import com.saham.hr_system.modules.employees.dto.EmployeeBalanceDto;
-import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
-import com.saham.hr_system.modules.employees.dto.EmployeeProfileDetails;
-import com.saham.hr_system.modules.employees.dto.UpdateEmployeeDto;
+import com.saham.hr_system.modules.employees.dto.*;
 import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
@@ -13,6 +10,7 @@ import com.saham.hr_system.modules.employees.service.EmployeeUpdateService;
 import com.saham.hr_system.modules.employees.utils.EmployeeProfilePictureUploader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
@@ -37,6 +35,7 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
     }
 
     @Override
+    @Transactional
     public EmployeeDetailsDto updateEmployee(Long employeeId, UpdateEmployeeDto updateEmployeeDto) {
 
         // fetch the employee from db:
@@ -52,30 +51,29 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         if(updateEmployeeDto.getEmail() != null){
             employee.setEmail(updateEmployeeDto.getEmail());
         }
-        /*
-        // update the new manager:
-        if(updateEmployeeDto.getManagerId() != null){
-            if(!employeeQueryService.verifyManager(updateEmployeeDto.getManagerId())){
-                throw new UserNotFoundException("Manager with name " + updateEmployeeDto.getManagerName() + " not found.");
-            } else {
-                Employee manager = employeeQueryService.getManager(updateEmployeeDto.getManagerName());
-                employee.setManager(manager);
-            }
-
-        }
-
-         */
         // update the new roles:
         if(updateEmployeeDto.getRoles() != null && !updateEmployeeDto.getRoles().isEmpty()){
             List<Role> roles =
                     updateEmployeeDto.getRoles().stream().map(roleName-> roleRepository.findByRoleName(roleName).orElseThrow()).toList();
             employee.setRoles(roles);
         }
+        // update employee balance if provided:
         if (updateEmployeeDto.getEmployeeBalance() != null){
             EmployeeBalance balance = employee.getEmployeeBalance() != null ? employeeBalanceRepository.findByEmployee(employee).orElseThrow() : null;
             EmployeeBalance updatedBalance = updateBalance(balance, updateEmployeeDto.getEmployeeBalance());
             employee.setEmployeeBalance(updatedBalance);
         }
+        // update employee professional details if provided:
+        EmployeeProfessionalDetails updatedProfessionalDetails = updateProfessionalDetails(employee, updateEmployeeDto.getProfessionalDetailsDto());
+        // update employee social details if provided:
+        EmployeeSocialDetails updatedSocialDetails = updateSocialDetails(employee, updateEmployeeDto.getSocialDetailsDto());
+        // update employee contact details if provided:
+        EmployeeContactDetails updatedContactDetails = updateContactDetails(employee, updateEmployeeDto.getContactDetailsDto());
+
+        // Set the employee details using transactions
+        employee.setEmployeeProfessionalDetails(updatedProfessionalDetails);
+        employee.setEmployeeSocialDetails(updatedSocialDetails);
+        employee.setEmployeeContactDetails(updatedContactDetails);
         // finally, save the employee:
         Employee savedEmployee = employeeRepository.save(employee);
 
@@ -115,7 +113,98 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         return employeeBalanceRepository.save(employeeBalance);
     }
 
-    private EmployeeProfileDetails updateProfessionalDetails(){return null;}
-    private EmployeeSocialDetails updateSocialDetails(){return null;}
-    private EmployeeContactDetails updateContactDetails(){return null;}
+    /**
+     *
+     * @param employee
+     * @param dto
+     * @return
+     */
+    private EmployeeProfessionalDetails updateProfessionalDetails(
+            Employee employee , UpdateEmployeeProDetailsDto dto
+    ){
+        EmployeeProfessionalDetails professionalDetails = employee.getEmployeeProfessionalDetails();
+        // If the employee does not have professional details, create a new instance:
+        if(professionalDetails == null){
+            professionalDetails = new EmployeeProfessionalDetails();
+        }
+        // Update Matriculation Number
+        if(dto.getMatriculation() != null){
+            professionalDetails.setMatriculation(dto.getMatriculation());
+        }
+        // Update Professional Email
+        if(dto.getProfessionalEmail() != null){
+            professionalDetails.setProfessionalEmail(dto.getProfessionalEmail());
+        }
+        // Update Join Date
+        if(dto.getJoinDate() != null){
+            professionalDetails.setJoinDate(dto.getJoinDate());
+        }
+        // Update the department
+        if(dto.getDepartment() != null){
+            professionalDetails.setDepartment(dto.getDepartment());
+        }
+        // Update Manager
+        if(dto.getManagerId() != null){
+            Employee newManager = employeeQueryService.getManager(dto.getManagerId());
+            assert newManager != null;
+            professionalDetails.setManager(newManager);
+        }
+
+        return professionalDetails;
+    }
+
+    /**
+     *
+     * @param employee
+     * @param dto
+     * @return
+     */
+    private EmployeeSocialDetails updateSocialDetails(
+            Employee employee, UpdateEmployeeSocialDetailsDto dto
+    ){
+        // Fetch the social details:
+        EmployeeSocialDetails employeeSocialDetails = employee.getEmployeeSocialDetails();
+        if(employeeSocialDetails == null){
+            employeeSocialDetails = new EmployeeSocialDetails();
+        }
+
+        // Update the CNSS number
+        if(dto.getCnssNumber() != null){
+            employeeSocialDetails.setCnssNumber(dto.getCnssNumber());
+        }
+        // Update the CIMR number
+        if(dto.getCimrNumber() != null){
+            employeeSocialDetails.setCimrNumber(dto.getCimrNumber());
+        }
+        // Update the insurance number
+        if(dto.getInsuranceNumber() != null){
+            employeeSocialDetails.setInsuranceNumber(dto.getInsuranceNumber());
+        }
+
+        return employeeSocialDetails;
+    }
+
+    /**
+     *
+     * @param employee
+     * @param dto
+     * @return
+     */
+    private EmployeeContactDetails updateContactDetails(Employee employee, UpdateEmployeeContactDetailsDto dto){
+        // Fetch the employee contact details
+        EmployeeContactDetails employeeContactDetails = employee.getEmployeeContactDetails();
+        if(employeeContactDetails == null){
+            employeeContactDetails = new EmployeeContactDetails();
+        }
+        // Update the person to call in case of emergency
+        if(dto.getPersonToCallInCaseOfEmergency() != null){
+            employeeContactDetails.setPersonToContactInCaseOfEmergency(dto.getPersonToCallInCaseOfEmergency());
+        }
+        // Update the emergency contact number
+        if(dto.getEmergencyContactNumber() != null){
+            employeeContactDetails.setEmergencyContactNumber(dto.getEmergencyContactNumber());
+        }
+
+        return employeeContactDetails;
+    }
 }
