@@ -127,7 +127,7 @@ public class LeaveServiceImpl implements LeaveService {
                 .findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
 
         // Fetch the subordinates
-        List<Employee> subordinates = employeeRepository.findAllByManagerId(manager.getId());
+        List<Employee> subordinates = employeeRepository.findAllByEmployeeProfessionalDetails_Manager_Id(manager.getId());
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("requestDate").descending());
         // Fetch leave requests (IN PROCESS ONLY):

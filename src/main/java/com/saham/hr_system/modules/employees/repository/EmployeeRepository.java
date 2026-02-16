@@ -23,7 +23,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
      * @param id
      * @return
      */
+
     List<Employee> findAllByManagerId(Long id);
+
+    List<Employee> findAllByEmployeeProfessionalDetails_Manager_Id(Long managerId);
+
 
     /**
      *

@@ -11,7 +11,6 @@ import org.thymeleaf.context.Context;
 
 @Component
 public class EmployeeResetPasswordEmailSender implements ResetPasswordEmailSender {
-
     @Value("${frontend.url}")
     private String redirectionUrl;
     private final TemplateEngine templateEngine;

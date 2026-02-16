@@ -51,7 +51,7 @@ public class AbsenceRequestQueryImpl implements AbsenceRequestQuery {
 
         // get the subordinates:
         List<Employee> subordinates =
-                employeeRepository.findAllByManagerId(manager.getId());
+                employeeRepository.findAllByEmployeeProfessionalDetails_Manager_Id(manager.getId());
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("issueDate").descending());
 
