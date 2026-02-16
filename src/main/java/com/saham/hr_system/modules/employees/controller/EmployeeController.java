@@ -1,15 +1,10 @@
 package com.saham.hr_system.modules.employees.controller;
 
 import com.saham.hr_system.exception.UserNotFoundException;
-import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
-import com.saham.hr_system.modules.employees.dto.NewEmployeeDto;
-import com.saham.hr_system.modules.employees.dto.SubordinateDetailsResponseDto;
-import com.saham.hr_system.modules.employees.dto.UpdateEmployeeDto;
+import com.saham.hr_system.modules.employees.dto.*;
 import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.service.implementation.EmployeeAdderServiceImpl;
-import com.saham.hr_system.modules.employees.service.implementation.EmployeeQueryServiceImpl;
-import com.saham.hr_system.modules.employees.service.implementation.EmployeeServiceImpl;
-import com.saham.hr_system.modules.employees.service.implementation.EmployeeUpdateServiceImpl;
+import com.saham.hr_system.modules.employees.service.implementation.*;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -33,13 +28,15 @@ public class EmployeeController {
     private final EmployeeAdderServiceImpl employeeAdderService;
     private final EmployeeQueryServiceImpl employeeQueryService;
     private final EmployeeUpdateServiceImpl employeeUpdateService;
+    private final EmployeePasswordUpdateServiceImpl employeePasswordUpdateService;
 
-    public EmployeeController(@Value("${file.upload.profile-pictures}") String path, EmployeeServiceImpl employeeService, EmployeeAdderServiceImpl employeeAdderService, EmployeeQueryServiceImpl employeeQueryService, EmployeeUpdateServiceImpl employeeUpdateService) {
+    public EmployeeController(@Value("${file.upload.profile-pictures}") String path, EmployeeServiceImpl employeeService, EmployeeAdderServiceImpl employeeAdderService, EmployeeQueryServiceImpl employeeQueryService, EmployeeUpdateServiceImpl employeeUpdateService, EmployeePasswordUpdateServiceImpl employeePasswordUpdateService) {
         this.profilePicturesPath = Paths.get(path).toAbsolutePath().normalize();
         this.employeeService = employeeService;
         this.employeeAdderService = employeeAdderService;
         this.employeeQueryService = employeeQueryService;
         this.employeeUpdateService = employeeUpdateService;
+        this.employeePasswordUpdateService = employeePasswordUpdateService;
     }
     /*
     @GetMapping("get")
@@ -80,9 +77,13 @@ public class EmployeeController {
                 .body(response);
     }
 
-    @PatchMapping("update/password/{email}")
-    public ResponseEntity<Object> updateEmployeePassword(){
-        return null;
+    @PatchMapping("update/password")
+    public ResponseEntity<Object> updateEmployeePassword(
+            @RequestParam String email,
+            @RequestBody PasswordUpdateDto passwordUpdateDto
+            ){
+        employeePasswordUpdateService.updatePassword(email, passwordUpdateDto);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("update/profile-picture/{employeeId}")
