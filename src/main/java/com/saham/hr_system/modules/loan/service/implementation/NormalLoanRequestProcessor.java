@@ -61,8 +61,8 @@ public class NormalLoanRequestProcessor implements LoanRequestProcessor {
         // notify the employee and HR ASYNC:
         CompletableFuture.runAsync(()->{
             try{
-                //loanRequestEmailSender.notifyEmployee(loanRequest);
-                //loanRequestEmailSender.notifyHR(loanRequest);
+                loanRequestEmailSender.notifyEmployee(loanRequest);
+                loanRequestEmailSender.notifyHR(loanRequest);
             }catch (RuntimeException e){
                 e.printStackTrace();
             }

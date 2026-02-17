@@ -6,12 +6,14 @@ import com.saham.hr_system.modules.absence.service.implementation.AbsenceRejecti
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestQueryImpl;
 import com.saham.hr_system.modules.absence.service.implementation.AbsenceRequestServiceImpl;
 import com.saham.hr_system.modules.absence.service.implementation.SicknessAbsenceDocumentStorageService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -117,10 +119,10 @@ public class AbsenceController {
      */
     @PutMapping("/requests/subordinates/approve-request")
     public ResponseEntity<?> approveSubordinateRequest(
-            Authentication authentication,
             @RequestParam String refNumber
     ) throws Exception {
-        String approvedBy = authentication.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String approvedBy = auth.getName();
         absenceRequestService.approveAbsenceRequest(approvedBy, refNumber);
         return ResponseEntity.status(200).body("Absence request has been approved");
     }
@@ -128,17 +130,20 @@ public class AbsenceController {
     /**
      * Rejects an absence request belonging to a subordinate employee.
      *
-     * @param rejectedBy email of the manager rejecting the request.
      * @param refNumber  reference number of the absence request.
      * @return HTTP success message after rejection.
      * @throws Exception if rejection fails.
      */
     @PutMapping("/requests/subordinates/reject-request")
     public ResponseEntity<?> rejectSubordinateRequest(
-            Authentication authentication,
             @RequestParam String refNumber
     ) throws Exception {
-        String rejectedBy = authentication.getName();
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String rejectedBy = auth.getName();
+
+        //String rejectedBy = authentication.getName();
         absenceRejection.rejectSubordinate(rejectedBy, refNumber);
         return ResponseEntity.status(200).body("Absence request has been rejected");
     }

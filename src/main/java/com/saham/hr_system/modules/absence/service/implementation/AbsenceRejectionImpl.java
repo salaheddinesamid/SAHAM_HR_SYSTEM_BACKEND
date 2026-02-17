@@ -38,7 +38,7 @@ public class AbsenceRejectionImpl implements AbsenceRejection {
                 employeeRepository.findByEmail(email).orElseThrow();
 
         // check if the manager is indeed the manager of the employee who made the request
-        if(!absenceRequest.getEmployee().getManager().getId().equals(manager.getId())) {
+        if(!absenceRequest.getEmployee().getEmployeeProfessionalDetails().getManager().getId().equals(manager.getId())) {
             throw new UnauthorizedAccessException("You are not authorized to reject this absence request.");
         }
 
@@ -58,6 +58,7 @@ public class AbsenceRejectionImpl implements AbsenceRejection {
         absenceRequestRepo.save(absenceRequest);
 
         // notify the employee (omitted for brevity)
+        /*
         CompletableFuture.runAsync(()->{
             try{
                 absenceRequestRejectionEmailSender.notifyEmployee(absenceRequest);
@@ -65,6 +66,8 @@ public class AbsenceRejectionImpl implements AbsenceRejection {
                 throw new RuntimeException(ex);
             }
         });
+
+         */
     }
 
     @Override

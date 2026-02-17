@@ -136,14 +136,16 @@ public class RemoteWorkAbsenceRequestApproval implements AbsenceApproval {
 
         absenceRequestRepo.save(request);
         absenceRepository.save(absence);
-
+        /*
         CompletableFuture.runAsync(() -> {
             try {
-                //absenceApprovalEmailSender.notifyEmployee(absence);
-                //absenceApprovalEmailSender.notifyManager(absence);
+                absenceApprovalEmailSender.notifyEmployee(absence);
+                absenceApprovalEmailSender.notifyManager(absence);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
+
+         */
     }
 }

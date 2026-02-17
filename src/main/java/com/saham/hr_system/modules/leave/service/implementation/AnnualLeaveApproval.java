@@ -123,8 +123,9 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // Fetch the employee:
         Employee employee  = leaveRequest.getEmployee();
         // Fetch the manager:
-        Employee manager = employee.getManager();
+        Employee manager = employee.getManager() == null ? employee.getEmployeeProfessionalDetails().getManager() : employee.getManager();
 
+        assert manager != null;
         if(!manager.getEmail().equals(approvedBy)){
             throw new UnauthorizedAccessException("You are not authorized to approve this request");
         }
@@ -151,7 +152,8 @@ public class AnnualLeaveApproval implements LeaveApproval {
         // Fetch the employee:
         Employee employee  = leaveRequest.getEmployee();
         // Fetch the manager:
-        Employee manager = employee.getManager();
+        Employee manager = employee.getManager() == null ? employee.getEmployeeProfessionalDetails().getManager() : employee.getManager();
+        assert manager != null;
 
         if(!manager.getEmail().equals(rejectedBy)){
             throw new UnauthorizedAccessException("You are not authorized to reject this request");
