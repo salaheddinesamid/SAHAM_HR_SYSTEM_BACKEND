@@ -54,7 +54,9 @@ public class AbsenceRequestEmailSenderImpl implements AbsenceRequestEmailSender 
 
     @Override
     public void notifyManager(AbsenceRequest absenceRequest) throws MessagingException {
-        String TO = absenceRequest.getEmployee().getEmail();
+        String TO = absenceRequest.getEmployee().getManager() == null
+                ? absenceRequest.getEmployee().getEmployeeProfessionalDetails().getManager().getEmail()
+                : absenceRequest.getEmployee().getManager().getEmail();
 
         // Template variables
         Context context = new Context();

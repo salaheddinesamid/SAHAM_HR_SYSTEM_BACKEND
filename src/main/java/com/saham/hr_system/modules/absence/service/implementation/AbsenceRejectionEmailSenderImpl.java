@@ -43,7 +43,9 @@ public class AbsenceRejectionEmailSenderImpl implements AbsenceRejectionEmailSen
 
     @Override
     public void notifyManager(AbsenceRequest absenceRequest) {
-        String TO = absenceRequest.getEmployee().getManager().getEmail();
+        String TO = absenceRequest.getEmployee().getManager() == null
+                ? absenceRequest.getEmployee().getEmployeeProfessionalDetails().getManager().getEmail()
+                : absenceRequest.getEmployee().getManager().getEmail();
 
         // Template engine variables:
         Context context = new Context();

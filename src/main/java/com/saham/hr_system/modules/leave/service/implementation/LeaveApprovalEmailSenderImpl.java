@@ -30,7 +30,9 @@ public class LeaveApprovalEmailSenderImpl implements LeaveApprovalEmailSender {
 
     @Override
     public void sendHRApprovalEmailToManager(LeaveRequest leaveRequest) throws MessagingException {
-        String TO = leaveRequest.getEmployee().getManager().getEmail();
+        String TO = leaveRequest.getEmployee().getManager() == null
+                ? leaveRequest.getEmployee().getEmployeeProfessionalDetails().getManager().getEmail()
+                : leaveRequest.getEmployee().getManager().getEmail();
 
         // Template engine variables:
         Context context = new Context();
