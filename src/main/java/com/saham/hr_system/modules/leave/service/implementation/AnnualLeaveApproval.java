@@ -62,7 +62,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
 
         // Fetch employee balance:
         EmployeeBalance employeeBalance =
-                employeeBalanceRepository.findByEmployee(employee).orElseThrow();
+                employee.getEmployeeBalance();
 
         // Check if the request is approved by manager:
         if(!leaveRequest.isApprovedByManager()){
@@ -140,7 +140,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         CompletableFuture.runAsync(()->{
             try {
                 leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest);
-                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
+                //leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
@@ -194,13 +194,9 @@ public class AnnualLeaveApproval implements LeaveApproval {
 
         // notify the employee:
         CompletableFuture.runAsync(()->{
-            try {
-                leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
-                leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+            //leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+            //leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
 
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
         });
     }
 }

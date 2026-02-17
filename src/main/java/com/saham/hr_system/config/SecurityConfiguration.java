@@ -86,7 +86,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/employees/update/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/holidays/get_all").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/employees/new").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/holidays/update/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/holidays/update/**").permitAll()
                         .requestMatchers("/api/v1/payrolls/upload/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/employees/profile/get").hasAuthority("EMPLOYEE")
                         .requestMatchers("/websocket").permitAll()

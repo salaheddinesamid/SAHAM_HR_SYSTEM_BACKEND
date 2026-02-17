@@ -7,11 +7,13 @@ import com.saham.hr_system.modules.holidays.model.Holiday;
 import com.saham.hr_system.modules.holidays.model.HolidayType;
 import com.saham.hr_system.modules.holidays.repository.HolidayRepository;
 import com.saham.hr_system.modules.holidays.service.HolidayModifier;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class ReligiousHolidayModifier implements HolidayModifier {
     private final HolidayRepository holidayRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -44,6 +46,7 @@ public class ReligiousHolidayModifier implements HolidayModifier {
             long totalDaysUpdate =
                     dto.getEndDate().toEpochDay() - dto.getStartDate().toEpochDay() + 1;
             // publish the event of holiday update
+            log.info("Publishing holiday update event for holiday: {}, total days updated: {}", name, totalDaysUpdate);
             applicationEventPublisher
                     .publishEvent(
                             new HolidayUpdatedEvent(
