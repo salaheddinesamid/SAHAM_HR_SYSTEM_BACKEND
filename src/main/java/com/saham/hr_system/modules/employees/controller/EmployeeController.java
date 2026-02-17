@@ -10,6 +10,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,16 +88,19 @@ public class EmployeeController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("update/profile-picture/{employeeId}")
-    public ResponseEntity<Object> updateEmployeeProfilePicture(@PathVariable Long employeeId, @RequestBody MultipartFile multipartFile){
+    @PatchMapping("update/profile-picture/")
+    public ResponseEntity<Object> updateEmployeeProfilePicture(@RequestBody MultipartFile multipartFile){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        employeeUpdateService.updateEmployeeProfilePicture(email, multipartFile);
         return ResponseEntity
                 .status(200)
                 .body("Profile picture updated successfully");
     }
 
-    @GetMapping("/profile/picture/{fileName}")
-    public ResponseEntity<Resource> getEmployeeProfilePicture(@PathVariable String fileName) throws MalformedURLException {
-        Path path = Paths.get(profilePicturesPath.toUri()).resolve(fileName);
+    @GetMapping("/profile/picture/{picturePath}")
+    public ResponseEntity<Resource> getEmployeeProfilePicture(@PathVariable String picturePath) throws MalformedURLException {
+        Path path = Paths.get(profilePicturesPath.toUri()).resolve(picturePath);
         Resource resource = new UrlResource(path.toUri());
         return ResponseEntity.ok()
                 .body(resource);

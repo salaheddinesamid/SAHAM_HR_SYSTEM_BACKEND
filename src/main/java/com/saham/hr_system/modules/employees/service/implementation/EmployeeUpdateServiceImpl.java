@@ -81,15 +81,15 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
     }
 
     @Override
-    public void updateEmployeeProfilePicture(Long employeeId, MultipartFile picture) {
+    public void updateEmployeeProfilePicture(String email, MultipartFile picture) {
         // Check if the employee exists:
         Employee employee = employeeRepository
-                .findById(employeeId).orElseThrow(()-> new UserNotFoundException("Employee with ID " + employeeId + " not found."));
+                .findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
 
         // Upload the profile picture and get the URL:
-        //String url = employeeProfilePictureUploader.uploadProfilePicture();
+        String url = employeeProfilePictureUploader.uploadProfilePicture(picture, employee.getEmployeeProfessionalDetails().getMatriculation());
         // Set the URL in employee entity and save:
-        //employee.setProfilePictureUrl(url);
+        employee.setProfilePictureUrl(url);
         employeeRepository.save(employee);
     }
 

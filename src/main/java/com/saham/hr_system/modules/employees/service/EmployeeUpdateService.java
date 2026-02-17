@@ -12,5 +12,5 @@ public interface EmployeeUpdateService {
      */
     EmployeeDetailsDto updateEmployee(Long employeeId, UpdateEmployeeDto updateEmployeeDto);
 
-    void updateEmployeeProfilePicture(Long employeeId, MultipartFile picture);
+    void updateEmployeeProfilePicture(String email, MultipartFile picture);
 }
