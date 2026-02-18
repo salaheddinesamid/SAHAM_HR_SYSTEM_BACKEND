@@ -141,7 +141,7 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         }
         // Update the department
         if(dto.getDepartment() != null){
-            professionalDetails.setDepartment(dto.getDepartment());
+            professionalDetails.setDepartment(EmployeeDepartment.valueOf(dto.getDepartment()));
         }
         // Update Manager
         if(dto.getManagerId() != null){

@@ -23,7 +23,8 @@ public class EmployeeProfessionalDetails {
     private String occupation;
 
     @Column(name = "department")
-    private String department;
+    @Enumerated(EnumType.STRING)
+    private EmployeeDepartment department;
 
     @Column(name = "entity")
     private EmployeeEntity entity;

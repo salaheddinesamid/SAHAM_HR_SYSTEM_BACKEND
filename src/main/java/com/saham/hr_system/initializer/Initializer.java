@@ -112,6 +112,7 @@ public class Initializer implements CommandLineRunner {
         NewEmployeeDto newEmployeeDto = new NewEmployeeDto(
                 "Moulay Mhamed",
                 "Elalamy",
+                "MALE",
                 "AAAAA",
                 "SINGLE",
                 0,

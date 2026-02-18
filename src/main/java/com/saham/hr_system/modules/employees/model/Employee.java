@@ -33,6 +33,10 @@ public class Employee implements UserDetails {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "sex", nullable = true, columnDefinition = "VARCHAR(255) default ''")
+    @Enumerated(EnumType.STRING)
+    private EmployeeSex sex;
+
     @Column(name = "CIN", nullable = false, unique = true)
     private String CIN;
 

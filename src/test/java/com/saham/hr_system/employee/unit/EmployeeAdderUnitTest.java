@@ -90,6 +90,7 @@ class EmployeeAdderUnitTest {
         newEmployeeDto = new NewEmployeeDto(
                 "Salaheddine",
                 "Samid",
+                "MALE",
                 "T573GH",
                 "SINGLE",
                 0,

@@ -28,6 +28,7 @@ public class EmployeeMapper {
         Employee employee = new Employee();
         employee.setFirstName(requestDto.getFirstName());
         employee.setLastName(requestDto.getLastName());
+        employee.setSex(EmployeeSex.valueOf(requestDto.getSex()));
         employee.setCIN(requestDto.getCIN());
         employee.setEmail(requestDto.getEmail());
         Map<String, String> generatedPassword = employeePasswordGenerator.generatePassword(employee.getFullName());
