@@ -1,6 +1,5 @@
 package com.saham.hr_system.employee.unit;
 
-import com.saham.hr_system.modules.employees.dto.EmployeeProfileDetails;
 import com.saham.hr_system.modules.employees.dto.NewEmployeeProfessionalDetailsDto;
 import com.saham.hr_system.modules.employees.mapper.EmployeeProfessionalDetailsMapper;
 import com.saham.hr_system.modules.employees.model.Employee;
@@ -84,7 +83,7 @@ public class EmployeeProfessionalDetailsMapperUnitTest {
         assert expected.getMatriculation().equals(professionalDetailsDto.getMatriculation());
         assertEquals("MAT123456", expected.getMatriculation());
         assertEquals("Software Engineer", expected.getOccupation());
-        assertEquals("IT", expected.getDepartment());
+        assertEquals("IT", expected.getDepartment().toString());
         assertEquals("SAHAM_HORIZON", expected.getEntity().toString());
         assertEquals(manager, expected.getManager());
         assertEquals( LocalDate.of(2025,11,22), expected.getJoinDate());

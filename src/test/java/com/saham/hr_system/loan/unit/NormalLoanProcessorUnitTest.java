@@ -3,6 +3,7 @@ package com.saham.hr_system.loan.unit;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.loan.dto.LoanRequestDto;
 import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
+import com.saham.hr_system.modules.loan.service.implementation.LoanRequestEmailSenderImpl;
 import com.saham.hr_system.modules.loan.service.implementation.LoanRequestValidatorImpl;
 import com.saham.hr_system.modules.loan.service.implementation.NormalLoanRequestProcessor;
 import com.saham.hr_system.modules.loan.utils.LoanReferenceNumberGenerator;
@@ -26,6 +27,9 @@ public class NormalLoanProcessorUnitTest {
 
     @Mock
     private LoanReferenceNumberGenerator loanReferenceNumberGenerator;
+
+    @Mock
+    private LoanRequestEmailSenderImpl loanRequestEmailSender;
 
     @InjectMocks
     private NormalLoanRequestProcessor normalLoanRequestProcessor;

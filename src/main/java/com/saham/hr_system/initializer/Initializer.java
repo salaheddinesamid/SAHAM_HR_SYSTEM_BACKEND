@@ -23,6 +23,7 @@ public class Initializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
     private final EmployeeRepository employeeRepository;
+    private final EmployeeProfessionalDetailsRepository employeeProfessionalDetailsRepository;
     private final PasswordEncoder passwordEncoder;
     private final CeoAdderServiceImpl ceoAdderService;
 
@@ -59,6 +60,8 @@ public class Initializer implements CommandLineRunner {
         Role adminRole  = roleRepository.findByRoleName("ADMIN")
                         .orElseThrow();
         if(!employeeRepository.existsByEmail("admin.hr@saham.com")){
+            EmployeeProfessionalDetails adminProfessionalDetails = new EmployeeProfessionalDetails();
+            adminProfessionalDetails.setMatriculation("EMPADMIN");
             admin.setFirstName("Admin");
             admin.setLastName("Admin");
             admin.setCIN("");
@@ -66,7 +69,10 @@ public class Initializer implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("admin2025"));
             admin.setRoles(List.of(adminRole));
             admin.setStatus(EmployeeStatus.AVAILABLE);
+            EmployeeProfessionalDetails savedProfessionalDetails = employeeProfessionalDetailsRepository.save(adminProfessionalDetails);
 
+
+            admin.setEmployeeProfessionalDetails(savedProfessionalDetails);
             employeeRepository.save(admin);
         }
 
@@ -95,6 +101,7 @@ public class Initializer implements CommandLineRunner {
         ceoProfessionalDetails.setProfessionalEmail("ceo@saham.com");
         ceoProfessionalDetails.setMatriculation("CEO001");
         ceoProfessionalDetails.setEntity("SAHAM_HORIZON");
+        ceoProfessionalDetails.setDepartment("CEO_OFFICE");
         ceoProfessionalDetails.setManagerId(null);
 
         // CEO social details

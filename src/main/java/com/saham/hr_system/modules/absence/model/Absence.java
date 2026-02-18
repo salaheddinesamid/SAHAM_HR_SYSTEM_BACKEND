@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "absence", indexes = {
         @Index(name = "idx_employee_id", columnList = "employee_id"),
-        @Index(name = "idx_reference_number", columnList = "reference_number"), @Index(name = "idx_employee_id", columnList = "employee_id"), @Index(name = "idx_status", columnList = "status")
+        @Index(name = "idx_reference_number", columnList = "reference_number"), @Index(name = "idx_employee_id", columnList = "employee_id")
 })
 public class Absence {
     @Id

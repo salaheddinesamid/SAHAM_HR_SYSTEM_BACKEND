@@ -73,6 +73,8 @@ public class AnnualLeaveApprovalUnitTest {
         employeeBalance.setCurrentBalance(2);
         employeeBalance.setEmployee(employee);
 
+        employee.setEmployeeBalance(employeeBalance);
+
         leaveRequest = new LeaveRequest();
         leaveRequest.setLeaveRequestId(1L);
         leaveRequest.setReferenceNumber("LEAVEjohn.s202401010001");

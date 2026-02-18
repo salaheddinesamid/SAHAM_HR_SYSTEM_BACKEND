@@ -1,6 +1,7 @@
 package com.saham.hr_system.unit;
 
 import com.saham.hr_system.modules.employees.model.Employee;
+import com.saham.hr_system.modules.employees.model.EmployeeProfessionalDetails;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.utils.LeaveRequestRefNumberGenerator;
@@ -30,8 +31,9 @@ public class LeaveRequestRefNumberGeneratorUnitTest {
         MockitoAnnotations.openMocks(this);
         // set the employee:
         employee = new Employee();
+        EmployeeProfessionalDetails employeeProfessionalDetails = new EmployeeProfessionalDetails();
+        employeeProfessionalDetails.setMatriculation("EMP020");
         employee.setId(1L);
-        employee.getEmployeeProfessionalDetails().setMatriculation("EMP020");
         leaveRequest = new LeaveRequest();
 
         leaveRequest.setLeaveRequestId(1L);

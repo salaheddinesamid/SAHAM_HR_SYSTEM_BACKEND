@@ -1,5 +1,6 @@
 package com.saham.hr_system.employee.unit;
 
+import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordSetupService;
 import com.saham.hr_system.modules.employees.dto.*;
 import com.saham.hr_system.modules.employees.mapper.*;
 import com.saham.hr_system.modules.employees.model.*;
@@ -51,6 +52,9 @@ class EmployeeAdderUnitTest {
 
     @Mock
     private EmployeeBalanceRepository employeeBalanceRepository;
+
+    @Mock
+    private EmployeePasswordSetupService employeePasswordSetupService;
 
     private NewEmployeeDto newEmployeeDto;
 
@@ -125,6 +129,7 @@ class EmployeeAdderUnitTest {
         EmployeeProfessionalDetails professionalDetails = new EmployeeProfessionalDetails();
         professionalDetails.setProfessionalEmail("test@saham.com");
         professionalDetails.setEntity(EmployeeEntity.SAHAM_HORIZON);
+        professionalDetails.setDepartment(EmployeeDepartment.IT);
 
         when(employeeProfessionalDetailsMapper
                 .mapToEmployeeProfessionalDetails(any(), eq(false)))
