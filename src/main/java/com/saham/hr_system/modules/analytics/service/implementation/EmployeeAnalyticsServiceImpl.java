@@ -31,12 +31,14 @@ public class EmployeeAnalyticsServiceImpl implements EmployeeAnalyticsService {
         // Filter by department
         if(!department.equals("ALL")){
             filteredEmployees =
-                    employees.stream().filter(employee -> employee.getEmployeeProfessionalDetails().getDepartment().equals(EmployeeDepartment.valueOf(department)))
+                    employees.stream().filter(employee ->
+                            employee.getEmployeeProfessionalDetails().getDepartment().equals(EmployeeDepartment.valueOf(department)))
                             .toList();
         }
         if(!entity.equals("ALL")){
             filteredEmployees =
-                    employees.stream().filter(employee -> employee.getEmployeeProfessionalDetails().getEntity().equals(EmployeeEntity.valueOf(entity)))
+                    employees.stream().filter(employee ->
+                        employee.getEmployeeProfessionalDetails().getEntity().equals(EmployeeEntity.valueOf(entity)))
                             .toList();
         }
 

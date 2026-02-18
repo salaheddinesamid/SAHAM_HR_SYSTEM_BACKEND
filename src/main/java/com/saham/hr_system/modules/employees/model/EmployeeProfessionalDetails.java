@@ -27,6 +27,7 @@ public class EmployeeProfessionalDetails {
     private EmployeeDepartment department;
 
     @Column(name = "entity")
+    @Enumerated(EnumType.STRING)
     private EmployeeEntity entity;
 
     @ManyToOne

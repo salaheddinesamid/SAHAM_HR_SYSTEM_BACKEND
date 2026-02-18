@@ -3,10 +3,12 @@ package com.saham.hr_system.modules.analytics.controller;
 import com.saham.hr_system.modules.analytics.service.implementation.EmployeeAnalyticsServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/api/v1/analytics/employees")
+@RestController
+@RequestMapping("/api/v1/analytics/employees")
 public class EmployeeAnalyticsController {
 
     private final EmployeeAnalyticsServiceImpl employeeAnalyticsService;

@@ -71,6 +71,8 @@ public class SecurityConfiguration {
                          */
                         .requestMatchers("/api/v1/files/download").permitAll()
 
+                        .requestMatchers("/api/v1/analytics/**").permitAll()
+
                         .requestMatchers("/api/v1/holidays/**").permitAll()
                         /*
                          Analytics Configuration
