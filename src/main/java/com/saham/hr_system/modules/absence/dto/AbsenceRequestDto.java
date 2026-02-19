@@ -1,6 +1,8 @@
 package com.saham.hr_system.modules.absence.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -13,6 +15,8 @@ import java.time.LocalDate;
  * </p>
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AbsenceRequestDto {
 
     /** The type of absence requested (SICKNESS, REMOTE_WORK, VACATION, etc.). */

@@ -11,6 +11,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -167,12 +168,12 @@ public class LeaveController {
     /**
      * This endpoint handles the approval of a subordinate's leave request by a manager.
      * This operation requires fine-grained access to ensure that only authorized managers can approve their subordinates' requests.
-     * @param authentication
      * @param leaveRequestId
      * @return
      */
     @PutMapping("/requests/subordinates/approve-request")
-    public ResponseEntity<?> approveSubordinateRequest(Authentication authentication,@RequestParam Long leaveRequestId) {
+    public ResponseEntity<?> approveSubordinateRequest(@RequestParam Long leaveRequestId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String approvedBy = authentication.getName();  // extract the email from the authentication object
         leaveService.approveSubordinateLeaveRequest(approvedBy,leaveRequestId);
         return

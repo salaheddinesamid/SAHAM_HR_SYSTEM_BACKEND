@@ -69,4 +69,6 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest,Long>
     Page<LeaveRequest> findAllByEmployee(Employee employee, Pageable pageable);
 
     Optional<LeaveRequest> findByEmployee(Employee employee);
+
+    Optional<LeaveRequest> findByStatus(LeaveRequestStatus status);
 }
