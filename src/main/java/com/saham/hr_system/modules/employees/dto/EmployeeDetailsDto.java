@@ -91,7 +91,7 @@ class ProfessionalDetailsDto{
         this.matriculation = professionalDetails.getMatriculation();
         this.occupation = professionalDetails.getOccupation();
         this.department = professionalDetails.getDepartment() != null ? professionalDetails.getDepartment().toString() : "";
-        this.entity = professionalDetails.getEntity().toString();
+        this.entity = professionalDetails.getEntity() != null ? professionalDetails.getEntity().toString() : "";
         this.managerName = professionalDetails.getManager() != null ?
                 String.format("%s %s", professionalDetails.getManager().getFirstName(), professionalDetails.getManager().getLastName())
                 : null;

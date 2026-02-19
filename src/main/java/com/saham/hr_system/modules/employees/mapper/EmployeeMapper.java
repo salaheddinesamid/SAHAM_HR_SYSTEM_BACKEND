@@ -29,7 +29,7 @@ public class EmployeeMapper {
         employee.setFirstName(requestDto.getFirstName());
         employee.setLastName(requestDto.getLastName());
         employee.setSex(EmployeeSex.valueOf(requestDto.getSex()));
-        employee.setCIN(requestDto.getCIN());
+        employee.setCIN(requestDto.getCin());
         employee.setEmail(requestDto.getEmail());
         Map<String, String> generatedPassword = employeePasswordGenerator.generatePassword(employee.getFullName());
          // set the encoded password:

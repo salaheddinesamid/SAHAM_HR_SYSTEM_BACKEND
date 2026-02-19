@@ -89,10 +89,11 @@ public class EmployeeUpdateServiceUnitTest {
         when(employeeRepository.findByEmployeeProfessionalDetails_Matriculation("EMP001")).thenReturn(Optional.of(employee));
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
         when(employeeQueryService.getManager(2L)).thenReturn(manager);
+        when(employeeRepository.save(any())).thenReturn(employee);
         // Act and verify:
-        //EmployeeDetailsDto results = employeeUpdateService.updateEmployee(1L, employeeDto);
-        //verify(employeeRepository, times(1)).save(any());
-        //assertNotNull(results.getProfessionalDetails());
+        EmployeeDetailsDto results = employeeUpdateService.updateEmployee(1L, employeeDto);
+        verify(employeeRepository, times(1)).save(any());
+        assertNotNull(results.getProfessionalDetails());
     }
 
     @Test

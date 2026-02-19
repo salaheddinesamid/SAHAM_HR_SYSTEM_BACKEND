@@ -8,13 +8,10 @@ import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
 import com.saham.hr_system.modules.employees.service.EmployeeUpdateService;
 import com.saham.hr_system.modules.employees.utils.EmployeeProfilePictureUploader;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -64,16 +61,20 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
             employee.setEmployeeBalance(updatedBalance);
         }
         // update employee professional details if provided:
-        EmployeeProfessionalDetails updatedProfessionalDetails = updateProfessionalDetails(employee, updateEmployeeDto.getProfessionalDetailsDto());
+        if (updateEmployeeDto.getProfessionalDetailsDto() != null){
+            EmployeeProfessionalDetails updatedProfessionalDetails = updateProfessionalDetails(employee, updateEmployeeDto.getProfessionalDetailsDto());
+            employee.setEmployeeProfessionalDetails(updatedProfessionalDetails);
+        }
         // update employee social details if provided:
-        EmployeeSocialDetails updatedSocialDetails = updateSocialDetails(employee, updateEmployeeDto.getSocialDetailsDto());
+        if(updateEmployeeDto.getSocialDetailsDto() != null){
+            EmployeeSocialDetails updatedSocialDetails = updateSocialDetails(employee, updateEmployeeDto.getSocialDetailsDto());
+            employee.setEmployeeSocialDetails(updatedSocialDetails);
+        }
         // update employee contact details if provided:
-        EmployeeContactDetails updatedContactDetails = updateContactDetails(employee, updateEmployeeDto.getContactDetailsDto());
-
-        // Set the employee details using transactions
-        employee.setEmployeeProfessionalDetails(updatedProfessionalDetails);
-        employee.setEmployeeSocialDetails(updatedSocialDetails);
-        employee.setEmployeeContactDetails(updatedContactDetails);
+        if(updateEmployeeDto.getContactDetailsDto() != null){
+             EmployeeContactDetails updatedContactDetails = updateContactDetails(employee, updateEmployeeDto.getContactDetailsDto());
+             employee.setEmployeeContactDetails(updatedContactDetails);
+        }
         // finally, save the employee:
         Employee savedEmployee = employeeRepository.save(employee);
 

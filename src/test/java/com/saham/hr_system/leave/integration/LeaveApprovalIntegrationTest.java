@@ -1,9 +1,8 @@
 package com.saham.hr_system.leave.integration;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-public class LeaveServiceIntegrationTest{
+public class LeaveApprovalIntegrationTest {
 
     @Test
     void contextLoads() {
@@ -11,8 +10,14 @@ public class LeaveServiceIntegrationTest{
     }
 
     @Test
-    void testLeaveApplySuccess(){}
+    void testApproveSubordinateLeaveRequest(){}
 
     @Test
-    void testApproveSubordinateLeaveRequestSuccess(){}
+    void testApproveLeave(){}
+
+    @Test
+    void testRejectSubordinateLeaveRequest(){}
+
+    @Test
+    void testRejectLeave(){}
 }

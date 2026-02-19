@@ -17,7 +17,7 @@ public class NewEmployeeDto {
     @NotNull
     private String sex;
     @NotNull
-    private String CIN;
+    private String cin;
     @NotNull
     private String familyStatus;
     @NotNull
