@@ -62,10 +62,10 @@ public class SecurityConfiguration {
                         /*
                             Configuration of Loan endpoints authorization
                          */
-                        .requestMatchers("/api/v1/loans/apply").permitAll()
+                        .requestMatchers("/api/v1/loans/apply").hasAuthority("EMPLOYEE")
                         .requestMatchers("/api/v1/loans/requests/employee/get-all").permitAll()
                         .requestMatchers("/api/v1/loans/requests/subordinates/**").hasAnyAuthority("MANAGER")
-                        .requestMatchers("/api/v1/loans/requests/hr/**").hasAnyAuthority("HR")
+                        .requestMatchers("/api/v1/loans/requests/hr/approve-request").permitAll()
                         /*
                             Configuration of Documents Upload/Download endpoints authorization
                          */

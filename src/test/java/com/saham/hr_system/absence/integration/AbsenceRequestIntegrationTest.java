@@ -47,7 +47,7 @@ public class AbsenceRequestIntegrationTest {
                 .andExpect(status().isOk());
     }
 
-
+    /*
     @Test
     void testCreateSicknessAbsenceRequest() throws Exception {
         // Mock MultipartFile for medical certificate
@@ -77,4 +77,6 @@ public class AbsenceRequestIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+     */
 }

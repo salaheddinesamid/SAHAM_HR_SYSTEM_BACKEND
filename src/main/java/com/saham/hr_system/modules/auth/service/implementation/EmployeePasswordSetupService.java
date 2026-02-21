@@ -9,6 +9,7 @@ import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -23,11 +24,13 @@ public class EmployeePasswordSetupService implements PasswordSetupService {
     private final EmployeeRepository employeeRepository;
     private final PasswordSetupTokenRepository passwordSetupTokenRepository;
     private final PasswordSetupUtils passwordSetupUtils;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    public EmployeePasswordSetupService(EmployeeRepository employeeRepository, PasswordSetupTokenRepository passwordSetupTokenRepository, PasswordSetupUtils passwordSetupUtils) {
+    public EmployeePasswordSetupService(EmployeeRepository employeeRepository, PasswordSetupTokenRepository passwordSetupTokenRepository, PasswordSetupUtils passwordSetupUtils, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.passwordSetupTokenRepository = passwordSetupTokenRepository;
         this.passwordSetupUtils = passwordSetupUtils;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class EmployeePasswordSetupService implements PasswordSetupService {
         passwordSetupToken.setUsed(true);
 
         // Update the employee's password (you would typically hash the password before saving it)
-        employee.setPassword(newPassword); // In a real application, make sure to hash the password!
+        employee.setPassword(passwordEncoder.encode(newPassword)); // In a real application, make sure to hash the password!
         employee.setAccountLocked(false);
         employeeRepository.save(employee);
 

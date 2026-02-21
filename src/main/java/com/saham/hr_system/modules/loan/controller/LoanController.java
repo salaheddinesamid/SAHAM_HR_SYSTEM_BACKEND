@@ -6,6 +6,8 @@ import com.saham.hr_system.modules.loan.service.implementation.LoanRequestQueryS
 import com.saham.hr_system.modules.loan.service.implementation.LoanServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,7 +40,9 @@ public class LoanController {
     }
 
     @PostMapping("apply")
-    public ResponseEntity<?> requestLoan(@RequestParam String email, @RequestBody LoanRequestDto requestDto) throws Exception {
+    public ResponseEntity<?> requestLoan(@RequestBody LoanRequestDto requestDto) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
         loanService.requestLoan(email, requestDto);
         return ResponseEntity
                 .status(200)
