@@ -31,7 +31,7 @@ jobs:
           java-version: '17'
 
       - name: Build and run tests
-        run: mvn clean package --spring.profiles.active=staging
+        run: mvn clean package
   static-code-analysis:
     runs-on: ubuntu-latest
     steps:
