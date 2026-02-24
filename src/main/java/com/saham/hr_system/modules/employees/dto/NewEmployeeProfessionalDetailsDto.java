@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.employees.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewEmployeeProfessionalDetailsDto {
+    @NotNull
     private String matriculation;
     private String occupation;
     private String department;
