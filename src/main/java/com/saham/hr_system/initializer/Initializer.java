@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
@@ -121,6 +122,7 @@ public class Initializer implements CommandLineRunner {
                 "Elalamy",
                 "MALE",
                 "AAAAA",
+                LocalDate.of(1990, 1, 1),
                 "SINGLE",
                 0,
                 "ceo@saham.com",

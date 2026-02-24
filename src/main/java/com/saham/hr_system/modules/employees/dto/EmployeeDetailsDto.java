@@ -13,6 +13,8 @@ public class EmployeeDetailsDto {
     private String fullName;
     private String firstName;
     private String lastName;
+    private String sex;
+    private LocalDate birthDate;
     private String email;
     private String familyStatus;
     private Integer numberOfChildren;
@@ -29,6 +31,7 @@ public class EmployeeDetailsDto {
         this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
         this.firstName = employee.getFirstName();
         this.lastName = employee.getLastName();
+        this.sex = employee.getSex().toString();
         this.email = employee.getEmail();
         this.familyStatus = employee.getFamilyStatus() != null ? employee.getFamilyStatus().toString() : null;
         this.CIN = employee.getCIN();
@@ -107,7 +110,7 @@ class ProfessionalDetailsDto{
 
 @Data
 class SocialDetailsDto{
-    private String cnssNumner;
+    private String cnssNumber;
     private String cimrNumber;
     private String insuranceNumber;
     private String insuranceProvider;
@@ -115,7 +118,7 @@ class SocialDetailsDto{
     public SocialDetailsDto(
             EmployeeSocialDetails socialDetails
     ){
-        this.cnssNumner = socialDetails.getCnssNumber();
+        this.cnssNumber = socialDetails.getCnssNumber();
         this.cimrNumber = socialDetails.getCimrNumber();
         this.insuranceNumber = socialDetails.getInsuranceNumber();
         this.insuranceProvider = socialDetails.getInsuranceProvider();

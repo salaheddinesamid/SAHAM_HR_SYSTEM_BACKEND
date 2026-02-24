@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -12,6 +13,10 @@ import java.util.List;
 public class UpdateEmployeeDto {
     private String firstName;
     private String lastName;
+    private String cin;
+    private String familyStatus;
+    private Integer numberOfChildren;
+    private LocalDate birthDate;
     private String email;
     private String password;
     private List<String> roles;

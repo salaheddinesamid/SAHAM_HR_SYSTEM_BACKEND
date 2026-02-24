@@ -74,6 +74,7 @@ public class EmployeeAdderIntegrationTest {
                 "Samid",
                 "MALE",
                 "T573GH",
+                LocalDate.of(2000, 1, 1),
                 "SINGLE",
                 0,
                 "salaheddine@saham.com",

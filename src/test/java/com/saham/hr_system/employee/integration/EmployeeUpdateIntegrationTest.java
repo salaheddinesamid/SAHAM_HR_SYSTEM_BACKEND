@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -38,9 +40,13 @@ public class EmployeeUpdateIntegrationTest {
         Long employeeId = 5L; // Assuming an employee with ID 1 exists
 
         // Mock DTO
-        UpdateEmployeeDto updateEmployeeDto = new UpdateEmployeeDto(
-                "SALAHEDDINE",
-                "SAMID",
+        UpdateEmployeeDto employeeDto = new UpdateEmployeeDto(
+                "AMINE",
+                "Samid",
+                null,
+                null,
+                null,
+                LocalDate.of(2003,12, 3),
                 null,
                 null,
                 null,
@@ -54,7 +60,7 @@ public class EmployeeUpdateIntegrationTest {
         mockMvc.perform(
                 patch("/api/v1/employees/update/"+employeeId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateEmployeeDto))
+                        .content(objectMapper.writeValueAsString(employeeDto))
         ).andDo(print())
                 .andExpect(status().isOk());
         // Then: We verify that the employee's details have been updated in the database

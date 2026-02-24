@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.util.List;
 @Data
 @AllArgsConstructor
@@ -18,6 +19,8 @@ public class NewEmployeeDto {
     private String sex;
     @NotNull
     private String cin;
+    @NotNull
+    private LocalDate birthDate;
     @NotNull
     private String familyStatus;
     @NotNull

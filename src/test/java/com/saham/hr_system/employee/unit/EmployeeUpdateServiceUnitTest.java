@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,8 +75,12 @@ public class EmployeeUpdateServiceUnitTest {
 
         );
         UpdateEmployeeDto employeeDto = new UpdateEmployeeDto(
+                "AMINE",
+                "Samid",
                 null,
                 null,
+                null,
+                LocalDate.of(2003,12, 3),
                 null,
                 null,
                 null,

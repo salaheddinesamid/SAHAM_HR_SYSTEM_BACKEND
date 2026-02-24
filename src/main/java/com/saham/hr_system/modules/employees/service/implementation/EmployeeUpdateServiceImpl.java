@@ -48,6 +48,10 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         if(updateEmployeeDto.getEmail() != null){
             employee.setEmail(updateEmployeeDto.getEmail());
         }
+        // update the birthdate:
+        if(updateEmployeeDto.getBirthDate() != null){
+            employee.setBirthDate(updateEmployeeDto.getBirthDate());
+        }
         // update the new roles:
         if(updateEmployeeDto.getRoles() != null && !updateEmployeeDto.getRoles().isEmpty()){
             List<Role> roles =
