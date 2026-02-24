@@ -44,6 +44,9 @@ public class Employee implements UserDetails {
     @Column(name = "CIN", nullable = false, unique = true)
     private String CIN;
 
+    @Column(name = "address", nullable = true, columnDefinition = "VARCHAR(255) default ''")
+    private String address;
+
     @Column(name = "family_status")
     @Enumerated(EnumType.STRING)
     private EmployeeFamilyStatus familyStatus;

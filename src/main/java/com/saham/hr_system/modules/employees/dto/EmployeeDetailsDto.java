@@ -20,6 +20,7 @@ public class EmployeeDetailsDto {
     private String familyStatus;
     private Integer numberOfChildren;
     private String CIN;
+    private String address;
     private String profilePictureUrl;
     private ProfessionalDetailsDto professionalDetails;
     private SocialDetailsDto socialDetails;
@@ -34,6 +35,7 @@ public class EmployeeDetailsDto {
         this.lastName = employee.getLastName();
         this.sex = employee.getSex().toString();
         this.email = employee.getEmail();
+        this.address = employee.getAddress();
         this.birthDate = employee.getBirthDate();
         this.familyStatus = employee.getFamilyStatus() != null ? employee.getFamilyStatus().toString() : null;
         this.CIN = employee.getCIN();
