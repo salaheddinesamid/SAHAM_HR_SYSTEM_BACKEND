@@ -48,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeRepository.findByEmail(email)
                         .orElseThrow(()-> new UsernameNotFoundException(email));
 
-        List<Employee> subordinates = employeeRepository.findAllByManagerId(manager.getId());
+        List<Employee> subordinates = employeeRepository.findAllByEmployeeProfessionalDetails_Manager_Id(manager.getId());
 
         return
                 subordinates.stream().map(SubordinateDetailsResponseDto::new).collect(Collectors.toList());
