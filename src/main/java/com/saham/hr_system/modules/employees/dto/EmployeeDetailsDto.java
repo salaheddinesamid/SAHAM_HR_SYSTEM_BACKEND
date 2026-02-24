@@ -34,6 +34,7 @@ public class EmployeeDetailsDto {
         this.lastName = employee.getLastName();
         this.sex = employee.getSex().toString();
         this.email = employee.getEmail();
+        this.birthDate = employee.getBirthDate();
         this.familyStatus = employee.getFamilyStatus() != null ? employee.getFamilyStatus().toString() : null;
         this.CIN = employee.getCIN();
         this.numberOfChildren = employee.getNumberOfChildren();
