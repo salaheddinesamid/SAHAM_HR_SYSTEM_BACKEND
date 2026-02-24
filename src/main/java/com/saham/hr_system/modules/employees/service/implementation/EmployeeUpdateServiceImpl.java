@@ -136,6 +136,10 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         if(dto.getMatriculation() != null){
             professionalDetails.setMatriculation(dto.getMatriculation());
         }
+        // Update the occupation
+        if(dto.getOccupation() != null){
+            professionalDetails.setOccupation(dto.getOccupation());
+        }
         // Update Professional Email
         if(dto.getProfessionalEmail() != null){
             professionalDetails.setProfessionalEmail(dto.getProfessionalEmail());
@@ -147,6 +151,14 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         // Update the department
         if(dto.getDepartment() != null){
             professionalDetails.setDepartment(EmployeeDepartment.valueOf(dto.getDepartment()));
+        }
+        // Update the entity
+        if(dto.getEntity() != null){
+            professionalDetails.setEntity(EmployeeEntity.valueOf(dto.getEntity()));
+        }
+        // Update the join date
+        if(dto.getJoinDate() != null){
+            professionalDetails.setJoinDate(dto.getJoinDate());
         }
         // Update Manager
         if(dto.getManagerId() != null){
