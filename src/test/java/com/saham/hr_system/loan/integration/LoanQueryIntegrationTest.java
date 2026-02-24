@@ -9,6 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,7 +24,7 @@ public class LoanQueryIntegrationTest {
     private LoanRequestRepository loanRequestRepository;
 
     @Test
-    void testFetchLoanRequests(){
+    void testFetchLoanRequests() throws Exception {
         long count = loanRequestRepository.count();
 
         // Perform:
@@ -30,8 +32,11 @@ public class LoanQueryIntegrationTest {
          * For example, if we expect the API to return all loan requests, we can assert that the count matches the expected value.
          * If we want to test pagination, we can assert that the number of loan requests returned in the response matches the expected page size.
          */
-        //mockMvc
-                //.perform(get())
+        mockMvc
+                .perform(get(
+                        "/api/v1/loans/requests/hr/get-all"
+                )).andDo(print())
+                .andExpect(jsonPath("$.content.length()").value(count));
 
     }
 

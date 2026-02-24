@@ -66,6 +66,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/loans/requests/employee/get-all").permitAll()
                         .requestMatchers("/api/v1/loans/requests/subordinates/**").hasAnyAuthority("MANAGER")
                         .requestMatchers("/api/v1/loans/requests/hr/approve-request").permitAll()
+                        .requestMatchers("/api/v1/loans/requests/hr/get-all").permitAll()
                         /*
                             Configuration of Documents Upload/Download endpoints authorization
                          */
