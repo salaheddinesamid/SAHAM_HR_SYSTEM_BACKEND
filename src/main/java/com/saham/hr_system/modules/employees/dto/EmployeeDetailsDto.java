@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.employees.dto;
 
 import com.saham.hr_system.modules.employees.model.*;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,11 +79,13 @@ class BalanceDetails{
 
 @Data
 class ProfessionalDetailsDto{
+    @NotNull
     private String matriculation;
     private String occupation;
     private String department;
     private String entity;
     private String managerName;
+    @NotNull
     private LocalDate joinDate;
     private String site;
     private String professionalPhoneNumber;
