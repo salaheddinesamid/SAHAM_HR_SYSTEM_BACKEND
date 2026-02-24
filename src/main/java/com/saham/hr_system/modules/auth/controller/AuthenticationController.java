@@ -43,8 +43,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("setup-password")
-    public ResponseEntity<Object> setupPassword(@RequestParam String email, @RequestParam String token, @RequestParam String newPassword){
-        employeePasswordSetupService.setupPassword(email, token, newPassword);
+    public ResponseEntity<Object> setupPassword(@RequestParam String token, @RequestParam String newPassword){
+        employeePasswordSetupService.setupPassword(token, newPassword);
         return ResponseEntity.ok().build();
     }
 }

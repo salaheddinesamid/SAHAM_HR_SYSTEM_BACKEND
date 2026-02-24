@@ -9,8 +9,7 @@ public interface PasswordSetupService {
     String initiatePasswordSetup(String email);
     /**
      * Complete the password setup process by setting the new password for the user.
-     * @param email : The email of the user to set up the password for.
      * @param newPassword : The new password to be set for the user.
      */
-    void setupPassword(String email, String token, String newPassword);
+    void setupPassword(String token, String newPassword);
 }

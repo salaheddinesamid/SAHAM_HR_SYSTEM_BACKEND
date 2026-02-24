@@ -51,22 +51,21 @@ public class EmployeePasswordSetupService implements PasswordSetupService {
     }
 
     @Override
-    public void setupPassword(String email, String token, String newPassword) {
-        // Fetch the employee from db:
-        Employee employee = employeeRepository.findByEmail(email)
-                .orElseThrow(()-> new UserNotFoundException(email));
-
+    public void setupPassword(String token, String newPassword) {
         // Fetch the token from db:
         PasswordSetupToken passwordSetupToken = passwordSetupTokenRepository.findByToken(token)
-                .orElseThrow(()-> new RuntimeException("Password setup token not found for email: " + email));
+                .orElseThrow(()-> new RuntimeException("Password setup token not found "));
+        // Fetch the employee from db:
+        Employee employee = passwordSetupToken.getEmployee();
+
 
         // Check if the token is expired:
         if (passwordSetupToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Password setup token has expired for email: " + email);
+            throw new RuntimeException("Password setup token has expired  " );
         }
         // Check if the token has been used:
         if(passwordSetupToken.isUsed()) {
-            throw new RuntimeException("Password setup token has already been used for email: " + email);
+            throw new RuntimeException("Password setup token has already been used ");
         }
         passwordSetupToken.setUsed(true);
 
