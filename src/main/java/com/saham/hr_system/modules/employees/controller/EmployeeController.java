@@ -89,10 +89,7 @@ public class EmployeeController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(
-            value = "/update/profile-picture/",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+    @PutMapping("/profile/profile-picture/")
     public ResponseEntity<Object> updateEmployeeProfilePicture(
             @RequestParam("multipartFile") MultipartFile multipartFile
     ){

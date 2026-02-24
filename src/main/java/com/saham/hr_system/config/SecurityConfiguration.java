@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/employees/subordinates").permitAll()
                         .requestMatchers("/api/v1/employees/get_all").permitAll()
                         .requestMatchers("/api/v1/employees/new").permitAll()
-                        .requestMatchers("/api/v1/employees/update/**").hasAnyAuthority("ADMIN","EMPLOYEE")
+                        .requestMatchers("/api/v1/employees/profile/profile-picture/").hasAnyAuthority("ADMIN","EMPLOYEE")
                         /*
                             Configuration of Leave endpoints authorization
                          */
