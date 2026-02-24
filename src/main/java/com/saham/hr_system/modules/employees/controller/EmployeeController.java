@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -88,8 +89,13 @@ public class EmployeeController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("update/profile-picture/")
-    public ResponseEntity<Object> updateEmployeeProfilePicture(@RequestBody MultipartFile multipartFile){
+    @PutMapping(
+            value = "/update/profile-picture/",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<Object> updateEmployeeProfilePicture(
+            @RequestParam("multipartFile") MultipartFile multipartFile
+    ){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         employeeUpdateService.updateEmployeeProfilePicture(email, multipartFile);

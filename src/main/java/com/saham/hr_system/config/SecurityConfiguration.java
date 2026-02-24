@@ -38,9 +38,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/employees/subordinates").permitAll()
                         .requestMatchers("/api/v1/employees/get_all").permitAll()
                         .requestMatchers("/api/v1/employees/new").permitAll()
-                        .requestMatchers("/api/v1/employees/update/**").permitAll()
-                        .requestMatchers("/api/v1/employees/update/profile-picture/**").hasAuthority("EMPLOYEE")
-                        .requestMatchers("/api/v1/employees/profile/picture/**").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/employees/update/**").hasAnyAuthority("ADMIN","EMPLOYEE")
                         /*
                             Configuration of Leave endpoints authorization
                          */
@@ -86,7 +84,6 @@ public class SecurityConfiguration {
                         // -------------- Configuration of Admin Endpoints --------------------- //
                         .requestMatchers("/api/v1/employees/get_all").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/employees/managers/get_all").permitAll()
-                        .requestMatchers("/api/v1/employees/update/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/holidays/get_all").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/employees/new").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/holidays/update/**").permitAll()
