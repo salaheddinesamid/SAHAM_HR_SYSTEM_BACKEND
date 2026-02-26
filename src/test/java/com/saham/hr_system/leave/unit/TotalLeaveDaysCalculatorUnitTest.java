@@ -88,7 +88,7 @@ class TotalLeaveDaysCalculatorUnitTest {
 
     @Test
     void shouldCalculateTotalLeaveDaysExcludingHolidays() {
-        LocalDate start = LocalDate.of(2026, 2, 19);
+        LocalDate start = LocalDate.of(2026, 2, 13);
         LocalDate end = LocalDate.of(2026, 2, 28);
         // Arrange
         when(holidayRepository.findAllByStartDateBetween(
@@ -103,7 +103,7 @@ class TotalLeaveDaysCalculatorUnitTest {
         // Holidays: 2 days (Jan 1–4)
         // Week ends: 2 days (Jan 3, 4)
         // Expected: 5 days
-        assertEquals(9, totalDays);
+        assertEquals(11, totalDays);
 
         verify(holidayRepository, times(1)).findAllByStartDateBetween(
                 start, end

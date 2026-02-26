@@ -34,17 +34,19 @@ public class TotalDaysCalculator {
         // Fetch the holidays from the database in range:
         List<Holiday> holidays = holidayRepository
                 .findAllByStartDateBetween(from, to);
+        log.info("Fetched holidays from database: {}", holidays);
         // Expand Holiday days into a Set
         Set<LocalDate> holidayDates =
                 holidays
                         .stream().flatMap(h -> h.getStartDate().datesUntil(h.getEndDate()))
                         .collect(Collectors.toSet());
 
+        log.info("Expanded holiday dates: {}", holidayDates);
         return
-                from.datesUntil(to.plusDays(1))
+                from.datesUntil(to)
                         .filter(date-> !isWeekend(date))
                         .filter(date -> !holidayDates.contains(date))
-                        .count();
+                        .count(); // Exclude the end date from the count
     }
 
     /**
