@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.employees.service.implementation;
 
 import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordSetupService;
 import com.saham.hr_system.modules.employees.dto.*;
+import com.saham.hr_system.modules.employees.exception.EmployeeAlreadyExistsException;
 import com.saham.hr_system.modules.employees.mapper.EmployeeContactDetailsMapper;
 import com.saham.hr_system.modules.employees.mapper.EmployeeMapper;
 import com.saham.hr_system.modules.employees.mapper.EmployeeProfessionalDetailsMapper;
@@ -74,8 +75,12 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
     @Transactional
     public EmployeeDetailsDto add(NewEmployeeDto newEmployeeRequestDto) {
         // Check if the employee already exists by matriculation
-        if(employeeRepository.existsByEmployeeProfessionalDetails_Matriculation(newEmployeeRequestDto.getProfessionalDetailsDto().getMatriculation())) {
-            throw new IllegalArgumentException("Employee with matriculation " + newEmployeeRequestDto.getProfessionalDetailsDto().getMatriculation() + " already exists.");
+        if(employeeRepository.existsByEmployeeProfessionalDetails_Matriculation(newEmployeeRequestDto.getProfessionalDetailsDto().getMatriculation())
+                || employeeRepository.existsByEmail(newEmployeeRequestDto.getProfessionalDetailsDto().getProfessionalEmail())
+        ) {
+            throw new EmployeeAlreadyExistsException(
+                    "La création de l'employé a échoué : une valeur unique (email, matricule ou CIN) est déjà utilisée."
+            );
         }
         // Create new employee
         Map<String, Object> mappedEmployee = employeeMapper.mapToEmployee(newEmployeeRequestDto);

@@ -63,6 +63,7 @@ public class Initializer implements CommandLineRunner {
         if(!employeeRepository.existsByEmail("admin.hr@saham.com")){
             EmployeeProfessionalDetails adminProfessionalDetails = new EmployeeProfessionalDetails();
             adminProfessionalDetails.setMatriculation("EMPADMIN");
+            adminProfessionalDetails.setEntity(EmployeeEntity.SAHAM_HORIZON);
             admin.setFirstName("Admin");
             admin.setLastName("Admin");
             admin.setCIN("");
@@ -70,6 +71,7 @@ public class Initializer implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("admin2025"));
             admin.setRoles(List.of(adminRole));
             admin.setStatus(EmployeeStatus.AVAILABLE);
+            admin.setAccountLocked(false);
             EmployeeProfessionalDetails savedProfessionalDetails = employeeProfessionalDetailsRepository.save(adminProfessionalDetails);
 
 

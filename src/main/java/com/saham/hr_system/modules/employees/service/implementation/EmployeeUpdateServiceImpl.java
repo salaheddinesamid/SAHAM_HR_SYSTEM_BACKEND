@@ -56,6 +56,11 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         if(updateEmployeeDto.getAddress() != null){
             employee.setAddress(updateEmployeeDto.getAddress());
         }
+
+        // Update family status:
+        if(updateEmployeeDto.getFamilyStatus() != null){
+            employee.setFamilyStatus(EmployeeFamilyStatus.valueOf(updateEmployeeDto.getFamilyStatus()));
+        }
         // update the birthdate:
         if(updateEmployeeDto.getBirthDate() != null){
             employee.setBirthDate(updateEmployeeDto.getBirthDate());
