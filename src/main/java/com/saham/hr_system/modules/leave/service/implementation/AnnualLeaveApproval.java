@@ -140,7 +140,7 @@ public class AnnualLeaveApproval implements LeaveApproval {
         CompletableFuture.runAsync(()->{
             try {
                 leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest);
-                //leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
+                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
@@ -194,8 +194,12 @@ public class AnnualLeaveApproval implements LeaveApproval {
 
         // notify the employee:
         CompletableFuture.runAsync(()->{
-            //leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
-            //leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+            try {
+                leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+                leaveRequestRejectionEmailSender.sendSubordinateRejectionEmailToEmployee(leaveRequest);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
 
         });
     }
