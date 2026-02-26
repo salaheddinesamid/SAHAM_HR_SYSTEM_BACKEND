@@ -96,6 +96,7 @@ class EmployeeAdderUnitTest {
                 "Samid",
                 "MALE",
                 "T573GH",
+                "",
                 LocalDate.of(2003,12, 3),
                 "SINGLE",
                 0,

@@ -14,6 +14,7 @@ public class UpdateEmployeeDto {
     private String firstName;
     private String lastName;
     private String cin;
+    private String address;
     private String familyStatus;
     private Integer numberOfChildren;
     private LocalDate birthDate;

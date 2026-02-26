@@ -1,12 +1,12 @@
 package com.saham.hr_system.modules.leave.service.implementation;
 
-import com.saham.hr_system.exception.InsufficientBalanceException;
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.model.Employee;
-import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import com.saham.hr_system.modules.employees.repository.EmployeeBalanceRepository;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.leave.dto.LeaveRequestDto;
+import com.saham.hr_system.modules.leave.exception.InvalidDatesException;
+import com.saham.hr_system.modules.leave.exception.MissingFieldException;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.model.LeaveType;
@@ -17,7 +17,6 @@ import com.saham.hr_system.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +30,6 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     private final LeaveRequestRepository leaveRequestRepository;
     private final TotalDaysCalculator leaveDaysCalculator;
     private final LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator;
-
     @Autowired
     public DefaultLeaveRequestProcessor(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRepository leaveRequestRepository, TotalDaysCalculator leaveDaysCalculator, LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator) {
         this.employeeRepository = employeeRepository;
@@ -48,7 +46,9 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
     }
 
     @Override
-    public LeaveRequest process(String email, LeaveRequestDto requestDto) throws MessagingException {
+    public LeaveRequest process(String email, LeaveRequestDto requestDto) throws MessagingException, InvalidDatesException, MissingFieldException {
+        // validate the request dto:
+
         // fetch the employee from db:
         Employee employee =
                 employeeRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));

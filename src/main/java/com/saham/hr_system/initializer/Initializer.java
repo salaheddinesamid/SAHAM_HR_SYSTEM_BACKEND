@@ -122,6 +122,7 @@ public class Initializer implements CommandLineRunner {
                 "Elalamy",
                 "MALE",
                 "AAAAA",
+                "",
                 LocalDate.of(1990, 1, 1),
                 "SINGLE",
                 0,

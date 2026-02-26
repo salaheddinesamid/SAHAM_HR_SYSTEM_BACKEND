@@ -78,6 +78,7 @@ public class EmployeeUpdateServiceUnitTest {
                 "AMINE",
                 "Samid",
                 null,
+                "",
                 null,
                 null,
                 LocalDate.of(2003,12, 3),

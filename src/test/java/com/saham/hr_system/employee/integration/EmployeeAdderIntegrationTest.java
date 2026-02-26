@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,22 +41,22 @@ public class EmployeeAdderIntegrationTest {
     void testAddNewEmployee() throws Exception {
 
         NewEmployeeProfessionalDetailsDto professionalDetailsDto = new NewEmployeeProfessionalDetailsDto(
-                "MAT123456",
+                "SDT123456D",
                 "Software Engineer",
                 "IT",
                 "SAHAM_HORIZON",
-                4L,
+                2L,
                 LocalDate.of(2025,11,22),
                 "Casablanca",
                 "00",
-                "salaheddine@saham.com",
+                "salaheddine.samid@saham.com",
                 "00",
                 "00"
         );
         NewEmployeeSocialDetails socialDetailsDto = new NewEmployeeSocialDetails(
-                "CNSS123456",
-                "CIMR123456",
-                "INS123456",
+                "CNSS6723456",
+                "CIMR983456",
+                "INSCR123456",
                 ""
         );
         NewEmployeeContactDetails contactDetails = new NewEmployeeContactDetails(
@@ -70,14 +71,15 @@ public class EmployeeAdderIntegrationTest {
                 0
         );
         NewEmployeeDto newEmployeeDto = new NewEmployeeDto(
-                "Salaheddine",
+                "Amine",
                 "Samid",
                 "MALE",
-                "T573GH",
+                "D573GHSD",
+                "Wafaa 01, NR 11 Hay Salam, Casablanca",
                 LocalDate.of(2000, 1, 1),
                 "SINGLE",
                 0,
-                "salaheddine@saham.com",
+                "salaheddine.samid@saham.com",
                 professionalDetailsDto,
                 socialDetailsDto,
                 contactDetails,
@@ -90,6 +92,8 @@ public class EmployeeAdderIntegrationTest {
                         .content(objectMapper.writeValueAsString(newEmployeeDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        assertTrue(employeeRepository.existsByEmail("salaheddine.samid@saham.com"));
     }
 }
 

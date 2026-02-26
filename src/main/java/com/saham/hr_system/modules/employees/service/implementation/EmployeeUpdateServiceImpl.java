@@ -48,6 +48,14 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         if(updateEmployeeDto.getEmail() != null){
             employee.setEmail(updateEmployeeDto.getEmail());
         }
+        // Update the CIN
+        if(updateEmployeeDto.getCin() != null){
+            employee.setCIN(updateEmployeeDto.getCin());
+        }
+        // Update the address
+        if(updateEmployeeDto.getAddress() != null){
+            employee.setAddress(updateEmployeeDto.getAddress());
+        }
         // update the birthdate:
         if(updateEmployeeDto.getBirthDate() != null){
             employee.setBirthDate(updateEmployeeDto.getBirthDate());
@@ -143,6 +151,19 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         // Update Professional Email
         if(dto.getProfessionalEmail() != null){
             professionalDetails.setProfessionalEmail(dto.getProfessionalEmail());
+        }
+
+        // Update the professional phone number
+        if(dto.getProfessionalPhoneNumber() != null){
+            professionalDetails.setProfessionalPhoneNumber(dto.getProfessionalPhoneNumber());
+        }
+        // Update the professional fixed number
+        if(dto.getProfessionalFixedPhoneNumber() != null){
+            professionalDetails.setProfessionalFixedPhoneNumber(dto.getProfessionalFixedPhoneNumber());
+        }
+        // Update the extension
+        if(dto.getExtension() != null){
+            professionalDetails.setExtension(dto.getExtension());
         }
         // Update Join Date
         if(dto.getJoinDate() != null){
