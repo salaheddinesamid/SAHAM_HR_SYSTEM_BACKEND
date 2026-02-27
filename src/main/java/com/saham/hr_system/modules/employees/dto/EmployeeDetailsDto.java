@@ -33,7 +33,7 @@ public class EmployeeDetailsDto {
         this.fullName = String.format("%s %s", employee.getFirstName(), employee.getLastName());
         this.firstName = employee.getFirstName();
         this.lastName = employee.getLastName();
-        this.sex = employee.getSex().toString();
+        this.sex = employee.getSex() != null ? employee.getSex().toString() : null;
         this.email = employee.getEmail();
         this.address = employee.getAddress();
         this.birthDate = employee.getBirthDate();

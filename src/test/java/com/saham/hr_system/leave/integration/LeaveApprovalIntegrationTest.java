@@ -2,6 +2,7 @@ package com.saham.hr_system.leave.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saham.hr_system.jwt.JwtUtilities;
+import com.saham.hr_system.modules.leave.model.Leave;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.leave.model.LeaveRequestStatus;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
@@ -42,9 +43,10 @@ public class LeaveApprovalIntegrationTest {
     void testApproveSubordinateLeaveRequest() throws Exception {
         String token = jwtUtilities.generateToken("ceo@saham.com", List.of("MANAGER"));
         // Randomly fetch a leave request from the database that is pending approval and belongs to a subordinate of the manager.
-        LeaveRequest leaveRequest = leaveRequestRepository
-                .findByStatus(LeaveRequestStatus.IN_PROCESS).orElseThrow();
-        Long requestId = leaveRequest.getLeaveRequestId();
+        List<LeaveRequest> leaveRequests = leaveRequestRepository
+                .findAllByStatus(LeaveRequestStatus.IN_PROCESS);
+        LeaveRequest request = leaveRequests.get(0);
+        Long requestId = request.getLeaveRequestId();
 
         // Perform a POST request to the endpoint /api/leaves/approve/{referenceNumber} with the reference number of the leave request.
         mockMvc.perform(
@@ -54,7 +56,7 @@ public class LeaveApprovalIntegrationTest {
         ).andDo(print())
                 .andExpect(status().isOk());
 
-        assertTrue(leaveRequest.isApprovedByManager());
+        assertTrue(request.isApprovedByManager());
     }
 
     @Test

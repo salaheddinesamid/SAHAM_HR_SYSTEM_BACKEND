@@ -2,6 +2,7 @@ package com.saham.hr_system.employee.unit;
 
 import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordSetupService;
 import com.saham.hr_system.modules.employees.dto.*;
+import com.saham.hr_system.modules.employees.exception.EmployeeAlreadyExistsException;
 import com.saham.hr_system.modules.employees.mapper.*;
 import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.*;
@@ -189,12 +190,10 @@ class EmployeeAdderUnitTest {
                 .thenReturn(true);
 
         // WHEN + THEN
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        EmployeeAlreadyExistsException exception = assertThrows(
+                EmployeeAlreadyExistsException.class,
                 () -> employeeAdderService.add(newEmployeeDto)
         );
-
-        assertTrue(exception.getMessage().contains("already exists"));
 
         verify(employeeRepository, never()).save(any());
     }

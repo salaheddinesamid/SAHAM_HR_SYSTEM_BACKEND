@@ -37,7 +37,7 @@ public class AbsenceRequestIntegrationTest {
 
         mockMvc.perform(
                         multipart("/api/v1/absences/new")
-                                .param("email", "salaheddine@saham.com")
+                                .param("email", "salaheddine.samid@saham.com")
                                 .param("type", "REMOTE_WORK")
                                 .param("startDate", "2026-01-01")
                                 .param("endDate", "2026-01-05")

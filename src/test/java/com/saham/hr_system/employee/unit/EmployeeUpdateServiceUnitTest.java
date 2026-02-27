@@ -79,7 +79,7 @@ public class EmployeeUpdateServiceUnitTest {
                 "Samid",
                 null,
                 "",
-                "",
+                "MARRIED",
                 null,
                 null,
                 LocalDate.of(2003,12, 3),

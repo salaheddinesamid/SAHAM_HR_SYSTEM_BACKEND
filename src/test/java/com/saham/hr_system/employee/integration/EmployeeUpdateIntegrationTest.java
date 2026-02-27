@@ -2,6 +2,7 @@ package com.saham.hr_system.employee.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.employees.dto.UpdateEmployeeDto;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -32,10 +34,14 @@ public class EmployeeUpdateIntegrationTest {
     private EmployeeRepository employeeRepository;
 
     @Autowired
+    private JwtUtilities jwtUtilities;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Test
     void testUpdateEmployeeDetails() throws Exception {
+        String token  = jwtUtilities.generateToken("salaheddine.samid@saham.com", List.of("ADMIN"));
         // Given: An existing employee in the database
         Long employeeId = 5L; // Assuming an employee with ID 1 exists
 
@@ -63,6 +69,7 @@ public class EmployeeUpdateIntegrationTest {
                 patch("/api/v1/employees/update/"+employeeId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(employeeDto))
+                        .header("Authorization", "Bearer " + token)
         ).andDo(print())
                 .andExpect(status().isOk());
         // Then: We verify that the employee's details have been updated in the database
