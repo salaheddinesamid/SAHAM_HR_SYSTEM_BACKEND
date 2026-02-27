@@ -4,7 +4,6 @@ import com.saham.hr_system.modules.employees.dto.*;
 import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.*;
 import com.saham.hr_system.modules.employees.service.implementation.CeoAdderServiceImpl;
-import com.saham.hr_system.modules.employees.service.implementation.EmployeeAdderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -61,11 +59,13 @@ public class Initializer implements CommandLineRunner {
         Role adminRole  = roleRepository.findByRoleName("ADMIN")
                         .orElseThrow();
         if(!employeeRepository.existsByEmail("admin.hr@saham.com")){
+            // Professional Details:
             EmployeeProfessionalDetails adminProfessionalDetails = new EmployeeProfessionalDetails();
             adminProfessionalDetails.setMatriculation("EMPADMIN");
             adminProfessionalDetails.setEntity(EmployeeEntity.SAHAM_HORIZON);
             admin.setFirstName("Admin");
             admin.setLastName("Admin");
+            admin.setSex(EmployeeSex.MALE);
             admin.setCIN("");
             admin.setEmail("admin.hr@saham.com");
             admin.setPassword(passwordEncoder.encode("admin2025"));
@@ -125,6 +125,7 @@ public class Initializer implements CommandLineRunner {
                 "MALE",
                 "AAAAA",
                 "",
+                "Morocco",
                 LocalDate.of(1990, 1, 1),
                 "SINGLE",
                 0,
