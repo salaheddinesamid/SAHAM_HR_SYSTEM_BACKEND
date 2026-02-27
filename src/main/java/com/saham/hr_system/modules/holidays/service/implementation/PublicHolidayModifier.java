@@ -27,10 +27,10 @@ public class PublicHolidayModifier implements HolidayModifier {
     }
 
     @Override
-    public Holiday modifyHoliday(String name, HolidayModificationDto dto) {
+    public Holiday modifyHoliday(Long id, HolidayModificationDto dto) {
         // fetch the holiday from the db:
         Holiday holiday =
-                holidayRepository.findByName(name)
+                holidayRepository.findById(id)
                         .orElseThrow();
         if(dto.getStartDate() != null || dto.getEndDate() != null){
             updateHolidayDates(holiday, dto);

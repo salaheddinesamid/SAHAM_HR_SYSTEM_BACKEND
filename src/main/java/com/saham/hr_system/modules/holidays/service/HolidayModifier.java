@@ -13,8 +13,8 @@ public interface HolidayModifier {
     /**
      *
      * @param dto
-     * @param name
+     * @param id
      * @return
      */
-    Holiday modifyHoliday(String name, HolidayModificationDto dto);
+    Holiday modifyHoliday(Long id, HolidayModificationDto dto);
 }

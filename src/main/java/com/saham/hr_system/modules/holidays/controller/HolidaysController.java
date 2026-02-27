@@ -46,14 +46,14 @@ public class HolidaysController {
                 .body(response);
     }
 
-    @PatchMapping("update/{name}/{type}")
-    public ResponseEntity<?> updateHoliday(@PathVariable String name, @PathVariable String type, @RequestBody HolidayModificationDto holidayModificationDto) {
+    @PatchMapping("update")
+    public ResponseEntity<?> updateHoliday(@RequestParam Long id, @RequestParam String type, @RequestBody HolidayModificationDto holidayModificationDto) {
         HolidayModifier modifier =
             holidayModifiers.stream()
                     .filter(m-> m.supports(type))
                     .findFirst().orElseThrow();
         Holiday response =
-                modifier.modifyHoliday(name, holidayModificationDto);
+                modifier.modifyHoliday(id, holidayModificationDto);
 
         return ResponseEntity.status(200).body(response);
     }

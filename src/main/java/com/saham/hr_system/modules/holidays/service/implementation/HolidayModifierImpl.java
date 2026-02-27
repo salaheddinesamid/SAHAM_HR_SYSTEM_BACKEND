@@ -29,10 +29,10 @@ public class HolidayModifierImpl implements HolidayModifier {
     }
 
     @Override
-    public Holiday modifyHoliday(String name, HolidayModificationDto dto) {
+    public Holiday modifyHoliday(Long id, HolidayModificationDto dto) {
         Holiday holiday =
-                holidayRepository.findByName(name)
-                        .orElseThrow(()-> new HolidayNotFoundException(name));
+                holidayRepository.findById(id)
+                        .orElseThrow(()-> new HolidayNotFoundException(id.toString()));
         if(dto.getName()!= null){
             holiday.setName(dto.getName());
         }

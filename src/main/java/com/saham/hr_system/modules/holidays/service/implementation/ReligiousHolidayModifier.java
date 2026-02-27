@@ -30,14 +30,14 @@ public class ReligiousHolidayModifier implements HolidayModifier {
     }
 
     @Override
-    public Holiday modifyHoliday(String name, HolidayModificationDto dto) {
+    public Holiday modifyHoliday(Long id, HolidayModificationDto dto) {
         // fetch the holiday from the db:
         Holiday holiday =
-                holidayRepository.findByName(name)
+                holidayRepository.findById(id)
                         .orElseThrow();
         // check if the holiday is floating:
         if(!holiday.isFloating()){
-            throw new HolidayDateCannotBeUpdated(name);
+            throw new HolidayDateCannotBeUpdated("");
         }
         // otherwise:
         if(dto.getStartDate() != null && dto.getEndDate() != null){
@@ -46,7 +46,7 @@ public class ReligiousHolidayModifier implements HolidayModifier {
             long totalDaysUpdate =
                     dto.getEndDate().toEpochDay() - dto.getStartDate().toEpochDay() + 1;
             // publish the event of holiday update
-            log.info("Publishing holiday update event for holiday: {}, total days updated: {}", name, totalDaysUpdate);
+            log.info("Publishing holiday update event for holiday: {}, total days updated: {}", id, totalDaysUpdate);
             applicationEventPublisher
                     .publishEvent(
                             new HolidayUpdatedEvent(
