@@ -25,8 +25,7 @@ public class EmployeePasswordUpdateServiceImpl implements EmployeePasswordUpdate
     @Override
     public boolean verifyOldPassword(String oldPassword, String password) {
         // Check if the old password matches the current password of the employee
-        String encodedOldPassword = passwordEncoder.encode(oldPassword);
-        return passwordEncoder.matches(encodedOldPassword, password);
+        return passwordEncoder.matches(oldPassword, password);
     }
 
     @Override
