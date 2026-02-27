@@ -15,4 +15,10 @@ public class EmployeeExceptionHandler {
                 Map.of("message", ex.getMessage())
         );
     }
+    @ExceptionHandler(InvalidOldPasswordException.class)
+    public ResponseEntity<Object> handleInvalidOldPassword(InvalidOldPasswordException ex) {
+        return ResponseEntity.status(400).body(
+                Map.of("message", ex.getMessage())
+        );
+    }
 }

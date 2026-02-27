@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.employees.service.implementation;
 
 import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.dto.PasswordUpdateDto;
+import com.saham.hr_system.modules.employees.exception.InvalidOldPasswordException;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.service.EmployeePasswordUpdateService;
@@ -38,7 +39,7 @@ public class EmployeePasswordUpdateServiceImpl implements EmployeePasswordUpdate
         if (!verifyOldPassword(passwordUpdateDto.getOldPassword(), employee.getPassword())) {
             log.info("Employee Password : {}", employee.getPassword());
             log.info("Provided Old Password : {}", passwordUpdateDto.getOldPassword());
-            throw new RuntimeException("Old password is incorrect");
+            throw new InvalidOldPasswordException("Old password is incorrect");
         }
         // Otherwise:
         employee.setPassword(passwordEncoder.encode(passwordUpdateDto.getNewPassword()));
