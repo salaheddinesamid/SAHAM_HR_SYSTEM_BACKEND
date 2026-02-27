@@ -17,6 +17,7 @@ public class UpdateEmployeeDto {
     private String address;
     private String familyStatus;
     private Integer numberOfChildren;
+    private String nationality;
     private LocalDate birthDate;
     private String email;
     private String password;

@@ -51,6 +51,9 @@ public class Employee implements UserDetails {
     @Enumerated(EnumType.STRING)
     private EmployeeFamilyStatus familyStatus;
 
+    @Column(name = "nationality", nullable = true)
+    private String nationality;
+
     @Column(name = "number_of_children")
     private Integer numberOfChildren;
 

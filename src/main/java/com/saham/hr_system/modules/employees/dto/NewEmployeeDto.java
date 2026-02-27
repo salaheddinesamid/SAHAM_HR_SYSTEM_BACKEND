@@ -20,6 +20,7 @@ public class NewEmployeeDto {
     @NotNull
     private String cin;
     private String address;
+    private String nationality;
     @NotNull
     private LocalDate birthDate;
     @NotNull

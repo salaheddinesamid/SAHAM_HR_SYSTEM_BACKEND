@@ -76,6 +76,7 @@ public class EmployeeAdderIntegrationTest {
                 "MALE",
                 "D573GHSD",
                 "Wafaa 01, NR 11 Hay Salam, Casablanca",
+                "Morocco",
                 LocalDate.of(2000, 1, 1),
                 "SINGLE",
                 0,
