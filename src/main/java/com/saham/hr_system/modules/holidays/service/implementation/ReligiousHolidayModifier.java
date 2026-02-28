@@ -45,15 +45,18 @@ public class ReligiousHolidayModifier implements HolidayModifier {
             holiday.setEndDate(dto.getEndDate());
             long totalDaysUpdate =
                     dto.getEndDate().toEpochDay() - dto.getStartDate().toEpochDay() + 1;
-            // publish the event of holiday update
-            log.info("Publishing holiday update event for holiday: {}, total days updated: {}", id, totalDaysUpdate);
-            applicationEventPublisher
-                    .publishEvent(
-                            new HolidayUpdatedEvent(
-                                    holiday,
-                                    totalDaysUpdate
-                            )
-                    );
+            // publish the event of holiday update if the totalDaysUpdate is greater than 0:
+            if(totalDaysUpdate > 0){
+                log.info("Publishing holiday update event for holiday: {}, total days updated: {}", id, totalDaysUpdate);
+                applicationEventPublisher
+                        .publishEvent(
+                                new HolidayUpdatedEvent(
+                                        holiday,
+                                        totalDaysUpdate
+                                )
+                        );
+            }
+
         }
         if(dto.getName() != null){
             holiday.setName(dto.getName());

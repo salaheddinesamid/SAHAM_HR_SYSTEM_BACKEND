@@ -36,8 +36,8 @@ public class LeaveRequestIntegrationTest {
         String token = jwtUtilities.generateToken("salaheddine.samid@saham.com", List.of("EMPLOYEE"));
         // Mock the DTO
         LeaveRequestDto leaveRequestDto = new LeaveRequestDto(
-                LocalDate.of(2026, 7, 1),
-                LocalDate.of(2026, 7, 10),
+                LocalDate.of(2026, 4, 10),
+                LocalDate.of(2026, 4, 12),
                 "ANNUAL",
                 null,
                 "Vacation"

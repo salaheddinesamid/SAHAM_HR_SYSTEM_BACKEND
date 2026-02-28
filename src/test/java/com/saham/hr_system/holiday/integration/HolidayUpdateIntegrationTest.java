@@ -38,8 +38,8 @@ public class HolidayUpdateIntegrationTest {
         // Mock update request DTO
         HolidayModificationDto requestDto = new HolidayModificationDto(
                 "Aïd el-Fitr (prévisionnel)",
-                LocalDate.of(2026, 4, 10),
-                LocalDate.of(2026, 4, 12),
+                LocalDate.of(2026, 4, 11),
+                LocalDate.of(2026, 4, 13),
                 2
         );
 
