@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.List;
+
 @Component
 public class LoanRequestEmailSenderImpl implements LoanRequestEmailSender {
 
@@ -28,11 +30,9 @@ public class LoanRequestEmailSenderImpl implements LoanRequestEmailSender {
     @Autowired
     private HRFetcherUtils hrFetcherUtils;
 
-    private final static String TO = "salaheddine.samid@medjoolstar.com";
-
     @Override
     public void notifyEmployee(LoanRequest loanRequest) {
-        //String TO = loanRequest.getEmployee().getEmail();
+        String to = loanRequest.getEmployee().getEmail();
 
         // Template variables
         Context context = new Context();
@@ -48,16 +48,16 @@ public class LoanRequestEmailSenderImpl implements LoanRequestEmailSender {
         String htmlContent = templateEngine.process("loan-requested-employee.html", context);
 
         outlookEmailService.sendEmail(
-                TO,
+                to,
                 htmlContent,
                 "Votre demande de pret/avance a été soumise avec succès"
         );
-        System.out.println("Loan request approval email sent to: " + TO);
+        System.out.println("Loan request approval email sent to: " + to);
     }
 
     @Override
     public void notifyHR(LoanRequest loanRequest) {
-        //String TO = leaveRequest.getEmployee().getEmail();
+        List<String> hrEmails = hrFetcherUtils.fetchHREmail();
 
         // Template variables
         Context context = new Context();
@@ -72,11 +72,14 @@ public class LoanRequestEmailSenderImpl implements LoanRequestEmailSender {
 
         String htmlContent = templateEngine.process("loan-requested-hr.html", context);
 
-        outlookEmailService.sendEmail(
-                TO,
-                htmlContent,
-                "Nouvelle demande de pret/avance à valider"
-        );
-        System.out.println("Loan request approval email sent to: " + TO);
+        for(String email : hrEmails){
+            outlookEmailService.sendEmail(
+                    email,
+                    htmlContent,
+                    "Nouvelle demande de pret/avance à valider"
+            );
+            System.out.println("Loan request approval email sent to: " + email);
+        }
+
     }
 }

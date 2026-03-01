@@ -14,4 +14,6 @@ public class LeaveAnalyticsDto {
     private long totalPendingLeaveRequests;
     private long totalRequests;
     private double leaveDaysRate;
+    private long totalAnnualLeaveRequests;
+    private long totalExceptionalLeaveRequests;
 }

@@ -38,6 +38,11 @@ public class LeaveAnalyticsServiceImpl implements LeaveAnalyticsService {
             filteredLeaves = leaves;
             filteredLeaveRequests = leaveRequests;
         }
+
+        if(from == null && to == null){
+            filteredLeaves = leaves;
+            filteredLeaveRequests = leaveRequests;
+        }
         if(!type.equals("ALL")){
             filteredLeaves = filterByType(leaves,type);
             filteredLeaveRequests = filterLeaveRequestByType(leaveRequests,type);
@@ -50,10 +55,12 @@ public class LeaveAnalyticsServiceImpl implements LeaveAnalyticsService {
         // If the department is not ALL, we filter by the specified department
         if(!department.equals("ALL")){
             filteredLeaves = filterLeavesByDepartment(filteredLeaves, department);
+            filteredLeaveRequests = filterLeaveRequestsByDepartment(filteredLeaveRequests, department);
         }
         // If the entity is not ALL, we filter by the specified entity
         if(!entity.equals("ALL")){
             filteredLeaves = filterLeavesByEntity(filteredLeaves, entity);
+            filteredLeaveRequests = filterLeaveRequestsByEntity(filteredLeaveRequests, entity);
         }
 
         long totalLeaves = filteredLeaves.size();
@@ -62,6 +69,9 @@ public class LeaveAnalyticsServiceImpl implements LeaveAnalyticsService {
         long totalRejectedLeaves = filteredLeaveRequests.stream().filter(request -> request.getStatus().toString().equals("REJECTED")).count();
         long totalRequests = filteredLeaveRequests.size();
 
+        long totalAnnualLeaveRequests = filteredLeaveRequests.stream().filter(request -> request.getTypeOfLeave().toString().equals("ANNUAL")).count();
+        long totalExceptionalLeaveRequests = filteredLeaveRequests.stream().filter(request -> request.getTypeOfLeave().toString().equals("EXCEPTIONAL")).count();
+
         double leaveDaysRate = 0;
         return new LeaveAnalyticsDto(
                 totalLeaves,
@@ -69,7 +79,9 @@ public class LeaveAnalyticsServiceImpl implements LeaveAnalyticsService {
                 totalRejectedLeaves,
                 totalPendingLeaves,
                 totalRequests,
-                leaveDaysRate
+                leaveDaysRate,
+                totalAnnualLeaveRequests,
+                totalExceptionalLeaveRequests
         );
     }
 

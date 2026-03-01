@@ -25,46 +25,6 @@ public class AnalyticsController {
         this.leaveAnalyticsService = leaveAnalyticsService;
     }
 
-    @GetMapping("absence/total")
-    public ResponseEntity<?> getTotalAbsences(@RequestParam(defaultValue = "ALL") String status, @RequestParam String type){
-        AbsenceAnalyticsService analyticsService =
-                absenceAnalyticsServices.stream().filter(service-> service.supports(type))
-                        .findFirst().orElseThrow();
-
-        TotalAbsenceDto response = analyticsService.getTotalAbsence();
-        return ResponseEntity
-                .status(200)
-                .body(response);
-    }
-
-    @GetMapping("/absence/total-requests")
-    public ResponseEntity<?> getTotalAbsenceRequests(
-            @RequestParam(required = false) LocalDate from,
-            @RequestParam(required = false) LocalDate to,
-            @RequestParam(required = false, defaultValue = "ALL") String status
-            ){
-        AbsenceAnalyticsService analyticsService =
-                absenceAnalyticsServices.stream().filter(service-> service.supports("REMOTE_WORK"))
-                        .findFirst().orElseThrow();
-
-        TotalAbsenceRequestDto response =
-                analyticsService.getTotalAbsenceRequests(from, to, status);
-        return ResponseEntity
-                .status(200)
-                .body(response);
-    }
-    @GetMapping("absence/average")
-    public ResponseEntity<?> getAbsenceAVGDuration(@RequestParam String type){
-        AbsenceAnalyticsService analyticsService =
-                absenceAnalyticsServices.stream().filter(service-> service.supports(type))
-                        .findFirst().orElseThrow();
-
-        AvgAbsenceDurationDto response = analyticsService.getAvgAbsenceDuration();
-        return ResponseEntity
-                .status(200)
-                .body(response);
-    }
-
     @GetMapping("/leaves/overview")
     public ResponseEntity<Object> getLeavesOverview(
             @RequestParam(defaultValue = "ALL") String type,
