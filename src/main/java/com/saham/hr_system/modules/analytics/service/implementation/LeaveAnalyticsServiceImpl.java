@@ -36,13 +36,16 @@ public class LeaveAnalyticsServiceImpl implements LeaveAnalyticsService {
         // If the type is ALL, we don't filter by type, otherwise we filter by the specified type
         if(type.equals("ALL")){
             filteredLeaves = leaves;
+            filteredLeaveRequests = leaveRequests;
         }
         if(!type.equals("ALL")){
             filteredLeaves = filterByType(leaves,type);
+            filteredLeaveRequests = filterLeaveRequestByType(leaveRequests,type);
         }
         // If the from and to dates are provided, we filter by the date range
         if(from != null && to != null){
             filteredLeaves = filterLeavesByDateRange(filteredLeaves, from, to);
+            filteredLeaveRequests = filterLeaveRequestsByDateRange(filteredLeaveRequests, from, to);
         }
         // If the department is not ALL, we filter by the specified department
         if(!department.equals("ALL")){
@@ -54,7 +57,20 @@ public class LeaveAnalyticsServiceImpl implements LeaveAnalyticsService {
         }
 
         long totalLeaves = filteredLeaves.size();
-        return null;
+        long totalApprovedLeaves = filteredLeaveRequests.stream().filter(request -> request.getStatus().toString().equals("APPROVED")).count();
+        long totalPendingLeaves = filteredLeaveRequests.stream().filter(request -> request.getStatus().toString().equals("IN_PROCESS")).count();
+        long totalRejectedLeaves = filteredLeaveRequests.stream().filter(request -> request.getStatus().toString().equals("REJECTED")).count();
+        long totalRequests = filteredLeaveRequests.size();
+
+        double leaveDaysRate = 0;
+        return new LeaveAnalyticsDto(
+                totalLeaves,
+                totalApprovedLeaves,
+                totalRejectedLeaves,
+                totalPendingLeaves,
+                totalRequests,
+                leaveDaysRate
+        );
     }
 
     private List<Leave> filterByType(List<Leave> leaves, String type) {
@@ -77,6 +93,30 @@ public class LeaveAnalyticsServiceImpl implements LeaveAnalyticsService {
     private List<Leave> filterLeavesByEntity(List<Leave> leaves, String entity) {
         return leaves.stream()
                 .filter(leave -> leave.getEmployee().getEmployeeProfessionalDetails().getEntity().toString().equals(entity))
+                .toList();
+    }
+
+    // We can also create similar methods for filtering leave requests if needed, for now we are only filtering leaves, but we can easily adapt the same logic to filter leave requests as well.
+    private List<LeaveRequest> filterLeaveRequestByType(List<LeaveRequest> requests, String type) {
+        return requests.stream()
+                .filter(request -> request.getTypeOfLeave().toString().equals(type))
+                .toList();
+    }
+    private List<LeaveRequest> filterLeaveRequestsByDateRange(List<LeaveRequest> requests, LocalDate from, LocalDate to) {
+        return requests.stream()
+                .filter(request -> (request.getStartDate().isEqual(from) || request.getEndDate().isAfter(from)) &&
+                        (request.getEndDate().isEqual(to) || request.getStartDate().isBefore(to)))
+                .toList();
+    }
+
+    private List<LeaveRequest> filterLeaveRequestsByDepartment(List<LeaveRequest> requests, String department) {
+        return requests.stream()
+                .filter(request -> request.getEmployee().getEmployeeProfessionalDetails().getDepartment().toString().equals(department))
+                .toList();
+    }
+    private List<LeaveRequest> filterLeaveRequestsByEntity(List<LeaveRequest> requests, String entity) {
+        return requests.stream()
+                .filter(request -> request.getEmployee().getEmployeeProfessionalDetails().getEntity().toString().equals(entity))
                 .toList();
     }
 }

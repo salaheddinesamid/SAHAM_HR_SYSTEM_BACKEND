@@ -11,6 +11,7 @@ public class LeaveAnalyticsDto {
     private long totalLeaves;
     private long totalApprovedLeaves;
     private long totalRejectedLeaves;
+    private long totalPendingLeaveRequests;
     private long totalRequests;
-    private long leaveDaysRate;
+    private double leaveDaysRate;
 }
