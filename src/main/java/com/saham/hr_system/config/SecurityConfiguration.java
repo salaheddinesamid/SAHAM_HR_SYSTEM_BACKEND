@@ -127,9 +127,7 @@ public class SecurityConfiguration {
                                 "http://192.168.15.27:3000",
                                 "http://localhost:3001",
                                 "http://192.168.15.27:3001",
-                                "http://YOUR_SERVER_IP",
-                                "http://YOUR_SERVER_IP:YOUR_FRONTEND_PORT",
-                                "https://YOUR_DOMAIN"
+                                "http://hr.saham.local"
                         )
                         .allowedMethods("*")
                         .allowedHeaders("*")
