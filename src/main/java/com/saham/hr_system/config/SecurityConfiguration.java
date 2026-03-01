@@ -133,6 +133,7 @@ public class SecurityConfiguration {
                         )
                         .allowedMethods("*")
                         .allowedHeaders("*")
+                        .allowedOriginPatterns("*")
                         .allowCredentials(true);
             }
         };
