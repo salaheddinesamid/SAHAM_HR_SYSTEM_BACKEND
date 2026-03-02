@@ -24,10 +24,11 @@ public class DocumentRequestEmailSenderImpl implements DocumentRequestEmailSende
     @Autowired
     private HRFetcherUtils hrFetcherUtils;
 
-    private final static String TO = "salaheddine.samid@medjoolstar.com";
+
     @Override
     public void notifyEmployee(DocumentRequest documentRequest) throws MessagingException {
 
+        String to = documentRequest.getEmployee().getEmployeeProfessionalDetails().getProfessionalEmail();
         // Template variables
         Context context = new Context();
         context.setVariable("employeeName", documentRequest.getEmployee().getFullName());
@@ -36,7 +37,7 @@ public class DocumentRequestEmailSenderImpl implements DocumentRequestEmailSende
 
         outlookEmailService
                 .sendEmail(
-                        TO,
+                        to,
                         htmlContent,
                         "Votre demande de documents a été soumise avec succès"
                 );
@@ -53,7 +54,7 @@ public class DocumentRequestEmailSenderImpl implements DocumentRequestEmailSende
 
             outlookEmailService
                     .sendEmail(
-                            TO,
+                            hrEmail,
                             htmlContent,
                             "Nouvelle demande des documents à valider"
                     );
