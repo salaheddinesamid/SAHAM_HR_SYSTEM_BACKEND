@@ -124,10 +124,11 @@ public class SecurityConfiguration {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:3000",
-                                "http://192.168.15.27:3000/",
+                                "http://192.168.15.27:3000",
                                 "http://localhost:3001",
-                                "http://192.168.15.27:3001/",
-                                "http://hr.saham.local"
+                                "http://192.168.15.27:3001",
+                                "http://hr.saham.local:3000",
+                                "http://hr.saham.local:3001"
                         )
                         .allowedMethods("*")
                         .allowedHeaders("*")
