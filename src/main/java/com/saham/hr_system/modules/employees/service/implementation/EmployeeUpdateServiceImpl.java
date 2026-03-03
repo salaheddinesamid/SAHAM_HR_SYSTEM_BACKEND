@@ -77,7 +77,7 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         }
         // update employee balance if provided:
         if (updateEmployeeDto.getEmployeeBalance() != null){
-            EmployeeBalance balance = employee.getEmployeeBalance() != null ? employeeBalanceRepository.findByEmployee(employee).orElseThrow() : null;
+            EmployeeBalance balance = employee.getEmployeeBalance() != null ? employee.getEmployeeBalance() : employeeBalanceRepository.findByEmployee(employee).orElseThrow();
             EmployeeBalance updatedBalance = updateBalance(balance, updateEmployeeDto.getEmployeeBalance());
             employee.setEmployeeBalance(updatedBalance);
         }
