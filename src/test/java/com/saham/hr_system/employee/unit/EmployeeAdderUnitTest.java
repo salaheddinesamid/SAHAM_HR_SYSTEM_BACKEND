@@ -90,6 +90,7 @@ class EmployeeAdderUnitTest {
                 25,
                 25,
                 2,
+                0,
                 0
         );
         newEmployeeDto = new NewEmployeeDto(

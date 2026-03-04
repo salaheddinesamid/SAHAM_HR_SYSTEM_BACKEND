@@ -55,10 +55,10 @@ public class EmployeeMapper {
         // create new balance:
         EmployeeBalance employeeBalance = new EmployeeBalance();
         employeeBalance.setYear(balanceDto.getYear());
-        employeeBalance.setCurrentBalance(balanceDto.getCurrentBalance());
         employeeBalance.setAnnualBalance(balanceDto.getAnnualBalance());
         employeeBalance.setUsedBalance(balanceDto.getUsedBalance());
         employeeBalance.setAccumulatedBalance(balanceDto.getAccumulatedBalance());
+        employeeBalance.setPreviousYearBalance(balanceDto.getPreviousYearBalance());
         employeeBalance.setLastUpdated(LocalDateTime.now());
 
         return employeeBalance;

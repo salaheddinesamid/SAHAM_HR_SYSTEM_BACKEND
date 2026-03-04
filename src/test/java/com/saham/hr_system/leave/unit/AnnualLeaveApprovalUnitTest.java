@@ -70,7 +70,7 @@ public class AnnualLeaveApprovalUnitTest {
 
         employeeBalance = new EmployeeBalance();
         employeeBalance.setBalanceId(1L);
-        employeeBalance.setCurrentBalance(2);
+        employeeBalance.setRemainderBalance(2);
         employeeBalance.setEmployee(employee);
 
         employee.setEmployeeBalance(employeeBalance);

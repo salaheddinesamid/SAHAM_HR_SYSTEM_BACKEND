@@ -66,6 +66,7 @@ public class EmployeeAdderIntegrationTest {
                 25,
                 25,
                 2,
+                0,
                 0
         );
         NewEmployeeDto newEmployeeDto = new NewEmployeeDto(

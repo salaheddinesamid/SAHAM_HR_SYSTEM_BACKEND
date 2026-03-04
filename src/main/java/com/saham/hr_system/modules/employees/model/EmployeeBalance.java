@@ -22,9 +22,6 @@ public class EmployeeBalance {
     @Column(name = "annual_balance")
     private double annualBalance; // the annual right
 
-    @Column(name = "current_balance")
-    private double currentBalance; // the current balance
-
     @Column(name = "monthly_balance")
     private double monthlyBalance; // the monthly balance
 
@@ -34,12 +31,14 @@ public class EmployeeBalance {
     @Column(name = "used_balance")
     private double usedBalance; // the total days used
 
-
     @Column(name = "remainder_balance")
-    private float remainderBalance; // the remaining balance
+    private double remainderBalance; // the remaining balance
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
+
+    @Column(name = "previous_year_balance", columnDefinition = "double default 0")
+    private double previousYearBalance; // the balance carried over from the previous year
 
     @OneToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
@@ -51,7 +50,13 @@ public class EmployeeBalance {
      */
     @PrePersist
     void prePersist() {
-        this.remainderBalance = (float) (this.currentBalance + this.accumulatedBalance - this.usedBalance);
+        this.remainderBalance = this.accumulatedBalance - this.usedBalance + this.previousYearBalance;
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    void preUpdate() {
+        this.remainderBalance = this.accumulatedBalance - this.usedBalance + this.previousYearBalance;
         this.lastUpdated = LocalDateTime.now();
     }
 

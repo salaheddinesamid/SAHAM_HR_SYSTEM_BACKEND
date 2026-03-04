@@ -62,7 +62,7 @@ public class AnnualLeaveRequestProcessor {
         employeeBalance.setBalanceId(1L);
         employeeBalance.setAnnualBalance(30);
         employeeBalance.setYear(2025);
-        employeeBalance.setCurrentBalance(1);
+        employeeBalance.setRemainderBalance(1);
         employeeBalance.setEmployee(employee);
     }
 

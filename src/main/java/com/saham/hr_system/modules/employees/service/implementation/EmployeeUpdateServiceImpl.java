@@ -122,9 +122,6 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
         if(employeeBalanceDto.getAnnualBalance() != 0){
             employeeBalance.setAnnualBalance(employeeBalanceDto.getAnnualBalance());
         }
-        if(employeeBalanceDto.getCurrentBalance() != 0){
-            employeeBalance.setCurrentBalance(employeeBalanceDto.getCurrentBalance());
-        }
         if(employeeBalanceDto.getAccumulatedBalance() != 0){
             employeeBalance.setAccumulatedBalance(employeeBalanceDto.getAccumulatedBalance());
         }

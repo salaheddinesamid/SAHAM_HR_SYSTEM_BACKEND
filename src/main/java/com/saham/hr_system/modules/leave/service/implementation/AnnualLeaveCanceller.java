@@ -53,7 +53,7 @@ public class AnnualLeaveCanceller implements LeaveCanceller {
         Employee employee = leave.getEmployee();
         EmployeeBalance employeeBalance = employeeBalanceRepository.findByEmployee(employee).orElseThrow();
 
-        log.info("Employee total balance before cancellation is: {}", employeeBalance.getCurrentBalance());
+        log.info("Employee total balance before cancellation is: {}", employeeBalance.getRemainderBalance());
         // get the total days of the leave:
         double totalDays = leave.getTotalDays();
         log.info("Leave cancelled by " + employee.getFullName());
@@ -65,10 +65,9 @@ public class AnnualLeaveCanceller implements LeaveCanceller {
         leaveRequest.setStatus(LeaveRequestStatus.CANCELED);
 
         // update the balance:
-        employeeBalance.setCurrentBalance(employeeBalance.getCurrentBalance() + totalDays);
         employeeBalance.setUsedBalance(employeeBalance.getUsedBalance() - totalDays);
 
-        log.info("Employee total balance after cancellation is: {}", employeeBalance.getCurrentBalance());
+        log.info("Employee total balance after cancellation is: {}", employeeBalance.getRemainderBalance());
 
         // delete the leave:
         leaveRepository.delete(leave);
