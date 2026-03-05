@@ -20,7 +20,7 @@ public class EmployeePasswordSetupService implements PasswordSetupService {
 
     @Value("${frontend.url}")
     private String PASSWORD_RESET_URL;
-    private final static Long PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES = 60L; // Token valid for 60 minutes
+    private final static Long PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES = 60L * 24 * 7; // Token valid for 60 minutes
     private final EmployeeRepository employeeRepository;
     private final PasswordSetupTokenRepository passwordSetupTokenRepository;
     private final PasswordSetupUtils passwordSetupUtils;
