@@ -23,7 +23,7 @@ public class EmployeeBalance {
     private double annualBalance; // the annual right
 
     @Column(name = "monthly_balance")
-    private double monthlyBalance; // the monthly balance
+    private double monthlyBalance = this.annualBalance / 12; // the monthly balance
 
     @Column(name = "accumulated_balance")
     private double accumulatedBalance; // the accumulated balance
@@ -50,6 +50,7 @@ public class EmployeeBalance {
      */
     @PrePersist
     void prePersist() {
+        this.monthlyBalance = this.annualBalance / 12;
         this.remainderBalance = this.accumulatedBalance - this.usedBalance + this.previousYearBalance;
         this.lastUpdated = LocalDateTime.now();
     }
