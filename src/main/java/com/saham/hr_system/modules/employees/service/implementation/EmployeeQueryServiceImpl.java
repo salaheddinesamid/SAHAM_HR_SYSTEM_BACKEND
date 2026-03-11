@@ -1,5 +1,6 @@
 package com.saham.hr_system.modules.employees.service.implementation;
 
+import com.saham.hr_system.modules.employees.dto.EmployeeBalanceResponseDto;
 import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.model.EmployeeBalance;
@@ -43,6 +44,14 @@ public class EmployeeQueryServiceImpl implements EmployeeQueryService {
         });
 
     }
+
+    @Override
+    public List<EmployeeBalanceResponseDto> getAllEmployeesBalances() {
+        List<EmployeeBalance> employeeBalances = employeeBalanceRepository
+                .findAll();
+        return employeeBalances.stream().map(EmployeeBalanceResponseDto::new).toList();
+    }
+
     @Override
     public boolean verifyManager(String fullName) {
         Role managerRole = roleRepository.findByRoleName("MANAGER")

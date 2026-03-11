@@ -4,12 +4,10 @@ import com.saham.hr_system.exception.UserNotFoundException;
 import com.saham.hr_system.modules.employees.dto.*;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.service.implementation.*;
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -120,6 +118,12 @@ public class EmployeeController {
         return ResponseEntity
                 .status(200)
                 .body(employees);
+    }
+    @GetMapping("/balances/get_all")
+    public ResponseEntity<Object> getAllEmployeeBalances(){
+        return ResponseEntity
+                .status(200)
+                .body(employeeQueryService.getAllEmployeesBalances());
     }
     @GetMapping("managers/verify")
     public ResponseEntity<?> findManager(
