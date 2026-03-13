@@ -33,9 +33,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getRequestURI().contains("/upload")
-                || request.getContentType() != null
-                && request.getContentType().startsWith("multipart/");
+        return request.getRequestURI().contains("/upload");
     }
 
     @Override

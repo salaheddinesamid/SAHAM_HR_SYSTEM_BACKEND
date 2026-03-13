@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 @Component
 public class EmployeeProfilePictureUploader {
@@ -21,7 +22,8 @@ public class EmployeeProfilePictureUploader {
 
     public String uploadProfilePicture(MultipartFile multipartFile, String matriculation){
         try{
-            String fileName = "emp" + "_" + matriculation + "_" + System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
+            String extension = Objects.requireNonNull(multipartFile.getOriginalFilename()).split("\\.")[1];
+            String fileName = matriculation + "." + extension;
             Path copyPath = uploadPath.resolve(fileName);
             Files.copy(multipartFile.getInputStream(), copyPath, StandardCopyOption.REPLACE_EXISTING);
 

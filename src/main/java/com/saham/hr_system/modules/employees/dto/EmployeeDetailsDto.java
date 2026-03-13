@@ -3,6 +3,7 @@ package com.saham.hr_system.modules.employees.dto;
 import com.saham.hr_system.modules.employees.model.*;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +11,9 @@ import java.util.List;
 
 @Data
 public class EmployeeDetailsDto {
+
+    @Value("${app.server.url}")
+    private String SERVER_URL;
     private long employeeId;
     private String fullName;
     private String firstName;
@@ -40,7 +44,7 @@ public class EmployeeDetailsDto {
         this.familyStatus = employee.getFamilyStatus() != null ? employee.getFamilyStatus().toString() : null;
         this.CIN = employee.getCIN();
         this.numberOfChildren = employee.getNumberOfChildren();
-        this.profilePictureUrl = employee.getProfilePictureUrl();
+        this.profilePictureUrl = String.format("%s/?employeeId=%d", SERVER_URL, employee.getId());
         this.professionalDetails = employee.getEmployeeProfessionalDetails() != null ? new ProfessionalDetailsDto(employee.getEmployeeProfessionalDetails()) : null;
         this.socialDetails = employee.getEmployeeSocialDetails() != null ? new SocialDetailsDto(employee.getEmployeeSocialDetails()) : null;
         this.contactDetails = employee.getEmployeeContactDetails() != null ? new ContactDetailsDto(employee.getEmployeeContactDetails()) : null;

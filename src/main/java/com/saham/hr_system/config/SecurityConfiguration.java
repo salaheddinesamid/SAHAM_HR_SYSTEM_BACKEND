@@ -33,12 +33,44 @@ public class SecurityConfiguration {
 
                 .and()
                 .authorizeHttpRequests(auth -> auth
+
+                        // Loan Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/loans/requests/hr/**").hasAuthority("HR")
+                        .requestMatchers("/api/v1/loans/requests/subordinates/**").hasAnyAuthority("MANAGER")
+                        .requestMatchers("/api/v1/loans/apply").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/loans/requests/employee/get-all").hasAuthority("EMPLOYEE")
+                        // Leave Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/leaves/apply").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/leaves/requests/get").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/leaves/medical-certificate/upload").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/leaves/requests/subordinates/**").hasAuthority("MANAGER")
+                        .requestMatchers("/api/v1/leaves/requests/hr/**").hasAuthority("HR")
+                        .requestMatchers("/api/v1/leaves/cancel-request").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/leaves/employee-leaves/get_all").hasAnyAuthority("EMPLOYEE", "MANAGER")
+                        .requestMatchers("/api/v1/leaves/cancel").hasAuthority("HR")
+                        // Employee Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/employees/new").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/employees/update/**").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/employees/update/profile-picture").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/employees/get_all").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/employees/balances/get_all").hasAuthority("ADMIN")
+                        // Document Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/documents/request").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/documents/requests/approve-request").hasAuthority("HR")
+                        .requestMatchers("/api/v1/documents/requests/reject-request").hasAuthority("HR")
+                        // Absence Controller endpoints authorization configuration
+                        // Payroll Controller endpoints authorization configuration
+                        // Holidays Controller endpoints authorization configuration
+                        // Expense Controller endpoints authorization configuration
+                        // Authentication Controller endpoints authorization configuration
+                        // File Download Controller endpoints authorization configuration
+                        // Analytics Controller endpoints authorization configuration
                         .requestMatchers("/api/v1/auth/**").permitAll() // this endpoint is open for every one to do the authentication
                         .requestMatchers("/api/v1/employees/get").hasAnyAuthority("ADMIN","EMPLOYEE","HR","MANAGER")
                         .requestMatchers("/api/v1/employees/subordinates").permitAll()
                         .requestMatchers("/api/v1/employees/get_all").permitAll()
                         .requestMatchers("/api/v1/employees/new").permitAll()
-                        .requestMatchers("/api/v1/employees/profile/profile-picture/").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/employees/profile-picture").permitAll()
                         /*
                             Configuration of Leave endpoints authorization
                          */

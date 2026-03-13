@@ -17,6 +17,7 @@ target/
 # Ignore temporary custom folders
 src/main/resources/folders/**
 src/main/resources/payrolls/**
+src/main/resources/pictures/**
 
 src/main/resources/application-prod.properties
 src/main/resources/application-test.yml
