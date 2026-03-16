@@ -54,49 +54,41 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/employees/update/profile-picture").hasAuthority("EMPLOYEE")
                         .requestMatchers("/api/v1/employees/get_all").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/employees/balances/get_all").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/employees/get").hasAnyAuthority("ADMIN","EMPLOYEE","HR","MANAGER")
+                        .requestMatchers("/api/v1/employees/subordinates").permitAll()
+                        .requestMatchers("/api/v1/employees/get_all").permitAll()
+                        .requestMatchers("/api/v1/employees/new").permitAll()
+                        .requestMatchers("/api/v1/employees/profile-picture").hasAuthority("EMPLOYEE")
                         // Document Controller endpoints authorization configuration
                         .requestMatchers("/api/v1/documents/request").hasAuthority("EMPLOYEE")
                         .requestMatchers("/api/v1/documents/requests/approve-request").hasAuthority("HR")
                         .requestMatchers("/api/v1/documents/requests/reject-request").hasAuthority("HR")
                         // Absence Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/absences/new").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/absences/requests/subordinates/**").hasAuthority("MANAGER")
+                        .requestMatchers("/api/v1/absences/requests/hr/**").hasAuthority("HR")
+                        .requestMatchers("/api/v1/absences/employee-absences/get_all").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/absences/requests/subordinates/get_all").hasAuthority("MANAGER")
+                        .requestMatchers("/api/v1/absences/requests/hr/get_all").hasAuthority("HR")
                         // Payroll Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/payrolls/upload").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/payrolls/history/get_all").hasAnyAuthority("HR", "ADMIN")
+                        .requestMatchers("/api/v1/payrolls/overview").hasAnyAuthority("EMPLOYEE", "HR", "ADMIN")
                         // Holidays Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/holidays/get_all").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/api/v1/holidays/update").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/holidays/new").hasAuthority("ADMIN")
                         // Expense Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/expenses/new").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/expenses/get-all").hasAuthority("EMPLOYEE")
                         // Authentication Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/auth").permitAll() // this endpoint is open for every one to do the authentication
+                        .requestMatchers("/api/v1/auth/setup-password").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/api/v1/auth/forgot-password").hasAnyAuthority("ADMIN", "EMPLOYEE")
                         // File Download Controller endpoints authorization configuration
                         // Analytics Controller endpoints authorization configuration
-                        .requestMatchers("/api/v1/auth/**").permitAll() // this endpoint is open for every one to do the authentication
-                        .requestMatchers("/api/v1/employees/get").hasAnyAuthority("ADMIN","EMPLOYEE","HR","MANAGER")
-                        .requestMatchers("/api/v1/employees/subordinates").permitAll()
-                        .requestMatchers("/api/v1/employees/get_all").permitAll()
-                        .requestMatchers("/api/v1/employees/new").permitAll()
-                        .requestMatchers("/api/v1/employees/profile-picture").permitAll()
-                        /*
-                            Configuration of Leave endpoints authorization
-                         */
-                        .requestMatchers("/api/v1/leaves/apply").hasAnyAuthority("EMPLOYEE")
-                        .requestMatchers("/api/v1/leaves/employee-leaves/get_all").hasAnyAuthority("MANAGER","EMPLOYEE")
-                        .requestMatchers("/api/v1/leaves/requests/subordinates/**").hasAuthority("MANAGER") // The manager of a team is the only one who can see the leave requests of his subordinates, approved and reject.
-                        .requestMatchers("/api/v1/leaves/requests/hr/**").hasAuthority("HR")
-                        .requestMatchers("/api/v1/leaves/calculate-total-leave-days/**").permitAll()
-                        //.requestMatchers("/api/v1/leaves/**").hasAnyAuthority("HR","MANAGER","EMPLOYEE")
-                        .requestMatchers("/api/v1/leaves/requests/search").permitAll()
 
-                        /*
-                          Configuration of Absence endpoints authorization
-                         */
-                        .requestMatchers("/api/v1/absences/new").permitAll()
-                        .requestMatchers("/api/v1/absences/medical-certificates/**").permitAll()
-                        .requestMatchers("/api/v1/absences/requests/subordinates/**").hasAnyAuthority("MANAGER")
-                        .requestMatchers("/api/v1/absences/requests/hr/**").hasAnyAuthority("HR")
-                        /*
-                            Configuration of Loan endpoints authorization
-                         */
-                        .requestMatchers("/api/v1/loans/apply").hasAuthority("EMPLOYEE")
-                        .requestMatchers("/api/v1/loans/requests/employee/get-all").permitAll()
-                        .requestMatchers("/api/v1/loans/requests/subordinates/**").hasAnyAuthority("MANAGER")
-                        .requestMatchers("/api/v1/loans/requests/hr/approve-request").permitAll()
-                        .requestMatchers("/api/v1/loans/requests/hr/get-all").permitAll()
+
                         /*
                             Configuration of Documents Upload/Download endpoints authorization
                          */
@@ -112,17 +104,6 @@ public class SecurityConfiguration {
                         /*
                           Configuration of Payroll Management endpoints authorization
                          */
-
-                        // -------------- Configuration of Admin Endpoints --------------------- //
-                        .requestMatchers("/api/v1/employees/get_all").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/employees/update/password").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                        .requestMatchers("/api/v1/employees/managers/get_all").permitAll()
-                        .requestMatchers("/api/v1/employees/balances/get_all").permitAll()
-                        .requestMatchers("/api/v1/holidays/get_all").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/employees/new").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/holidays/update/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/payrolls/upload").permitAll()
-                        .requestMatchers("/api/v1/employees/profile/get").hasAuthority("EMPLOYEE")
                         .requestMatchers("/websocket").permitAll()
                         // Any other endpoint requires authentication
                         .anyRequest().authenticated()

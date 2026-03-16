@@ -132,14 +132,14 @@ public class EmployeeController {
     }
 
     @GetMapping("/profile-picture")
-    public ResponseEntity<Object> getEmployeeProfilePicture(@RequestParam long id ,@RequestParam String picturePath) throws MalformedURLException {
+    public ResponseEntity<Object> getEmployeeProfilePicture(@RequestParam long userId ,@RequestParam String picturePath) throws MalformedURLException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
         // find the employee to ensure they exist and have access to the picture:
         Employee employee = employeeRepository
                 .findByEmail(email).orElseThrow(()-> new UserNotFoundException("Employee not found with email: " + email));
-        if(employee.getId() != id){
+        if(employee.getId() != userId){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                     Map.of("error", "You do not have permission to access this profile picture")
             );

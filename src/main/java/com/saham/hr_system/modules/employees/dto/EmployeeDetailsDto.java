@@ -44,7 +44,7 @@ public class EmployeeDetailsDto {
         this.familyStatus = employee.getFamilyStatus() != null ? employee.getFamilyStatus().toString() : null;
         this.CIN = employee.getCIN();
         this.numberOfChildren = employee.getNumberOfChildren();
-        this.profilePictureUrl = String.format("%s/?employeeId=%d", SERVER_URL, employee.getId());
+        this.profilePictureUrl = employee.getProfilePictureUrl();
         this.professionalDetails = employee.getEmployeeProfessionalDetails() != null ? new ProfessionalDetailsDto(employee.getEmployeeProfessionalDetails()) : null;
         this.socialDetails = employee.getEmployeeSocialDetails() != null ? new SocialDetailsDto(employee.getEmployeeSocialDetails()) : null;
         this.contactDetails = employee.getEmployeeContactDetails() != null ? new ContactDetailsDto(employee.getEmployeeContactDetails()) : null;
