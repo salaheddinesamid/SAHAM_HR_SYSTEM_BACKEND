@@ -8,7 +8,8 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
+/** * DTO for representing detailed information about a subordinate employee, including their personal details, professional details, leaves, and absences.
+ */
 @Data
 public class SubordinateDetailsResponseDto {
     private Long employeeId;

@@ -4,7 +4,9 @@ import com.saham.hr_system.modules.employees.model.EmployeeBalance;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/** * EmployeeBalanceResponseDto is a Data Transfer Object (DTO) that encapsulates the balance information of an employee.
+ * It includes details such as the employee's full name, the year of the balance, and various balance metrics.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

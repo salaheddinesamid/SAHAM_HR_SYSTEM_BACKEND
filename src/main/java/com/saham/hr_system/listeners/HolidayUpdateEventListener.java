@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- *
+/** * This class listens to the HolidayUpdatedEvent and updates the affected employee leaves and balances accordingly.
+ * When a holiday is updated, it fetches all the leaves that overlap with the holiday dates, recalculates the total leave days for those leaves, and updates the employee balances accordingly.
  */
 @Component
 @Slf4j

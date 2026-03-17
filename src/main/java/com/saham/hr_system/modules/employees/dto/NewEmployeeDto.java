@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
+/** * DTO for creating a new employee, including personal, professional, social, and contact details.
+ */
 @Data
 @AllArgsConstructor
 public class NewEmployeeDto {

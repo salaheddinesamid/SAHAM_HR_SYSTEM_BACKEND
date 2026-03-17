@@ -14,6 +14,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * This class is responsible for configuring the security settings of the application, including authentication and authorization rules.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -21,6 +24,10 @@ public class SecurityConfiguration {
 
     private final JwtAuthFilter jwtAuthFilter;
 
+    /**
+     * This method configures the security filter chain for the application, defining the authentication and authorization rules for different endpoints.
+     * It also sets up CORS configuration and exception handling for unauthorized access attempts.
+     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -88,14 +95,11 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/auth/re-activate-account").hasAuthority("ADMIN")
                         // File Download Controller endpoints authorization configuration
                         // Analytics Controller endpoints authorization configuration
+                        .requestMatchers("/api/v1/analytics/**").hasAuthority("HR")
 
-
-                        /*
-                            Configuration of Documents Upload/Download endpoints authorization
-                         */
+                        //Configuration of Documents Upload/Download endpoints authorization
                         .requestMatchers("/api/v1/files/download").permitAll()
 
-                        .requestMatchers("/api/v1/analytics/**").hasAuthority("HR")
 
                         .requestMatchers("/api/v1/holidays/**").permitAll()
                         /*

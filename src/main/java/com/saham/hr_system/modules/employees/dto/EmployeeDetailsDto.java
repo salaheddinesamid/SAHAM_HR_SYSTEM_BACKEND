@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+/** * DTO for transferring detailed employee information, including personal, professional, social, and contact details.
+ */
 @Data
 public class EmployeeDetailsDto {
 

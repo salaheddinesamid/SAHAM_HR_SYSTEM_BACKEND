@@ -1,8 +1,8 @@
 package com.saham.hr_system.modules.employees.service;
 
-import com.saham.hr_system.modules.employees.dto.EmployeeDetailsDto;
 import com.saham.hr_system.modules.employees.model.Employee;
-
+/** * Service interface for sending welcome emails to new employees.
+ */
 public interface NewEmployeeEmailSender {
     /**
      * Send a welcome email to the new employee with their details and password setup instructions.

@@ -10,7 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-
+/** * This component is responsible for handling the upload of employee profile pictures.
+ * It takes care of saving the uploaded file to a specified directory and returns the filename.
+ */
 @Component
 public class EmployeeProfilePictureUploader {
 
@@ -19,7 +21,12 @@ public class EmployeeProfilePictureUploader {
     public EmployeeProfilePictureUploader(@Value("${file.upload.profile-pictures}") String path) {
         this.uploadPath = Paths.get(path).toAbsolutePath().normalize();
     }
-
+    /**
+     * Uploads a profile picture for an employee.
+     * @param multipartFile The file to be uploaded.
+     * @param matriculation The matriculation number of the employee, used to generate the filename.
+     * @return The filename of the uploaded profile picture.
+     */
     public String uploadProfilePicture(MultipartFile multipartFile, String matriculation) {
         try {
 

@@ -21,7 +21,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+/** * This filter is responsible for processing JWT authentication for incoming requests.
+ * It checks for the presence of a JWT token in the request (either in cookies or Authorization header),
+ * validates the token, and sets the authentication context if the token is valid.
+ * If the token is expired, it sends a JSON error response with details about the expiration.
+ */
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +40,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         return request.getRequestURI().contains("/upload");
     }
 
+    /**     * This method processes the JWT authentication for incoming requests. It extracts the token, validates it, and sets the authentication context.
+     * If the token is expired, it sends a JSON error response with details about the expiration.
+     *
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param filterChain the filter chain
+     * @throws ServletException if a servlet error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -69,6 +82,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
     }
 
+    /**     * Extracts the JWT token from the request, checking both cookies and Authorization header.
+     *
+     * @param request the HTTP request
+     * @return the extracted token, or null if not found
+     */
     private String extractToken(HttpServletRequest request) {
         if (request.getCookies() != null) {
             for (var cookie : request.getCookies()) {

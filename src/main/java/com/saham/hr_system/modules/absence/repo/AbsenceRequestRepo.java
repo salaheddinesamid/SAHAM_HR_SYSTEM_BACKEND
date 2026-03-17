@@ -18,7 +18,6 @@ public interface AbsenceRequestRepo extends JpaRepository<AbsenceRequest, Long> 
     /**
      *
      * @param employee
-     * @param pageable
      * @return
      */
     Page<AbsenceRequest> findAllByEmployee(Employee employee, Pageable pageable);

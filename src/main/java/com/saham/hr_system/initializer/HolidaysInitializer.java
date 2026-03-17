@@ -14,7 +14,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+/** * This class is responsible for initializing the holidays data in the database when the application starts.
+ * It implements CommandLineRunner, which allows it to run code after the application context is loaded.
+ * The holidays data is defined as a list of HolidayObject instances, which are then converted to Holiday entities and saved to the database.
+ * If the holidays already exist in the database, it will log a message and skip the initialization.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -22,7 +26,9 @@ public class HolidaysInitializer implements CommandLineRunner {
     private final ObjectMapper objectMapper;
     private final HolidayRepository holidayRepository;
 
-    // Create list of Holiday Objects:
+    /**     * A list of HolidayObject instances representing the holidays to be initialized in the database.
+     * Each HolidayObject contains the start date, end date, name, type, whether it's floating, leave days, and status of the holiday.
+     */
     private static final List<HolidayObject> holidays = List.of(
 
             new HolidayObject(

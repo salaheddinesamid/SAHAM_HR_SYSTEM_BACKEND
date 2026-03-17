@@ -8,7 +8,8 @@ import com.saham.hr_system.modules.employees.model.EmployeeProfessionalDetails;
 import com.saham.hr_system.modules.employees.service.implementation.EmployeeQueryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+/** * Mapper class to convert NewEmployeeProfessionalDetailsDto to EmployeeProfessionalDetails.
+ */
 @Component
 public class EmployeeProfessionalDetailsMapper {
 
@@ -18,6 +19,13 @@ public class EmployeeProfessionalDetailsMapper {
         this.employeeQueryService = employeeQueryService;
     }
 
+    /**
+     * Maps a NewEmployeeProfessionalDetailsDto to an EmployeeProfessionalDetails entity.
+     *
+     * @param dto The DTO containing the professional details of the employee.
+     * @param isCeo A boolean indicating if the employee is a CEO (true) or not (false).
+     * @return An EmployeeProfessionalDetails entity populated with the data from the DTO.
+     */
     public EmployeeProfessionalDetails mapToEmployeeProfessionalDetails(NewEmployeeProfessionalDetailsDto dto, boolean isCeo){
         EmployeeProfessionalDetails employeeProfessionalDetails = new EmployeeProfessionalDetails();
 

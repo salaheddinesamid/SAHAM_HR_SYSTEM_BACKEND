@@ -6,25 +6,17 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
-
+/** * Configuration class for Thymeleaf template engine.
+ */
 @Configuration
 public class ThymeleafTemplateConfig {
-
-    /**
-     *
-     * @return
-     */
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
         return templateEngine;
     }
-
-    /**
-     *
-     * @return
-     */
+    /* * Configures the template resolver for Thymeleaf. * * @return the configured template resolver */
     @Bean
     public ITemplateResolver templateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();

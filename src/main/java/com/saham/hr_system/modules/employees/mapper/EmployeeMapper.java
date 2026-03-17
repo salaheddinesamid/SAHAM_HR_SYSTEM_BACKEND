@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-
+/** * Mapper class to convert between Employee-related DTOs and entities.
+ */
 @Component
 public class EmployeeMapper {
     private final RoleRepository roleRepository;
@@ -24,6 +25,12 @@ public class EmployeeMapper {
         this.employeePasswordGenerator = employeePasswordGenerator;
     }
 
+    /**
+     * Maps a NewEmployeeDto to an Employee entity, including password generation and role assignment.
+     *
+     * @param requestDto The DTO containing the new employee's details.
+     * @return A map containing the mapped Employee entity and the raw password for notification purposes.
+     */
     public Map<String, Object> mapToEmployee(NewEmployeeDto requestDto) {
         Employee employee = new Employee();
         employee.setFirstName(requestDto.getFirstName());
@@ -50,7 +57,12 @@ public class EmployeeMapper {
                 "rawPassword" , generatedPassword.get("rawPassword")
         );
     }
-
+    /**
+     * Maps an EmployeeBalanceDto to an EmployeeBalance entity, setting the last updated timestamp.
+     *
+     * @param balanceDto The DTO containing the employee balance details.
+     * @return An EmployeeBalance entity with the mapped values.
+     */
     public EmployeeBalance mapToEmployeeBalanceDto(EmployeeBalanceDto balanceDto) {
         // create new balance:
         EmployeeBalance employeeBalance = new EmployeeBalance();

@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
-
+/** * DTO for capturing the professional details of a new employee during the onboarding process.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

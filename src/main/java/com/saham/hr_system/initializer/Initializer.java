@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
-
+/** * This class initializes the database with default roles and a default admin user.
+ * It runs on application startup and ensures that essential data is present for the application to function correctly.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -43,6 +45,10 @@ public class Initializer implements CommandLineRunner {
         // initializeEmployees();
     }
 
+    /** * Initializes the default roles in the database if they do not already exist.
+     * It iterates through the predefined list of roles and checks if each role is present in the database.
+     * If a role is missing, it creates and saves it to the database.
+     */
     private void initializeRoles() {
         for (RoleName roleName : DEFAULT_ROLES) {
             roleRepository.findByRoleName(roleName.name())
@@ -54,6 +60,10 @@ public class Initializer implements CommandLineRunner {
         }
     }
 
+    /** * Initializes a default admin user in the database if it does not already exist.
+     * It creates an admin employee with predefined credentials and assigns the ADMIN role to it.
+     * The admin's professional details are also created and linked to the employee.
+     */
     private void initializeAdmin(){
         Employee admin = new Employee();
         Role adminRole  = roleRepository.findByRoleName("ADMIN")
@@ -81,6 +91,10 @@ public class Initializer implements CommandLineRunner {
 
     }
 
+    /** * Initializes a default CEO user in the database if it does not already exist.
+     * It creates a CEO employee with predefined credentials and assigns the CEO and MANAGER roles to it.
+     * The CEO's professional, social, contact, and balance details are also created and linked to the employee.
+     */
     @Transactional
     protected void initializeCEO() {
 
