@@ -20,16 +20,32 @@ public class EmployeeProfilePictureUploader {
         this.uploadPath = Paths.get(path).toAbsolutePath().normalize();
     }
 
-    public String uploadProfilePicture(MultipartFile multipartFile, String matriculation){
-        try{
-            String extension = Objects.requireNonNull(multipartFile.getOriginalFilename()).split("\\.")[1];
+    public String uploadProfilePicture(MultipartFile multipartFile, String matriculation) {
+        try {
+
+            // Ensure directory exists
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String extension = Objects
+                    .requireNonNull(multipartFile.getOriginalFilename())
+                    .split("\\.")[1];
+
             String fileName = matriculation + "." + extension;
+
             Path copyPath = uploadPath.resolve(fileName);
-            Files.copy(multipartFile.getInputStream(), copyPath, StandardCopyOption.REPLACE_EXISTING);
+
+            Files.copy(
+                    multipartFile.getInputStream(),
+                    copyPath,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
 
             return fileName;
+
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to upload profile picture", e);
         }
     }
 }
