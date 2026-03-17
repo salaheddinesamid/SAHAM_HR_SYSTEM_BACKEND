@@ -47,4 +47,10 @@ public class AuthenticationController {
         employeePasswordSetupService.setupPassword(token, newPassword);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("re-activate-account")
+    public ResponseEntity<Object> reActivateAccount(@RequestParam String email){
+        employeePasswordSetupService.initiatePasswordSetup(email);
+        return ResponseEntity.ok().build();
+    }
 }

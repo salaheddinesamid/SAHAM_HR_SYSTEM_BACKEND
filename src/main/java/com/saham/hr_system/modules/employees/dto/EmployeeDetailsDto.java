@@ -26,6 +26,7 @@ public class EmployeeDetailsDto {
     private String CIN;
     private String address;
     private String profilePictureUrl;
+    private boolean isAccountActive;
     private ProfessionalDetailsDto professionalDetails;
     private SocialDetailsDto socialDetails;
     private ContactDetailsDto contactDetails;
@@ -45,6 +46,7 @@ public class EmployeeDetailsDto {
         this.CIN = employee.getCIN();
         this.numberOfChildren = employee.getNumberOfChildren();
         this.profilePictureUrl = employee.getProfilePictureUrl();
+        this.isAccountActive = !employee.isAccountLocked();
         this.professionalDetails = employee.getEmployeeProfessionalDetails() != null ? new ProfessionalDetailsDto(employee.getEmployeeProfessionalDetails()) : null;
         this.socialDetails = employee.getEmployeeSocialDetails() != null ? new SocialDetailsDto(employee.getEmployeeSocialDetails()) : null;
         this.contactDetails = employee.getEmployeeContactDetails() != null ? new ContactDetailsDto(employee.getEmployeeContactDetails()) : null;
