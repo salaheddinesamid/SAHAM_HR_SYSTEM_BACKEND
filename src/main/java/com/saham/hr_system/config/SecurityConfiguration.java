@@ -91,7 +91,7 @@ public class SecurityConfiguration {
                         // Authentication Controller endpoints authorization configuration
                         .requestMatchers("/api/v1/auth").permitAll() // this endpoint is open for every one to do the authentication
                         .requestMatchers("/api/v1/auth/setup-password").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                        .requestMatchers("/api/v1/auth/forgot-password").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/api/v1/auth/forgot-password").permitAll()
                         .requestMatchers("/api/v1/auth/re-activate-account").hasAuthority("ADMIN")
                         // File Download Controller endpoints authorization configuration
                         // Analytics Controller endpoints authorization configuration
