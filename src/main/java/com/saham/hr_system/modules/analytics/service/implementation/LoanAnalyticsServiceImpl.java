@@ -25,7 +25,7 @@ public class LoanAnalyticsServiceImpl implements LoanAnalyticsService {
 
     @Override
     public LoanAnalyticsDto getLoanAnalyticsOverview(String type, int year , String department, String entity) {
-        List<LoanRequest> loanRequests = loanRequestRepository.findAllByIssueDate_Year(year);
+        List<LoanRequest> loanRequests = loanRequestRepository.findAllByIssueDateYear(year);
         List<LoanRequest> filteredLoanRequests = new ArrayList<>();
 
         if(type.equals("ALL")){
