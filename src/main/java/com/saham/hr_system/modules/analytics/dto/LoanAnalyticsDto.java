@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 public class LoanAnalyticsDto {
 
     private long totalLoanRequests;
+    private double totalAmountRequested;
     private long totalLoanApproved;
     private long totalLoanRejected;
-    private long totalAmountLoanApproved;
+    private double totalAmountLoanApproved;
     private long totalAmountLoanRejected;
 }

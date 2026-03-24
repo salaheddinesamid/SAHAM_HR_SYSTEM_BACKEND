@@ -95,7 +95,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/auth/re-activate-account").hasAuthority("ADMIN")
                         // File Download Controller endpoints authorization configuration
                         // Analytics Controller endpoints authorization configuration
-                        .requestMatchers("/api/v1/analytics/**").hasAuthority("HR")
+                        .requestMatchers("/api/v1/analytics/**").permitAll()
 
                         //Configuration of Documents Upload/Download endpoints authorization
                         .requestMatchers("/api/v1/files/download").permitAll()

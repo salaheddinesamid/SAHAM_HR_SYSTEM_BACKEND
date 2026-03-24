@@ -3,8 +3,8 @@ package com.saham.hr_system.modules.analytics.service.implementation;
 import com.saham.hr_system.modules.analytics.dto.LoanAnalyticsDto;
 import com.saham.hr_system.modules.analytics.service.LoanAnalyticsService;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
-import com.saham.hr_system.modules.loan.model.Loan;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
+import com.saham.hr_system.modules.loan.model.LoanRequestStatus;
 import com.saham.hr_system.modules.loan.repository.LoanRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,15 +28,37 @@ public class LoanAnalyticsServiceImpl implements LoanAnalyticsService {
         List<LoanRequest> loanRequests = loanRequestRepository.findAll();
         List<LoanRequest> filteredLoanRequests = new ArrayList<>();
 
+        if(type.equals("ALL")){
+            filteredLoanRequests = loanRequests;
+        }
 
-        long totalLoanRequests = 0;
-        long totalApprovedLoanRequests = 0;
-        long totalRejectedLoanRequests = 0;
-        long totalAmountApproved = 0;
+        if(!type.equals("ALL")){
+            filteredLoanRequests = filterLoanRequestByType(loanRequests, type);
+        }
+        if(from != null && to != null){
+            filteredLoanRequests = filterLoanRequestsByDateRange(filteredLoanRequests, from, to);
+        }
+        if(!department.equals("ALL")){
+            filteredLoanRequests = filterLeaveRequestsByDepartment(filteredLoanRequests, department);
+        }
+        long totalLoanRequests = filteredLoanRequests.size();
+        double totalAmountRequested = filteredLoanRequests.stream()
+                .map(LoanRequest::getAmount)
+                .reduce(0.0, Double::sum);
+        long totalApprovedLoanRequests = filteredLoanRequests.stream()
+                .filter(loanRequest -> loanRequest.getStatus().equals(LoanRequestStatus.APPROVED))
+                .count();
+        long totalRejectedLoanRequests = filteredLoanRequests.stream()
+                .filter(loanRequest -> loanRequest.getStatus().equals(LoanRequestStatus.REJECTED    ))
+                .count();
+        double totalAmountApproved = filteredLoanRequests.stream()
+                .map(LoanRequest::getAmount)
+                .reduce(0.0, Double::sum);
         long totalAmountRejected = 0;
 
         return new LoanAnalyticsDto(
                 totalLoanRequests,
+                totalAmountRequested,
                 totalApprovedLoanRequests,
                 totalRejectedLoanRequests,
                 totalAmountApproved,
@@ -56,7 +78,7 @@ public class LoanAnalyticsServiceImpl implements LoanAnalyticsService {
                 .toList();
     }
 
-    private List<LeaveRequest> filterLeaveRequestsByDepartment(List<LeaveRequest> requests, String department) {
+    private List<LoanRequest> filterLeaveRequestsByDepartment(List<LoanRequest> requests, String department) {
         return requests.stream()
                 .filter(request -> request.getEmployee().getEmployeeProfessionalDetails().getDepartment().toString().equals(department))
                 .toList();
