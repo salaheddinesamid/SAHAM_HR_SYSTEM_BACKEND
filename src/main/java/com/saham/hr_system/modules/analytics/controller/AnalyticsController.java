@@ -61,13 +61,10 @@ public class AnalyticsController {
             @RequestParam(defaultValue = "ALL") String type,
             @RequestParam(defaultValue = "ALL") String department,
             @RequestParam(defaultValue = "ALL") String entity,
-            @RequestParam(required = false) LocalDate from,
-            @RequestParam(required = false) LocalDate to
+            @RequestParam int year
     ){
 
-        Object response = loanAnalyticsService.getLoanAnalyticsOverview(
-                type, from, to, department, entity
-        );
+        Object response = null;
         return ResponseEntity
                 .status(200)
                 .body(response);

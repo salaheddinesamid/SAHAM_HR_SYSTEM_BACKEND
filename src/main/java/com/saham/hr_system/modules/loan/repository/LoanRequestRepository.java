@@ -26,12 +26,7 @@ public interface LoanRequestRepository extends JpaRepository<LoanRequest,Long> {
      */
     Page<LoanRequest> findAllByEmployee(Employee employee, Pageable pageable);
 
-    /**
-     * 
-     * @param status
-     * @return
-     */
-    List<LoanRequest> findAllByStatus(LoanRequestStatus status);
+    List<LoanRequest> findAllByIssueDate_Year(int issueDateYear);
 
     Optional<LoanRequest> findByStatus(LoanRequestStatus status);
 

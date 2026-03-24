@@ -6,5 +6,5 @@ import java.time.LocalDate;
 
 public interface LoanAnalyticsService {
 
-    LoanAnalyticsDto getLoanAnalyticsOverview(String type, LocalDate from, LocalDate to, String department, String entity);
+    LoanAnalyticsDto getLoanAnalyticsOverview(String type, int year, String department, String entity);
 }
