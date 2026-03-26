@@ -8,6 +8,8 @@ import com.saham.hr_system.modules.payroll.service.PayrollProcessor;
 import com.saham.hr_system.modules.payroll.utils.PayrollPdfFileNameGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,18 +21,17 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-@Slf4j
 @Service
 public class PayrollProcessorImpl implements PayrollProcessor {
     private final PayrollFileServiceImpl payrollFileService;
-    private final EmployeeRepository employeeRepository;
     private final PayrollHistoryRepository payrollHistoryRepository;
     private final PayrollPdfFileNameGenerator payrollPdfFileNameGenerator;
 
+    private final static Logger log = LoggerFactory.getLogger(PayrollProcessorImpl.class);
+
     @Autowired
-    public PayrollProcessorImpl(PayrollFileServiceImpl payrollFileService, EmployeeRepository employeeRepository, PayrollHistoryRepository payrollHistoryRepository, PayrollPdfFileNameGenerator payrollPdfFileNameGenerator) {
+    public PayrollProcessorImpl(PayrollFileServiceImpl payrollFileService, PayrollHistoryRepository payrollHistoryRepository, PayrollPdfFileNameGenerator payrollPdfFileNameGenerator) {
         this.payrollFileService = payrollFileService;
-        this.employeeRepository = employeeRepository;
         this.payrollHistoryRepository = payrollHistoryRepository;
         this.payrollPdfFileNameGenerator = payrollPdfFileNameGenerator;
     }

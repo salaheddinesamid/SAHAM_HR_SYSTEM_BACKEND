@@ -12,6 +12,8 @@ import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveCanceller;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-@Slf4j
 public class AnnualLeaveCanceller implements LeaveCanceller {
     private final LeaveRepository leaveRepository;
     private final LeaveRequestRepository leaveRequestRepository;
     private final EmployeeBalanceRepository employeeBalanceRepository;
     private final LeaveCancellerEmailSenderImpl leaveCancellerEmailSender;
+
+    private final static Logger log = LoggerFactory.getLogger(AnnualLeaveCanceller.class);
 
     @Autowired
     public AnnualLeaveCanceller(LeaveRepository leaveRepository, LeaveRequestRepository leaveRequestRepository, EmployeeBalanceRepository employeeBalanceRepository, LeaveCancellerEmailSenderImpl leaveCancellerEmailSender) {
@@ -42,47 +45,52 @@ public class AnnualLeaveCanceller implements LeaveCanceller {
     @Override
     @Transactional
     public void cancel(String refNumber) {
-        // fetch the leave from db:
-        Leave leave = leaveRepository.findByReferenceNumber(refNumber).orElseThrow();
+        try{
+            // fetch the leave from db:
+            Leave leave = leaveRepository.findByReferenceNumber(refNumber).orElseThrow();
 
-        // fetch the request:
-        LeaveRequest leaveRequest = leaveRequestRepository.findByReferenceNumber(refNumber)
-                .orElseThrow();
+            // fetch the request:
+            LeaveRequest leaveRequest = leaveRequestRepository.findByReferenceNumber(refNumber)
+                    .orElseThrow();
 
-        // fetch the employee balance and update it
-        Employee employee = leave.getEmployee();
-        EmployeeBalance employeeBalance = employeeBalanceRepository.findByEmployee(employee).orElseThrow();
+            // fetch the employee balance and update it
+            Employee employee = leave.getEmployee();
+            EmployeeBalance employeeBalance = employeeBalanceRepository.findByEmployee(employee).orElseThrow();
 
-        log.info("Employee total balance before cancellation is: {}", employeeBalance.getRemainderBalance());
-        // get the total days of the leave:
-        double totalDays = leave.getTotalDays();
-        log.info("Leave cancelled by " + employee.getFullName());
+            log.info("Employee total balance before cancellation is: {}", employeeBalance.getRemainderBalance());
+            // get the total days of the leave:
+            double totalDays = leave.getTotalDays();
+            log.info("Leave cancelled by " + employee.getFullName());
 
-        // remove the leave from employee leaves:
-        employee.getLeaves().remove(leave);
+            // remove the leave from employee leaves:
+            employee.getLeaves().remove(leave);
 
-        // update the leave request:
-        leaveRequest.setStatus(LeaveRequestStatus.CANCELED);
+            // update the leave request:
+            leaveRequest.setStatus(LeaveRequestStatus.CANCELED);
 
-        // update the balance:
-        employeeBalance.setUsedBalance(employeeBalance.getUsedBalance() - totalDays);
+            // update the balance:
+            employeeBalance.setUsedBalance(employeeBalance.getUsedBalance() - totalDays);
 
-        log.info("Employee total balance after cancellation is: {}", employeeBalance.getRemainderBalance());
+            log.info("Employee total balance after cancellation is: {}", employeeBalance.getRemainderBalance());
 
-        // delete the leave:
-        leaveRepository.delete(leave);
-        // save the balance:
-        employeeBalanceRepository.save(employeeBalance);
-        // notify the employee and manager:
-        CompletableFuture.runAsync(() ->
-                {
-                    try {
-                        leaveCancellerEmailSender.notifyEmployee(leave);
-                        leaveCancellerEmailSender.notifyManager(leave);
-                    } catch (MessagingException e) {
-                        throw new RuntimeException(e);
+            // delete the leave:
+            leaveRepository.delete(leave);
+            // save the balance:
+            employeeBalanceRepository.save(employeeBalance);
+            // notify the employee and manager:
+            CompletableFuture.runAsync(() ->
+                    {
+                        try {
+                            leaveCancellerEmailSender.notifyEmployee(leave);
+                            leaveCancellerEmailSender.notifyManager(leave);
+                        } catch (MessagingException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }
-        );
+            );
+        }catch (RuntimeException exception){
+            log.error("Error occurred while cancelling the leave with reference number: {}, error message: {}", refNumber, exception.getMessage());
+            throw exception;
+        }
     }
 }

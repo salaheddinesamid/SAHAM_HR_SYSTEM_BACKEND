@@ -9,6 +9,8 @@ import com.saham.hr_system.modules.leave.model.LeaveType;
 import com.saham.hr_system.modules.leave.repository.LeaveRepository;
 import com.saham.hr_system.modules.leave.repository.LeaveRequestRepository;
 import com.saham.hr_system.modules.leave.service.LeaveApproval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +23,16 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
     private final LeaveRepository leaveRepository;
     private final LeaveApprovalEmailSenderImpl leaveApprovalEmailSender;
     private final LeaveRequestApprovalEmailSenderImpl leaveRequestApprovalEmailSender;
-    private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final LeaveRequestRejectionEmailSenderImpl leaveRequestRejectionEmailSender;
     private final LeaveRejectionEmailSenderImpl leaveRejectionEmailSender;
+    private final static Logger log = LoggerFactory.getLogger(ExceptionalLeaveApproval.class);
 
     @Autowired
-    public ExceptionalLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, LeaveApprovalEmailSenderImpl leaveApprovalEmailSender, LeaveRequestApprovalEmailSenderImpl leaveRequestApprovalEmailSender, LeaveRequestEmailSenderImpl leaveRequestEmailSender, LeaveRequestRejectionEmailSenderImpl leaveRequestRejectionEmailSender, LeaveRejectionEmailSenderImpl leaveRejectionEmailSender) {
+    public ExceptionalLeaveApproval(LeaveRequestRepository leaveRequestRepository, LeaveRepository leaveRepository, LeaveApprovalEmailSenderImpl leaveApprovalEmailSender, LeaveRequestApprovalEmailSenderImpl leaveRequestApprovalEmailSender, LeaveRequestRejectionEmailSenderImpl leaveRequestRejectionEmailSender, LeaveRejectionEmailSenderImpl leaveRejectionEmailSender) {
         this.leaveRequestRepository = leaveRequestRepository;
         this.leaveRepository = leaveRepository;
         this.leaveApprovalEmailSender = leaveApprovalEmailSender;
         this.leaveRequestApprovalEmailSender = leaveRequestApprovalEmailSender;
-        this.leaveRequestEmailSender = leaveRequestEmailSender;
         this.leaveRequestRejectionEmailSender = leaveRequestRejectionEmailSender;
         this.leaveRejectionEmailSender = leaveRejectionEmailSender;
     }
@@ -48,67 +49,77 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
      */
     @Override
     public Leave approve(Long requestId) {
-        // Fetch the request:
-        LeaveRequest leaveRequest =
-                leaveRequestRepository.findById(requestId).orElseThrow();
+        try{
+            // Fetch the request:
+            LeaveRequest leaveRequest =
+                    leaveRequestRepository.findById(requestId).orElseThrow();
 
-        // Get the employee:
-        Employee employee  = leaveRequest.getEmployee();
-        double totalDays =
-                leaveRequest.getTotalDays();
+            // Get the employee:
+            Employee employee  = leaveRequest.getEmployee();
+            double totalDays =
+                    leaveRequest.getTotalDays();
 
-        // check if the request is already approved:
-        if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){
-            throw new IllegalStateException("Leave request is already approved.");
-        }
-
-        // check if the request is approved by the manager:
-        if(!leaveRequest.isApprovedByManager()){
-            throw new IllegalStateException("Leave request is not approved by the manager yet.");
-        }
-
-        // otherwise:
-        leaveRequest.setApprovedByHr(true);
-        leaveRequest.setStatus(LeaveRequestStatus.APPROVED);
-
-        // create new leave:
-        Leave leave = new Leave();
-        leave.setEmployee(employee);
-        leave.setLeaveType(LeaveType.EXCEPTIONAL); // the type must be set to EXCEPTIONAL
-        leave.setFromDate(leaveRequest.getStartDate());
-        leave.setToDate(leaveRequest.getEndDate());
-        leave.setTotalDays(totalDays);
-        leave.setReferenceNumber(leaveRequest.getReferenceNumber());
-
-        // notify the employee and manager:
-        CompletableFuture.runAsync(()->{
-            try {
-                leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
-                leaveApprovalEmailSender.sendHRApprovalEmailToManager(leaveRequest);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            // check if the request is already approved:
+            if(leaveRequest.getStatus().equals(LeaveRequestStatus.APPROVED)){
+                log.warn("Leave request with id: {} is already approved.", requestId);
+                throw new IllegalStateException("Leave request is already approved.");
             }
-        });
-        return leaveRepository.save(leave);
+
+            // check if the request is approved by the manager:
+            if(!leaveRequest.isApprovedByManager()){
+                log.warn("Leave request with id: {} is not approved by the manager yet.", requestId);
+                throw new IllegalStateException("Leave request is not approved by the manager yet.");
+            }
+            // otherwise:
+            leaveRequest.setApprovedByHr(true);
+            leaveRequest.setStatus(LeaveRequestStatus.APPROVED);
+
+            // create new leave:
+            Leave leave = new Leave();
+            leave.setEmployee(employee);
+            leave.setLeaveType(LeaveType.EXCEPTIONAL); // the type must be set to EXCEPTIONAL
+            leave.setFromDate(leaveRequest.getStartDate());
+            leave.setToDate(leaveRequest.getEndDate());
+            leave.setTotalDays(totalDays);
+            leave.setReferenceNumber(leaveRequest.getReferenceNumber());
+
+            // notify the employee and manager:
+            CompletableFuture.runAsync(()->{
+                try {
+                    leaveApprovalEmailSender.sendHRApprovalEmailToEmployee(leaveRequest);
+                    leaveApprovalEmailSender.sendHRApprovalEmailToManager(leaveRequest);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            return leaveRepository.save(leave);
+        }catch (RuntimeException exception){
+            log.error("Error approving exceptional leave request: {}", exception.getMessage());
+            throw exception;
+        }
     }
 
     @Override
     public void approveSubordinate(String approvedBy,LeaveRequest leaveRequest) {
-        // set the request:
-        leaveRequest.setApprovedByManager(true);
+        try{
+            // set the request:
+            leaveRequest.setApprovedByManager(true);
+            // save the request:
+            leaveRequestRepository.save(leaveRequest);
 
-        // save the request:
-        leaveRequestRepository.save(leaveRequest);
-
-        // notify the employee and HR:
-        CompletableFuture.runAsync(()->{
-            try {
-                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest);
-                leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+            // notify the employee and HR:
+            CompletableFuture.runAsync(()->{
+                try {
+                    leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToEmployee(leaveRequest);
+                    leaveRequestApprovalEmailSender.sendSubordinateApprovalEmailToHR(leaveRequest);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }catch (RuntimeException exception){
+            log.error("Error approving exceptional leave request by manager: {}", exception.getMessage());
+            throw exception;
+        }
     }
 
     @Override
@@ -132,22 +143,27 @@ public class ExceptionalLeaveApproval implements LeaveApproval {
 
     @Override
     public void rejectLeave(LeaveRequest leaveRequest) {
-        // set the leave request:
-        leaveRequest.setApprovedByManager(false);
-        leaveRequest.setApprovedByManager(false);
-        leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
+        try{
+            // set the leave request:
+            leaveRequest.setApprovedByManager(false);
+            leaveRequest.setApprovedByManager(false);
+            leaveRequest.setStatus(LeaveRequestStatus.REJECTED);
 
-        // save the leave request:
-        leaveRequestRepository.save(leaveRequest);
+            // save the leave request:
+            leaveRequestRepository.save(leaveRequest);
 
-        // notify the employee and manager:
-        CompletableFuture.runAsync(()->{
-            try {
-                leaveRejectionEmailSender.notifyEmployee(leaveRequest);
-                leaveRejectionEmailSender.notifyManager(leaveRequest);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+            // notify the employee and manager:
+            CompletableFuture.runAsync(()->{
+                try {
+                    leaveRejectionEmailSender.notifyEmployee(leaveRequest);
+                    leaveRejectionEmailSender.notifyManager(leaveRequest);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }catch (RuntimeException exception){
+            log.error("Error rejecting exceptional leave request: {}", exception.getMessage());
+            throw exception;
+        }
     }
 }

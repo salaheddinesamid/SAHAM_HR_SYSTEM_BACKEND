@@ -14,6 +14,8 @@ import com.saham.hr_system.modules.leave.service.LeaveProcessor;
 import com.saham.hr_system.modules.leave.utils.LeaveRequestRefNumberGenerator;
 import com.saham.hr_system.utils.TotalDaysCalculator;
 import jakarta.mail.MessagingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +32,7 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
     private final LeaveRequestEmailSenderImpl leaveRequestEmailSender;
     private final TotalDaysCalculator leaveDaysCalculator;
     private final LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator;
+    private final static Logger log = LoggerFactory.getLogger(ExceptionalLeaveRequestProcessor.class);
 
     @Autowired
     public ExceptionalLeaveRequestProcessor(EmployeeRepository employeeRepository, LeaveRequestRepository leaveRequestRepository, LeaveRequestEmailSenderImpl leaveRequestEmailSender, TotalDaysCalculator leaveDaysCalculator, LeaveRequestRefNumberGenerator leaveRequestRefNumberGenerator) {
@@ -47,45 +50,53 @@ public class ExceptionalLeaveRequestProcessor implements LeaveProcessor {
 
     @Override
     public LeaveRequest process(String email, LeaveRequestDto requestDto) throws IOException, MessagingException {
-        // fetch the employee from db:
-        Employee employee =
-                employeeRepository.findByEmail(email).orElseThrow();
+        try{
+            // fetch the employee from db:
+            Employee employee =
+                    employeeRepository.findByEmail(email).orElseThrow(()-> {
+                        log.warn("Employee with email: {} not found while processing exceptional leave request", email);
+                        return new RuntimeException("Employee not found");
+                    });
 
-        // calculate the total leave days excluding the weekends and holidays
-        double totalDays =
-                leaveDaysCalculator.calculateTotalDays(requestDto.getStartDate(), requestDto.getEndDate());
+            // calculate the total leave days excluding the weekends and holidays
+            double totalDays =
+                    leaveDaysCalculator.calculateTotalDays(requestDto.getStartDate(), requestDto.getEndDate());
 
-        // Otherwise:
-        LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setStartDate(requestDto.getStartDate());
-        leaveRequest.setEndDate(requestDto.getEndDate());
-        leaveRequest.setEmployee(employee);
-        leaveRequest.setTotalDays(totalDays);
-        leaveRequest.setTypeOfLeave(LeaveType.valueOf(requestDto.getType()));
-        leaveRequest.setTypeDetails(requestDto.getTypeDetails());
-        leaveRequest.setRequestDate(LocalDateTime.now());
-        leaveRequest.setComment(requestDto.getComment());
-        leaveRequest.setApprovedByManager(false);
-        leaveRequest.setApprovedByHr(false);
-        leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
+            // Otherwise:
+            LeaveRequest leaveRequest = new LeaveRequest();
+            leaveRequest.setStartDate(requestDto.getStartDate());
+            leaveRequest.setEndDate(requestDto.getEndDate());
+            leaveRequest.setEmployee(employee);
+            leaveRequest.setTotalDays(totalDays);
+            leaveRequest.setTypeOfLeave(LeaveType.valueOf(requestDto.getType()));
+            leaveRequest.setTypeDetails(requestDto.getTypeDetails());
+            leaveRequest.setRequestDate(LocalDateTime.now());
+            leaveRequest.setComment(requestDto.getComment());
+            leaveRequest.setApprovedByManager(false);
+            leaveRequest.setApprovedByHr(false);
+            leaveRequest.setStatus(LeaveRequestStatus.IN_PROCESS);
 
-        String refNumber = leaveRequestRefNumberGenerator.generate(leaveRequest);
-        leaveRequest.setReferenceNumber(refNumber); // set the reference number
+            String refNumber = leaveRequestRefNumberGenerator.generate(leaveRequest);
+            leaveRequest.setReferenceNumber(refNumber); // set the reference number
 
-        // notify the employee:
-        CompletableFuture.runAsync(()->{
-                    try {
-                        leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
-                        leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest);
+            // notify the employee:
+            CompletableFuture.runAsync(()->{
+                        try {
+                            leaveRequestEmailSender.sendEmployeeNotificationEmail(leaveRequest);
+                            leaveRequestEmailSender.sendManagerNotificationEmail(leaveRequest);
 
-                    } catch (MessagingException e) {
-                        throw new RuntimeException(e);
+                        } catch (MessagingException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }
-        );
+            );
 
-        // save the request:
-        return leaveRequestRepository.save(leaveRequest);
+            // save the request:
+            return leaveRequestRepository.save(leaveRequest);
+        }catch (RuntimeException exception){
+            log.error("Error processing exceptional leave request for employee: {}, error: {}", email, exception.getMessage());
+            throw exception;
+        }
     }
 
 }
