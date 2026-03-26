@@ -10,6 +10,8 @@ import com.saham.hr_system.modules.absence.utils.AbsenceReferenceNumberGenerator
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.utils.TotalDaysCalculator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,8 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
     private final TotalDaysCalculator absenceTotalDaysCalculator;
     private final AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;
     private final AbsenceRequestEmailSenderImpl absenceRequestEmailSender;
+
+    private final static Logger log = LoggerFactory.getLogger(RemoteWorkAbsenceRequestProcessor.class);
 
     /**
      * Constructs a new RemoteWorkAbsenceRequestProcessor with required dependencies.
@@ -93,43 +97,51 @@ public class RemoteWorkAbsenceRequestProcessor implements AbsenceRequestProcesso
      */
     @Override
     public AbsenceRequest processAbsenceRequest(String email, AbsenceRequestDto requestDto) throws Exception {
-        // validate the request:
-        absenceRequestValidator.validate(requestDto);
+        try{
+            // validate the request:
+            absenceRequestValidator.validate(requestDto);
 
-        // fetch employee from db:
-        Employee employee = employeeRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(email));
+            // fetch employee from db:
+            Employee employee = employeeRepository
+                    .findByEmail(email)
+                    .orElseThrow(() -> {
+                        log.warn("Employee found: {}", email);
+                        return new UserNotFoundException(email);
+                    });
 
-        // create new absence:
-        AbsenceRequest absenceRequest = absenceMapper.mapToEntity(requestDto);
+            // create new absence:
+            AbsenceRequest absenceRequest = absenceMapper.mapToEntity(requestDto);
 
-        // calculate the total days:
-        long totalDays = absenceTotalDaysCalculator.calculateTotalDays(
-                requestDto.getStartDate(), requestDto.getEndDate()
-        );
+            // calculate the total days:
+            long totalDays = absenceTotalDaysCalculator.calculateTotalDays(
+                    requestDto.getStartDate(), requestDto.getEndDate()
+            );
 
-        assert absenceRequest != null;
-        absenceRequest.setTotalDays(totalDays);
-        absenceRequest.setEmployee(employee);
+            assert absenceRequest != null;
+            absenceRequest.setTotalDays(totalDays);
+            absenceRequest.setEmployee(employee);
 
-        // generate and assign reference number:
-        String refNumber = absenceReferenceNumberGenerator.generate(absenceRequest);
-        absenceRequest.setReferenceNumber(refNumber);
+            // generate and assign reference number:
+            String refNumber = absenceReferenceNumberGenerator.generate(absenceRequest);
+            absenceRequest.setReferenceNumber(refNumber);
 
-        // save the absence request:
-        AbsenceRequest savedAbsenceRequest = absenceRequestRepository.save(absenceRequest);
-        // asynchronous email notifications:
-        CompletableFuture.runAsync(() -> {
-            try {
-                absenceRequestEmailSender.notifyEmployee(savedAbsenceRequest);
-                absenceRequestEmailSender.notifyManager(savedAbsenceRequest);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+            // save the absence request:
+            AbsenceRequest savedAbsenceRequest = absenceRequestRepository.save(absenceRequest);
+            // asynchronous email notifications:
+            CompletableFuture.runAsync(() -> {
+                try {
+                    absenceRequestEmailSender.notifyEmployee(savedAbsenceRequest);
+                    absenceRequestEmailSender.notifyManager(savedAbsenceRequest);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
-        // save to database:
-        return savedAbsenceRequest;
+            // save to database:
+            return savedAbsenceRequest;
+        }catch (RuntimeException exception){
+            log.error("Error processing remote work absence request for email: {}", email, exception);
+            throw exception;
+        }
     }
 }

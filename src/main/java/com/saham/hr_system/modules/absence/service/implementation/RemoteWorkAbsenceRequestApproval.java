@@ -11,6 +11,8 @@ import com.saham.hr_system.modules.absence.service.AbsenceApproval;
 import com.saham.hr_system.modules.absence.service.AbsenceApprovalEmailSender;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -30,6 +32,8 @@ public class RemoteWorkAbsenceRequestApproval implements AbsenceApproval {
     private final AbsenceRepository absenceRepository;
     private final AbsenceApprovalEmailSender absenceApprovalEmailSender;
     private final AbsenceRequestApprovalEmailSenderImpl absenceRequestApprovalEmailSender;
+
+    private final static Logger log = LoggerFactory.getLogger(RemoteWorkAbsenceRequestApproval.class);
 
     /**
      * Constructs a new RemoteWorkAbsenceRequestApproval instance.
@@ -82,6 +86,7 @@ public class RemoteWorkAbsenceRequestApproval implements AbsenceApproval {
         Employee manager = employeeRepository.findByEmail(approvedBy).orElseThrow();
 
         if (!absenceRequest.getEmployee().getManager().equals(manager)) {
+            log.warn("Unauthorized approval attempt by {} for absence request {}", approvedBy, absenceRequest.getReferenceNumber());
             throw new UnauthorizedAccessException("You are not authorized to approve this absence request.");
         }
 
@@ -114,38 +119,43 @@ public class RemoteWorkAbsenceRequestApproval implements AbsenceApproval {
      */
     @Override
     public void approve(AbsenceRequest request) {
-        if (request.getStatus().equals(AbsenceRequestStatus.APPROVED)) {
-            throw new IllegalStateException("Absence request is already approved.");
-        }
-
-        if (!request.isApprovedByManager()) {
-            throw new IllegalStateException("Absence request is not yet approved by the manager.");
-        }
-
-        request.setApprovedByHr(true);
-        request.setStatus(AbsenceRequestStatus.APPROVED);
-
-        Absence absence = new Absence();
-        absence.setReferenceNumber(request.getReferenceNumber());
-        absence.setType(request.getType()); // set type to REMOTE_WORK
-        absence.setApprovedAt(LocalDateTime.now());
-        absence.setStartDate(request.getStartDate());
-        absence.setEndDate(request.getEndDate());
-        absence.setTotalDays(request.getTotalDays());
-        absence.setEmployee(request.getEmployee());
-
-        absenceRequestRepo.save(request);
-        absenceRepository.save(absence);
-        /*
-        CompletableFuture.runAsync(() -> {
-            try {
-                absenceApprovalEmailSender.notifyEmployee(absence);
-                absenceApprovalEmailSender.notifyManager(absence);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        try{
+            if (request.getStatus().equals(AbsenceRequestStatus.APPROVED)) {
+                log.warn("Attempted to approve an already approved absence request: {}", request.getReferenceNumber());
+                throw new IllegalStateException("Absence request is already approved.");
             }
-        });
 
-         */
+            if (!request.isApprovedByManager()) {
+                log.warn("Attempted to approve an absence request that has not been approved by the manager: {}", request.getReferenceNumber());
+                throw new IllegalStateException("Absence request is not yet approved by the manager.");
+            }
+
+            request.setApprovedByHr(true);
+            request.setStatus(AbsenceRequestStatus.APPROVED);
+
+            Absence absence = new Absence();
+            absence.setReferenceNumber(request.getReferenceNumber());
+            absence.setType(request.getType()); // set type to REMOTE_WORK
+            absence.setApprovedAt(LocalDateTime.now());
+            absence.setStartDate(request.getStartDate());
+            absence.setEndDate(request.getEndDate());
+            absence.setTotalDays(request.getTotalDays());
+            absence.setEmployee(request.getEmployee());
+
+            absenceRequestRepo.save(request);
+            absenceRepository.save(absence);
+
+            CompletableFuture.runAsync(() -> {
+                try {
+                    absenceApprovalEmailSender.notifyEmployee(absence);
+                    absenceApprovalEmailSender.notifyManager(absence);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }catch (RuntimeException exception){
+            log.error("Error approving Remote Work absence request: {}", exception.getMessage());
+            throw exception;
+        }
     }
 }

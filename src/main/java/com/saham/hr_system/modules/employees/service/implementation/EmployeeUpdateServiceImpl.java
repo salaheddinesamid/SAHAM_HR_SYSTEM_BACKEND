@@ -8,6 +8,8 @@ import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.repository.RoleRepository;
 import com.saham.hr_system.modules.employees.service.EmployeeUpdateService;
 import com.saham.hr_system.modules.employees.utils.EmployeeProfilePictureUploader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,7 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
     private final EmployeeQueryServiceImpl employeeQueryService;
     private final RoleRepository roleRepository;
     private final EmployeeProfilePictureUploader employeeProfilePictureUploader;
+    private final static Logger log = LoggerFactory.getLogger(EmployeeUpdateServiceImpl.class);
 
     public EmployeeUpdateServiceImpl(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, EmployeeQueryServiceImpl employeeQueryService, RoleRepository roleRepository, EmployeeProfilePictureUploader employeeProfilePictureUploader) {
         this.employeeRepository = employeeRepository;
@@ -34,85 +37,94 @@ public class EmployeeUpdateServiceImpl implements EmployeeUpdateService {
     @Override
     @Transactional
     public EmployeeDetailsDto updateEmployee(Long employeeId, UpdateEmployeeDto updateEmployeeDto) {
+        try{
+            // fetch the employee from db:
+            Employee employee = employeeRepository
+                    .findById(employeeId).orElseThrow();
+            if(updateEmployeeDto.getFirstName() != null){
+                employee.setFirstName(updateEmployeeDto.getFirstName());
+            }
+            if(updateEmployeeDto.getLastName() != null){
+                employee.setLastName(updateEmployeeDto.getLastName());
+            }
+            // update the new email:
+            if(updateEmployeeDto.getEmail() != null){
+                employee.setEmail(updateEmployeeDto.getEmail());
+            }
+            // Update the CIN
+            if(updateEmployeeDto.getCin() != null){
+                employee.setCIN(updateEmployeeDto.getCin());
+            }
+            // Update the address
+            if(updateEmployeeDto.getAddress() != null){
+                employee.setAddress(updateEmployeeDto.getAddress());
+            }
 
-        // fetch the employee from db:
-        Employee employee = employeeRepository
-                .findById(employeeId).orElseThrow();
-        if(updateEmployeeDto.getFirstName() != null){
-            employee.setFirstName(updateEmployeeDto.getFirstName());
-        }
-        if(updateEmployeeDto.getLastName() != null){
-            employee.setLastName(updateEmployeeDto.getLastName());
-        }
-        // update the new email:
-        if(updateEmployeeDto.getEmail() != null){
-            employee.setEmail(updateEmployeeDto.getEmail());
-        }
-        // Update the CIN
-        if(updateEmployeeDto.getCin() != null){
-            employee.setCIN(updateEmployeeDto.getCin());
-        }
-        // Update the address
-        if(updateEmployeeDto.getAddress() != null){
-            employee.setAddress(updateEmployeeDto.getAddress());
-        }
+            // Update family status:
+            if(updateEmployeeDto.getFamilyStatus() != null){
+                employee.setFamilyStatus(EmployeeFamilyStatus.valueOf(updateEmployeeDto.getFamilyStatus()));
+            }
+            // Update nationality:
+            if(updateEmployeeDto.getNationality() != null){
+                employee.setNationality(updateEmployeeDto.getNationality());
+            }
+            // update the birthdate:
+            if(updateEmployeeDto.getBirthDate() != null){
+                employee.setBirthDate(updateEmployeeDto.getBirthDate());
+            }
+            // update the new roles:
+            if(updateEmployeeDto.getRoles() != null && !updateEmployeeDto.getRoles().isEmpty()){
+                List<Role> roles =
+                        updateEmployeeDto.getRoles().stream().map(roleName-> roleRepository.findByRoleName(roleName).orElseThrow()).toList();
+                employee.setRoles(roles);
+            }
+            // update employee balance if provided:
+            if (updateEmployeeDto.getEmployeeBalance() != null){
+                EmployeeBalance balance = employee.getEmployeeBalance() != null ? employee.getEmployeeBalance() : employeeBalanceRepository.findByEmployee(employee).orElseThrow();
+                EmployeeBalance updatedBalance = updateBalance(balance, updateEmployeeDto.getEmployeeBalance());
+                employee.setEmployeeBalance(updatedBalance);
+            }
+            // update employee professional details if provided:
+            if (updateEmployeeDto.getProfessionalDetailsDto() != null){
+                EmployeeProfessionalDetails updatedProfessionalDetails = updateProfessionalDetails(employee, updateEmployeeDto.getProfessionalDetailsDto());
+                employee.setEmployeeProfessionalDetails(updatedProfessionalDetails);
+            }
+            // update employee social details if provided:
+            if(updateEmployeeDto.getSocialDetailsDto() != null){
+                EmployeeSocialDetails updatedSocialDetails = updateSocialDetails(employee, updateEmployeeDto.getSocialDetailsDto());
+                employee.setEmployeeSocialDetails(updatedSocialDetails);
+            }
+            // update employee contact details if provided:
+            if(updateEmployeeDto.getContactDetailsDto() != null){
+                EmployeeContactDetails updatedContactDetails = updateContactDetails(employee, updateEmployeeDto.getContactDetailsDto());
+                employee.setEmployeeContactDetails(updatedContactDetails);
+            }
+            // finally, save the employee:
+            Employee savedEmployee = employeeRepository.save(employee);
 
-        // Update family status:
-        if(updateEmployeeDto.getFamilyStatus() != null){
-            employee.setFamilyStatus(EmployeeFamilyStatus.valueOf(updateEmployeeDto.getFamilyStatus()));
+            return new EmployeeDetailsDto(savedEmployee);
+        }catch (RuntimeException exception){
+            log.error("Error updating employee with ID {}: {}", employeeId, exception.getMessage());
+            throw exception;
         }
-        // Update nationality:
-        if(updateEmployeeDto.getNationality() != null){
-            employee.setNationality(updateEmployeeDto.getNationality());
-        }
-        // update the birthdate:
-        if(updateEmployeeDto.getBirthDate() != null){
-            employee.setBirthDate(updateEmployeeDto.getBirthDate());
-        }
-        // update the new roles:
-        if(updateEmployeeDto.getRoles() != null && !updateEmployeeDto.getRoles().isEmpty()){
-            List<Role> roles =
-                    updateEmployeeDto.getRoles().stream().map(roleName-> roleRepository.findByRoleName(roleName).orElseThrow()).toList();
-            employee.setRoles(roles);
-        }
-        // update employee balance if provided:
-        if (updateEmployeeDto.getEmployeeBalance() != null){
-            EmployeeBalance balance = employee.getEmployeeBalance() != null ? employee.getEmployeeBalance() : employeeBalanceRepository.findByEmployee(employee).orElseThrow();
-            EmployeeBalance updatedBalance = updateBalance(balance, updateEmployeeDto.getEmployeeBalance());
-            employee.setEmployeeBalance(updatedBalance);
-        }
-        // update employee professional details if provided:
-        if (updateEmployeeDto.getProfessionalDetailsDto() != null){
-            EmployeeProfessionalDetails updatedProfessionalDetails = updateProfessionalDetails(employee, updateEmployeeDto.getProfessionalDetailsDto());
-            employee.setEmployeeProfessionalDetails(updatedProfessionalDetails);
-        }
-        // update employee social details if provided:
-        if(updateEmployeeDto.getSocialDetailsDto() != null){
-            EmployeeSocialDetails updatedSocialDetails = updateSocialDetails(employee, updateEmployeeDto.getSocialDetailsDto());
-            employee.setEmployeeSocialDetails(updatedSocialDetails);
-        }
-        // update employee contact details if provided:
-        if(updateEmployeeDto.getContactDetailsDto() != null){
-             EmployeeContactDetails updatedContactDetails = updateContactDetails(employee, updateEmployeeDto.getContactDetailsDto());
-             employee.setEmployeeContactDetails(updatedContactDetails);
-        }
-        // finally, save the employee:
-        Employee savedEmployee = employeeRepository.save(employee);
-
-        return new EmployeeDetailsDto(savedEmployee);
     }
 
     @Override
     public void updateEmployeeProfilePicture(String email, MultipartFile picture) {
-        // Check if the employee exists:
-        Employee employee = employeeRepository
-                .findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
+        try{
+            // Check if the employee exists:
+            Employee employee = employeeRepository
+                    .findByEmail(email).orElseThrow(()-> new UserNotFoundException(email));
 
-        // Upload the profile picture and get the URL:
-        String url = employeeProfilePictureUploader.uploadProfilePicture(picture, employee.getEmployeeProfessionalDetails().getMatriculation());
-        // Set the URL in employee entity and save:
-        employee.setProfilePictureUrl(url);
-        employeeRepository.save(employee);
+            // Upload the profile picture and get the URL:
+            String url = employeeProfilePictureUploader.uploadProfilePicture(picture, employee.getEmployeeProfessionalDetails().getMatriculation());
+            // Set the URL in employee entity and save:
+            employee.setProfilePictureUrl(url);
+            employeeRepository.save(employee);
+        } catch (RuntimeException e) {
+            log.error("");
+            throw new RuntimeException(e);
+        }
     }
 
     private EmployeeBalance updateBalance(EmployeeBalance employeeBalance, EmployeeBalanceDto employeeBalanceDto) {

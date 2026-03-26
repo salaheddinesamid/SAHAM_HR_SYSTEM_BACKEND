@@ -11,6 +11,8 @@ import com.saham.hr_system.modules.absence.utils.AbsenceReferenceNumberGenerator
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.utils.TotalDaysCalculator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +42,8 @@ public class SicknessAbsenceRequestProcessor implements AbsenceRequestProcessor 
     private final TotalDaysCalculator totalDaysCalculator;
     private final AbsenceReferenceNumberGenerator absenceReferenceNumberGenerator;
     private final AbsenceRequestEmailSenderImpl absenceRequestEmailSender;
+
+    private final static Logger log = LoggerFactory.getLogger(SicknessAbsenceRequestProcessor.class);
 
     /**
      * Constructs the processor with all required service dependencies.
@@ -83,54 +87,60 @@ public class SicknessAbsenceRequestProcessor implements AbsenceRequestProcessor 
     @Override
     public AbsenceRequest processAbsenceRequest(String email, AbsenceRequestDto requestDto) throws Exception {
 
-        // Validate request fields (date ranges, required attachments, etc.)
-        absenceRequestValidator.validate(requestDto);
+        try{
+            // Validate request fields (date ranges, required attachments, etc.)
+            absenceRequestValidator.validate(requestDto);
 
-        // Fetch the employee making the request
-        Employee employee = employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(email));
+            // Fetch the employee making the request
+            Employee employee = employeeRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserNotFoundException(email));
 
-        // Compute total absence duration
-        double totalDays = totalDaysCalculator.calculateTotalDays(
-                requestDto.getStartDate(),
-                requestDto.getEndDate()
-        );
+            // Compute total absence duration
+            double totalDays = totalDaysCalculator.calculateTotalDays(
+                    requestDto.getStartDate(),
+                    requestDto.getEndDate()
+            );
 
-        // Build the new absence request entity
-        AbsenceRequest absenceRequest = new AbsenceRequest();
-        absenceRequest.setIssueDate(LocalDateTime.now());
-        absenceRequest.setEmployee(employee);
-        absenceRequest.setType(AbsenceType.SICKNESS);
-        absenceRequest.setStartDate(requestDto.getStartDate());
-        absenceRequest.setEndDate(requestDto.getEndDate());
-        absenceRequest.setStatus(AbsenceRequestStatus.IN_PROCESS);
-        absenceRequest.setApprovedByManager(false);
-        absenceRequest.setApprovedByHr(false);
-        absenceRequest.setTotalDays(totalDays);
+            // Build the new absence request entity
+            AbsenceRequest absenceRequest = new AbsenceRequest();
+            absenceRequest.setIssueDate(LocalDateTime.now());
+            absenceRequest.setEmployee(employee);
+            absenceRequest.setType(AbsenceType.SICKNESS);
+            absenceRequest.setStartDate(requestDto.getStartDate());
+            absenceRequest.setEndDate(requestDto.getEndDate());
+            absenceRequest.setStatus(AbsenceRequestStatus.IN_PROCESS);
+            absenceRequest.setApprovedByManager(false);
+            absenceRequest.setApprovedByHr(false);
+            absenceRequest.setTotalDays(totalDays);
 
-        // Generate and assign a unique reference number
-        String referenceNumber = absenceReferenceNumberGenerator.generate(absenceRequest);
-        absenceRequest.setReferenceNumber(referenceNumber);
+            // Generate and assign a unique reference number
+            String referenceNumber = absenceReferenceNumberGenerator.generate(absenceRequest);
+            absenceRequest.setReferenceNumber(referenceNumber);
 
-        // Upload the medical certificate and store its path
-        String medicalCertificatePath =
-                sicknessAbsenceDocumentStorageService.upload(
-                        employee.getFullName(),
-                        requestDto.getMedicalCertificate()
-                );
-        absenceRequest.setMedicalCertificatePath(medicalCertificatePath);
+            // Upload the medical certificate and store its path
+            String medicalCertificatePath =
+                    sicknessAbsenceDocumentStorageService.upload(
+                            employee.getFullName(),
+                            requestDto.getMedicalCertificate()
+                    );
+            absenceRequest.setMedicalCertificatePath(medicalCertificatePath);
 
-        // Send notifications asynchronously
-        CompletableFuture.runAsync(() -> {
-            try {
-                absenceRequestEmailSender.notifyEmployee(absenceRequest);
-                absenceRequestEmailSender.notifyManager(absenceRequest);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+            // Send notifications asynchronously
+            CompletableFuture.runAsync(() -> {
+                try {
+                    absenceRequestEmailSender.notifyEmployee(absenceRequest);
+                    absenceRequestEmailSender.notifyManager(absenceRequest);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
-        // Save and return the newly created absence request
-        return absenceRequestRepo.save(absenceRequest);
+            // Save and return the newly created absence request
+            return absenceRequestRepo.save(absenceRequest);
+        }catch (Exception e){
+            log.error("Error processing sickness absence request for employee {}: {}", email, e.getMessage());
+            throw e;
+        }
+
     }
 }

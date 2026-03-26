@@ -3,6 +3,8 @@ package com.saham.hr_system.modules.absence.service.implementation;
 import com.saham.hr_system.modules.absence.exception.MedicalCerificateNotFoundException;
 import com.saham.hr_system.modules.absence.service.DocumentStorageService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,11 +24,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-@Slf4j
+
 public class SicknessAbsenceDocumentStorageService implements DocumentStorageService {
     private final Path uploadPath;
     private static List<String> allowedExtensions = List.of(".pdf", ".jpg", ".jpeg", ".png");
 
+    private final static Logger log = LoggerFactory.getLogger(SicknessAbsenceDocumentStorageService.class);
     public SicknessAbsenceDocumentStorageService(@Value("${file.upload.medical-certificates}") String path) {
         this.uploadPath = Paths.get(path).toAbsolutePath().normalize();
     }
@@ -37,56 +40,63 @@ public class SicknessAbsenceDocumentStorageService implements DocumentStorageSer
      */
     @Override
     public String upload(String fullName, MultipartFile file) throws IOException {
-        // Validate if the file is empty:
-        if(file.isEmpty()) {
-            throw new IOException("File is empty");
+        try{
+            // Validate if the file is empty:
+            if(file.isEmpty()) {
+                log.warn("Attempted to upload an empty file for medical certificate: {}", fullName);
+                throw new IOException("File is empty");
+            }
+            // Validate the type of the file:
+            String originalFilename = file.getOriginalFilename();
+            String extension =
+                    Optional.ofNullable(
+                                    originalFilename
+                            ).filter(f-> f.contains("."))
+                            .map(f-> f.substring(originalFilename.lastIndexOf(".")))
+                            .orElse("")
+                            .toLowerCase();
+
+            if(!allowedExtensions.contains(extension)) {
+                throw new IOException("Invalid file type. Allowed types are: " + String.join(", ", allowedExtensions));
+            }
+
+            // clean the original filename:
+            assert originalFilename != null;
+            String cleanFileName = StringUtils.cleanPath(originalFilename);
+            if(cleanFileName.contains("..")) {
+                log.warn("Attempted to upload a file with invalid path sequence: {}", cleanFileName);
+                throw new IOException("File contains invalid path sequence: " + cleanFileName);
+            }
+
+            // Create the upload folder if it does not exist:
+            LocalDate date = LocalDate.now();
+            String year = String.valueOf(date.getYear());
+            String month = String.valueOf(date.getMonthValue());
+
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + cleanFileName;
+            // Target the path:
+            Path targetPath =
+                    uploadPath.resolve(fullName)
+                            .resolve(year)
+                            .resolve(month);
+
+            // create all directories if not exists:
+            if(!Files.exists(targetPath)) {
+                Files.createDirectories(targetPath);
+            }
+
+            // generate the full path for the file copy:
+            Path copyPath = targetPath.resolve(uniqueFileName);
+
+            // save copy of the file:
+            Files.copy(file.getInputStream(), copyPath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Return the final relative path to save in the db:
+            return fullName + "/" + uniqueFileName;
+        }catch (RuntimeException exception){
+            log.error("Error occurred while uploading medical certificate for {}: {}", fullName, exception.getMessage());
+            throw new IOException("Failed to upload file: " + exception.getMessage());
         }
-        // Validate the type of the file:
-        String originalFilename = file.getOriginalFilename();
-        String extension =
-                Optional.ofNullable(
-                        originalFilename
-                ).filter(f-> f.contains("."))
-                        .map(f-> f.substring(originalFilename.lastIndexOf(".")))
-                        .orElse("")
-                        .toLowerCase();
-
-        if(!allowedExtensions.contains(extension)) {
-            throw new IOException("Invalid file type. Allowed types are: " + String.join(", ", allowedExtensions));
-        }
-
-        // clean the original filename:
-        assert originalFilename != null;
-        String cleanFileName = StringUtils.cleanPath(originalFilename);
-        if(cleanFileName.contains("..")) {
-            throw new IOException("File contains invalid path sequence: " + cleanFileName);
-        }
-
-        // Create the upload folder if it does not exist:
-        LocalDate date = LocalDate.now();
-        String year = String.valueOf(date.getYear());
-        String month = String.valueOf(date.getMonthValue());
-
-        String uniqueFileName = UUID.randomUUID().toString() + "_" + cleanFileName;
-        // Target the path:
-        Path targetPath =
-                uploadPath.resolve(fullName)
-                .resolve(year)
-                        .resolve(month);
-
-        // create all directories if not exists:
-        if(!Files.exists(targetPath)) {
-            Files.createDirectories(targetPath);
-        }
-
-        // generate the full path for the file copy:
-        Path copyPath = targetPath.resolve(uniqueFileName);
-
-        // save copy of the file:
-        Files.copy(file.getInputStream(), copyPath, StandardCopyOption.REPLACE_EXISTING);
-
-        // Return the final relative path to save in the db:
-        return fullName + "/" + uniqueFileName;
 
     }
 

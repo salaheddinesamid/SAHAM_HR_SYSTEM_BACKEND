@@ -10,7 +10,8 @@ import com.saham.hr_system.modules.employees.mapper.EmployeeSocialDetailMapper;
 import com.saham.hr_system.modules.employees.model.*;
 import com.saham.hr_system.modules.employees.repository.*;
 import com.saham.hr_system.modules.employees.service.EmployeeAdderService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 
 
 @Service
-@Slf4j
 public class EmployeeAdderServiceImpl implements EmployeeAdderService {
 
     private final EmployeeRepository employeeRepository;
@@ -35,6 +35,8 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
     private final EmployeeQueryServiceImpl employeeQueryService;
     private final EmployeePasswordSetupService employeePasswordSetupService;
     private final NewEmployeeEmailSenderImpl newEmployeeEmailSender;
+
+    private final static Logger log = LoggerFactory.getLogger(EmployeeAdderServiceImpl.class);
 
     @Autowired
     public EmployeeAdderServiceImpl(EmployeeRepository employeeRepository, EmployeeBalanceRepository employeeBalanceRepository, EmployeeProfessionalDetailsRepository employeeProfessionalDetailsRepository, EmployeeSocialDetailsRepository employeeSocialDetailsRepository, EmployeeContactDetailsRepository employeeContactDetailsRepository, RoleRepository roleRepository, EmployeeMapper employeeMapper, EmployeeProfessionalDetailsMapper employeeProfessionalDetailsMapper, EmployeeSocialDetailMapper employeeSocialDetailMapper, EmployeeContactDetailsMapper employeeContactDetailsMapper, EmployeeQueryServiceImpl employeeQueryService, EmployeePasswordSetupService employeePasswordSetupService, NewEmployeeEmailSenderImpl newEmployeeEmailSender) {
@@ -74,64 +76,73 @@ public class EmployeeAdderServiceImpl implements EmployeeAdderService {
     @Override
     @Transactional
     public EmployeeDetailsDto add(NewEmployeeDto newEmployeeRequestDto) {
-        // Check if the employee already exists by matriculation
-        if(employeeRepository.existsByEmployeeProfessionalDetails_Matriculation(newEmployeeRequestDto.getProfessionalDetailsDto().getMatriculation())
-                || employeeRepository.existsByEmail(newEmployeeRequestDto.getProfessionalDetailsDto().getProfessionalEmail())
-        ) {
-            throw new EmployeeAlreadyExistsException(
-                    "La création de l'employé a échoué : une valeur unique (email, matricule ou CIN) est déjà utilisée."
+        try{
+            // Check if the employee already exists by matriculation
+            if(employeeRepository.existsByEmployeeProfessionalDetails_Matriculation(newEmployeeRequestDto.getProfessionalDetailsDto().getMatriculation())
+                    || employeeRepository.existsByEmail(newEmployeeRequestDto.getProfessionalDetailsDto().getProfessionalEmail())
+            ) {
+                log.warn("Attempted to create an employee with existing unique identifiers: email {}, matriculation {}, or CIN {}",
+                        newEmployeeRequestDto.getProfessionalDetailsDto().getProfessionalEmail(),
+                        newEmployeeRequestDto.getProfessionalDetailsDto().getMatriculation(),
+                        newEmployeeRequestDto.getCin());
+                throw new EmployeeAlreadyExistsException(
+                        "La création de l'employé a échoué : une valeur unique (email, matricule ou CIN) est déjà utilisée."
+                );
+            }
+            // Create new employee
+            Map<String, Object> mappedEmployee = employeeMapper.mapToEmployee(newEmployeeRequestDto);
+            Employee employee = mappedEmployee.get("mappedEmployee") != null ? (Employee) mappedEmployee.get("mappedEmployee") : null;
+            log.info("Mapped employee: {}with raw password: {}", employee, mappedEmployee.get("rawPassword"));
+
+            assert employee != null;
+            // Create and save employee professional details
+            EmployeeProfessionalDetails employeeProfessionalDetails =
+                    employeeProfessionalDetailsMapper.mapToEmployeeProfessionalDetails(newEmployeeRequestDto.getProfessionalDetailsDto(), false);
+            employee.setEmail(employeeProfessionalDetails.getProfessionalEmail());
+            EmployeeProfessionalDetails savedProfessionalDetails = employeeProfessionalDetailsRepository.save(employeeProfessionalDetails);
+            // Create and save employee social details
+            EmployeeSocialDetails employeeSocialDetails = employeeSocialDetailMapper.mapToEmployeeSocialDetails(
+                    newEmployeeRequestDto.getEmployeeSocialDetailsDto()
             );
-        }
-        // Create new employee
-        Map<String, Object> mappedEmployee = employeeMapper.mapToEmployee(newEmployeeRequestDto);
-        Employee employee = mappedEmployee.get("mappedEmployee") != null ? (Employee) mappedEmployee.get("mappedEmployee") : null;
-        log.info("Mapped employee: " + employee + "with raw password: " + mappedEmployee.get("rawPassword"));
+            EmployeeSocialDetails savedSocialDetails = employeeSocialDetailsRepository.save(employeeSocialDetails);
 
-        assert employee != null;
-        // Create and save employee professional details
-        EmployeeProfessionalDetails employeeProfessionalDetails =
-                employeeProfessionalDetailsMapper.mapToEmployeeProfessionalDetails(newEmployeeRequestDto.getProfessionalDetailsDto(), false);
-        employee.setEmail(employeeProfessionalDetails.getProfessionalEmail());
-        EmployeeProfessionalDetails savedProfessionalDetails = employeeProfessionalDetailsRepository.save(employeeProfessionalDetails);
-        // Create and save employee social details
-        EmployeeSocialDetails employeeSocialDetails = employeeSocialDetailMapper.mapToEmployeeSocialDetails(
-                newEmployeeRequestDto.getEmployeeSocialDetailsDto()
-        );
-        EmployeeSocialDetails savedSocialDetails = employeeSocialDetailsRepository.save(employeeSocialDetails);
+            // Create and save employee contact details:
+            EmployeeContactDetails employeeContactDetails = employeeContactDetailsMapper.mapToEmployeeContactDetails(
+                    newEmployeeRequestDto.getEmployeeContactDetailsDto()
+            );
+            EmployeeContactDetails savedContactDetails = employeeContactDetailsRepository.save(employeeContactDetails);
+            // create  and save new balance:
+            EmployeeBalance employeeBalance =
+                    employeeMapper.mapToEmployeeBalanceDto(newEmployeeRequestDto.getEmployeeBalance());
+            EmployeeBalance savedBalance =
+                    employeeBalanceRepository.save(employeeBalance);
 
-        // Create and save employee contact details:
-        EmployeeContactDetails employeeContactDetails = employeeContactDetailsMapper.mapToEmployeeContactDetails(
-                newEmployeeRequestDto.getEmployeeContactDetailsDto()
-        );
-        EmployeeContactDetails savedContactDetails = employeeContactDetailsRepository.save(employeeContactDetails);
-        // create  and save new balance:
-        EmployeeBalance employeeBalance =
-                employeeMapper.mapToEmployeeBalanceDto(newEmployeeRequestDto.getEmployeeBalance());
-        EmployeeBalance savedBalance =
-                employeeBalanceRepository.save(employeeBalance);
+            // attach the balance to the employee:
+            employee.setEmployeeBalance(savedBalance);
+            // attach the professional details to the employee:
+            employee.setEmployeeProfessionalDetails(savedProfessionalDetails);
+            // attach the social details to the employee:
+            employee.setEmployeeSocialDetails(savedSocialDetails);
+            // attach the contact details to the employee:
+            employee.setEmployeeContactDetails(savedContactDetails);
 
-        // attach the balance to the employee:
-        employee.setEmployeeBalance(savedBalance);
-        // attach the professional details to the employee:
-        employee.setEmployeeProfessionalDetails(savedProfessionalDetails);
-        // attach the social details to the employee:
-        employee.setEmployeeSocialDetails(savedSocialDetails);
-        // attach the contact details to the employee:
-        employee.setEmployeeContactDetails(savedContactDetails);
+            Employee savedEmployee = employeeRepository.save(employee);
 
-        Employee savedEmployee = employeeRepository.save(employee);
-
-        // initiate setup of the employee password:
-        String link = employeePasswordSetupService.initiatePasswordSetup(savedEmployee.getEmail());
-        // notify the employee:
-        CompletableFuture.runAsync(()->{
+            // initiate setup of the employee password:
+            String link = employeePasswordSetupService.initiatePasswordSetup(savedEmployee.getEmail());
+            // notify the employee:
+            CompletableFuture.runAsync(()->{
                 try{
                     newEmployeeEmailSender.sendWelcomeEmail(employee.getEmail(), employee, link);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-        });
-        // notify the employee and Manager:
-        return new EmployeeDetailsDto(savedEmployee);
+            });
+            // notify the employee and Manager:
+            return new EmployeeDetailsDto(savedEmployee);
+        }catch (RuntimeException exception){
+            log.error("Error adding new employee: " + exception.getMessage());
+            throw exception;
+        }
     }
 }

@@ -8,6 +8,8 @@ import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
 import com.saham.hr_system.modules.absence.service.AbsenceApproval;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestProcessor;
 import com.saham.hr_system.modules.absence.service.AbsenceRequestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ public class AbsenceRequestServiceImpl implements AbsenceRequestService {
     private final List<AbsenceRequestProcessor> processors;
     private final List<AbsenceApproval> approvals;
     private final AbsenceRequestRepo absenceRequestRepo;
+    private final static Logger log = LoggerFactory.getLogger(AbsenceRequestServiceImpl.class);
 
     @Autowired
     public AbsenceRequestServiceImpl(List<AbsenceRequestProcessor> processors, List<AbsenceApproval> approvals, AbsenceRequestRepo absenceRequestRepo) {
@@ -52,7 +55,7 @@ public class AbsenceRequestServiceImpl implements AbsenceRequestService {
         try {
             AbsenceRequest absenceRequest = absenceRequestRepo.findByReferenceNumber(refNumber)
                     .orElseThrow(() -> new AbsenceRequestNotFoundException("Absence request with reference number " + refNumber + " not found."));
-
+            log.warn("Attempting to approve absence request with reference number {} by {}", refNumber, approvedBy);
             AbsenceApproval approval =
                     approvals.stream().filter(a -> a.supports(absenceRequest.getType().toString()))
                             .findFirst().orElse(null);
@@ -77,7 +80,12 @@ public class AbsenceRequestServiceImpl implements AbsenceRequestService {
             assert approval != null;
             approval.approve(absenceRequest);
         } catch (AbsenceRequestNotFoundException e) {
+            log.warn("Attempted to approve non-existent absence request with reference number {}", refNumber);
             throw new AbsenceRequestNotFoundException("Absence request with reference number " + refNumber + " not found.");
+        }
+        catch (RuntimeException exception){
+            log.error("Error during approval of absence request with reference number {}: {}", refNumber, exception.getMessage());
+            throw exception;
         }
     }
 }
