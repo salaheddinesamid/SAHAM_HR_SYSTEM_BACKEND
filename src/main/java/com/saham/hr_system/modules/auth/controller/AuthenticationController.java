@@ -2,6 +2,7 @@ package com.saham.hr_system.modules.auth.controller;
 
 import com.saham.hr_system.modules.auth.dto.LoginRequestDto;
 import com.saham.hr_system.modules.auth.service.implementation.AuthenticationServiceImpl;
+import com.saham.hr_system.modules.auth.service.implementation.EmployeeAccountReactivationImpl;
 import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordReinitialization;
 import com.saham.hr_system.modules.auth.service.implementation.EmployeePasswordSetupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,13 @@ public class AuthenticationController {
     private final AuthenticationServiceImpl authenticationServiceImpl;
     private final EmployeePasswordReinitialization employeePasswordReinitialization;
     private final EmployeePasswordSetupService employeePasswordSetupService;
-
+    private final EmployeeAccountReactivationImpl employeeAccountReactivation;
     @Autowired
-    public AuthenticationController(AuthenticationServiceImpl authenticationServiceImpl, EmployeePasswordReinitialization employeePasswordReinitialization, EmployeePasswordSetupService employeePasswordSetupService) {
+    public AuthenticationController(AuthenticationServiceImpl authenticationServiceImpl, EmployeePasswordReinitialization employeePasswordReinitialization, EmployeePasswordSetupService employeePasswordSetupService, EmployeeAccountReactivationImpl employeeAccountReactivation) {
         this.authenticationServiceImpl = authenticationServiceImpl;
         this.employeePasswordReinitialization = employeePasswordReinitialization;
         this.employeePasswordSetupService = employeePasswordSetupService;
+        this.employeeAccountReactivation = employeeAccountReactivation;
     }
 
     @PostMapping("")
@@ -50,7 +52,7 @@ public class AuthenticationController {
 
     @PostMapping("re-activate-account")
     public ResponseEntity<Object> reActivateAccount(@RequestParam String email){
-        employeePasswordSetupService.initiatePasswordSetup(email);
+        employeeAccountReactivation.reactivateEmployeeAccount(email);
         return ResponseEntity.ok().build();
     }
 }
