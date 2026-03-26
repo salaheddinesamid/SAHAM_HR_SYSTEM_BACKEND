@@ -1,12 +1,16 @@
 package com.saham.hr_system.modules.auth.service.implementation;
 
+import com.saham.hr_system.modules.auth.model.PasswordSetupToken;
 import com.saham.hr_system.modules.auth.repository.PasswordSetupTokenRepository;
 import com.saham.hr_system.modules.auth.service.EmployeeAccountReactivation;
 import com.saham.hr_system.modules.employees.model.Employee;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import com.saham.hr_system.modules.employees.service.implementation.EmployeeAccountReactivationEmailSenderImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -26,13 +30,22 @@ public class EmployeeAccountReactivationImpl implements EmployeeAccountReactivat
     }
 
     @Override
+    @Transactional
     public void reactivateEmployeeAccount(String email) {
         // Fetch the employee from DB
         Employee employee = employeeRepository
                 .findByEmail(email).orElseThrow();
         // Remove the previous activation token
-        passwordSetupTokenRepository.deleteByEmployee(employee);
-        // Generate the token and link
+
+        // Remplace the old token if exists, to avoid multiple tokens for the same employee
+        PasswordSetupToken employeeToken =
+                passwordSetupTokenRepository.findByEmployee(employee).orElse(null);
+        String newToken = UUID.randomUUID().toString();
+        if(employeeToken != null){
+            employeeToken.setToken(newToken);
+            employeeToken.setUsed(false);
+            employeeToken.setExpiryDate(LocalDateTime.now().plusMinutes(60L * 24 * 7));
+        }
         String link = employeePasswordSetupService.initiatePasswordSetup(email);
 
         CompletableFuture.runAsync(()->{

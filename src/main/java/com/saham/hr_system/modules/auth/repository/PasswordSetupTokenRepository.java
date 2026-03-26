@@ -10,5 +10,5 @@ public interface PasswordSetupTokenRepository extends JpaRepository<PasswordSetu
 
     Optional<PasswordSetupToken> findByToken(String token);
 
-    void deleteByEmployee(Employee employee);
+    Optional<PasswordSetupToken> findByEmployee(Employee employee);
 }
