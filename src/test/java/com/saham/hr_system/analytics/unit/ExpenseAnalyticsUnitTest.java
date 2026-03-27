@@ -1,6 +1,5 @@
 package com.saham.hr_system.analytics.unit;
 
-import com.saham.hr_system.modules.analytics.dto.ExpenseAnalyticsDto;
 import com.saham.hr_system.modules.analytics.service.implementation.ExpenseAnalyticsServiceImpl;
 import com.saham.hr_system.modules.expenses.model.Expense;
 import com.saham.hr_system.modules.expenses.repository.ExpenseRepository;
@@ -13,6 +12,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+
 import static org.mockito.Mockito.when;
 
 public class ExpenseAnalyticsUnitTest {
@@ -53,9 +54,9 @@ public class ExpenseAnalyticsUnitTest {
         when(expenseRepository.findAllByIssueDateBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 2, 1)))
                 .thenReturn(List.of(ex1, ex2, ex3));
         // Act and verify
-        double result1 = expenseAnalyticsService.fetchMonthlyData
+        Map<String, Double> result1 = expenseAnalyticsService.fetchMonthlyData
                 ("","", 2026, 1);
-        double result2 = expenseAnalyticsService.fetchMonthlyData("","", 2026, 2);
+        Map<String, Double> result2 = expenseAnalyticsService.fetchMonthlyData("","", 2026, 2);
 
         Assertions.assertEquals(6000, result1);
         Assertions.assertEquals(0, result2);
