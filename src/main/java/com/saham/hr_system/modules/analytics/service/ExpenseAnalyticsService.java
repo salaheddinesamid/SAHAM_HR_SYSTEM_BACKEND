@@ -6,5 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface ExpenseAnalyticsService {
-    List<Map<String, Double>> getYearlyOverview(String department, String entity, int year);
+    /**
+     * Get a monthly overview of expenses for a given department and entity.
+     * @param department
+     * @param entity
+     * @return A map where the key is the month (e.g., "January") and the value is the total expenses for that month.
+     */
+    List<ExpenseAnalyticsDto> getYearlyOverview(String department, String entity, int year);
 }

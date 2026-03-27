@@ -53,7 +53,8 @@ public class ExpenseAnalyticsUnitTest {
         when(expenseRepository.findAllByIssueDateBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 2, 1)))
                 .thenReturn(List.of(ex1, ex2, ex3));
         // Act and verify
-        double result1 = expenseAnalyticsService.fetchMonthlyData("","", 2026, 1);
+        double result1 = expenseAnalyticsService.fetchMonthlyData
+                ("","", 2026, 1);
         double result2 = expenseAnalyticsService.fetchMonthlyData("","", 2026, 2);
 
         Assertions.assertEquals(6000, result1);

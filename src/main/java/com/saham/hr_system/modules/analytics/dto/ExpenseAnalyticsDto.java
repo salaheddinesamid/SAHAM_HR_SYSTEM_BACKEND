@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpenseAnalyticsDto {
-    private double totalExpenses;
+    private long totalNumberOfExpenses;
+    private double totalAmount;
+    private String month;
 }
