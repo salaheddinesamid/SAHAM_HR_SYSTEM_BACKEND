@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.analytics.service.implementation;
 
 import com.saham.hr_system.modules.analytics.dto.LoanAnalyticsDto;
+import com.saham.hr_system.modules.analytics.dto.LoanMonthlyAnalyticsDto;
 import com.saham.hr_system.modules.analytics.service.LoanAnalyticsService;
 import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import com.saham.hr_system.modules.loan.model.LoanRequest;
@@ -60,7 +61,8 @@ public class LoanAnalyticsServiceImpl implements LoanAnalyticsService {
                 totalApprovedLoanRequests,
                 totalRejectedLoanRequests,
                 totalAmountApproved,
-                totalAmountRejected
+                totalAmountRejected,
+                null
         );
     }
 
@@ -85,5 +87,9 @@ public class LoanAnalyticsServiceImpl implements LoanAnalyticsService {
         return requests.stream()
                 .filter(request -> request.getEmployee().getEmployeeProfessionalDetails().getEntity().toString().equals(entity))
                 .toList();
+    }
+
+    private List<LoanMonthlyAnalyticsDto> getLoanMonthlyAnalytics(int year){
+        return null;
     }
 }

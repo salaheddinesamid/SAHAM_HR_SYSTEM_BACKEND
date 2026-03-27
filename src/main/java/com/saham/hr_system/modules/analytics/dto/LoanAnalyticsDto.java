@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,4 +17,6 @@ public class LoanAnalyticsDto {
     private long totalLoanRejected;
     private double totalAmountLoanApproved;
     private long totalAmountLoanRejected;
+
+    private List<LoanMonthlyAnalyticsDto> monthlyAnalytics;
 }
