@@ -31,4 +31,15 @@ public class ExpenseItem {
 
     @Column(name = "invoiced", nullable = false)
     private boolean invoiced;
+    /**
+     * The designation of the expense item, which can be one of the following:
+     * - TRAVEL: for travel expenses
+     * - MEAL: for meal expenses
+     * - ACCOMMODATION: for accommodation expenses
+     * - OTHER: for other types of expenses
+     */
+
+    //@Column(name = "designation")
+    //@Enumerated(EnumType.STRING)
+    //private ExpenseDesignation designation;
 }
