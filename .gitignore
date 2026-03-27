@@ -6,6 +6,8 @@ target/
 
 .mvn/wrapper/maven-wrapper.jar
 
+logs
+
 
 ############################################
 # Spring Boot – Ignore sensitive config files

@@ -1,6 +1,7 @@
 package com.saham.hr_system.modules.analytics.controller;
 
 import com.saham.hr_system.modules.analytics.service.implementation.AbsenceAnalyticsServiceImpl;
+import com.saham.hr_system.modules.analytics.service.implementation.ExpenseAnalyticsServiceImpl;
 import com.saham.hr_system.modules.analytics.service.implementation.LeaveAnalyticsServiceImpl;
 import com.saham.hr_system.modules.analytics.service.implementation.LoanAnalyticsServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,13 @@ public class AnalyticsController {
     private final AbsenceAnalyticsServiceImpl absenceAnalyticsService;
     private final LeaveAnalyticsServiceImpl leaveAnalyticsService;
     private final LoanAnalyticsServiceImpl loanAnalyticsService;
+    private final ExpenseAnalyticsServiceImpl expenseAnalyticsService;
 
-    public AnalyticsController(AbsenceAnalyticsServiceImpl absenceAnalyticsService, LeaveAnalyticsServiceImpl leaveAnalyticsService, LoanAnalyticsServiceImpl loanAnalyticsService) {
+    public AnalyticsController(AbsenceAnalyticsServiceImpl absenceAnalyticsService, LeaveAnalyticsServiceImpl leaveAnalyticsService, LoanAnalyticsServiceImpl loanAnalyticsService, ExpenseAnalyticsServiceImpl expenseAnalyticsService) {
         this.absenceAnalyticsService = absenceAnalyticsService;
         this.leaveAnalyticsService = leaveAnalyticsService;
         this.loanAnalyticsService = loanAnalyticsService;
+        this.expenseAnalyticsService = expenseAnalyticsService;
     }
 
     @GetMapping("/leaves/overview")
@@ -65,6 +68,21 @@ public class AnalyticsController {
     ){
 
         Object response = null;
+        return ResponseEntity
+                .status(200)
+                .body(response);
+    }
+
+
+    @GetMapping("/expenses/overview")
+    public ResponseEntity<Object> getExpenseOverview(
+            @RequestParam(defaultValue = "ALL") String type,
+            @RequestParam(defaultValue = "ALL") String department,
+            @RequestParam(defaultValue = "ALL") String entity,
+            @RequestParam int year
+    ){
+
+        Object response = expenseAnalyticsService.getYearlyOverview(department, entity, year);
         return ResponseEntity
                 .status(200)
                 .body(response);

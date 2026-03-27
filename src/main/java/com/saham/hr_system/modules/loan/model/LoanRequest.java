@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "loan_requests", indexes = {
         @Index(name = "idx_reference_number", columnList = "reference_number"),
         @Index(name = "idx_employee_id", columnList = "employee_id"), @Index(name = "idx_status", columnList = "status"),
+        @Index(name = "idx_issue_date", columnList = "issue_date")
 
 })
 public class LoanRequest {
