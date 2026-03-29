@@ -1,6 +1,7 @@
 package com.saham.hr_system.employee.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.employees.dto.*;
 import com.saham.hr_system.modules.employees.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +37,15 @@ public class EmployeeAdderIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    void testAddNewEmployee() throws Exception {
+    @Autowired
+    private JwtUtilities jwtUtilities;
 
+    // Generate an access token to access resources
+    private String ACCESS_TOKEN = jwtUtilities.generateToken("admin.hr@saham.com", List.of("ADMIN"));
+
+    @Test
+    //@WithMockUser(username = "admin.hr@saham.com", roles = {"ADMIN"})
+    void testAddNewEmployee() throws Exception {
         NewEmployeeProfessionalDetailsDto professionalDetailsDto = new NewEmployeeProfessionalDetailsDto(
                 "SDT123456D",
                 "Software Engineer",
@@ -91,6 +99,7 @@ public class EmployeeAdderIntegrationTest {
                 newEmployeeDto.getProfessionalDetailsDto().getMatriculation()
         )){
             mockMvc.perform(post("/api/v1/employees/new")
+                            .header("Authorization", "Bearer " + ACCESS_TOKEN   )
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(newEmployeeDto)))
                     .andDo(print())

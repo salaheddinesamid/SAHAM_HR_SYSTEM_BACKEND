@@ -2,6 +2,7 @@ package com.saham.hr_system.absence.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.saham.hr_system.jwt.JwtUtilities;
 import com.saham.hr_system.modules.absence.dto.AbsenceRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,17 +32,22 @@ public class AbsenceRequestIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private JwtUtilities jwtUtilities;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Test
     void testCreateRemoteWorkAbsenceRequest() throws Exception {
-
+        // Generate JWT token
+        String token = jwtUtilities.generateToken("admin.hr@saham.com", List.of("EMPLOYEE", "ADMIN"));
         mockMvc.perform(
                         multipart("/api/v1/absences/new")
-                                .param("email", "salaheddine.samid@saham.com")
+                                .param("email", "admin.hr@saham.com")
                                 .param("type", "REMOTE_WORK")
                                 .param("startDate", "2026-01-01")
                                 .param("endDate", "2026-01-05")
+                                .header("Authorization", String.format("Bearer %s", token))
                                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 )
                 .andDo(print())
