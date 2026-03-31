@@ -41,7 +41,7 @@ public class EmployeeUpdateIntegrationTest {
 
     @Test
     void testUpdateEmployeeDetails() throws Exception {
-        String token  = jwtUtilities.generateToken("salaheddine.samid@saham.com", List.of("ADMIN"));
+        String token  = jwtUtilities.generateToken("admin.hr@saham.com", List.of("ADMIN", "EMPLOYEE"));
         // Given: An existing employee in the database
         Long employeeId = 5L; // Assuming an employee with ID 1 exists
 

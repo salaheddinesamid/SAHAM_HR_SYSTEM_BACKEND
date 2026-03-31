@@ -31,6 +31,9 @@ public class       EmployeeBalanceAccrualServiceIntegrationTest {
         // Act and verify
         employeeBalanceAccrualService.processMonthlyAccruals();
         double newAccumulatedBalance = employeeBalance.getAccumulatedBalance();
+
+        // Reload from the database
+        employeeBalance = employeeBalanceRepository.findById(employeeBalance.getBalanceId()).orElseThrow();
         log.info("Initial accumulated balance: {}, Monthly balance: {}, New accumulated balance: {}",
                 initialAccumulatedBalance, employeeBalance.getMonthlyBalance(), newAccumulatedBalance);
 

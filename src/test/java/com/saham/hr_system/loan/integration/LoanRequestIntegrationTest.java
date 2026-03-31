@@ -36,7 +36,7 @@ public class LoanRequestIntegrationTest {
     @Test
     void testCreateNormalLoanRequest() throws Exception {
 
-        String token = jwtUtilities.generateToken("salaheddine.samid@saham.com", List.of("EMPLOYEE"));
+        String token = jwtUtilities.generateToken("admin.hr@saham.com", List.of("EMPLOYEE"));
         // Mock DTO
         LoanRequestDto loanRequestDto = new LoanRequestDto(
                 "NORMAL",

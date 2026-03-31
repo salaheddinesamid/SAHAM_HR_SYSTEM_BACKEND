@@ -72,7 +72,6 @@ public class DefaultLeaveRequestProcessor implements LeaveProcessor {
             leaveRequest.setTotalDays(totalDays);
             leaveRequest.setTypeOfLeave(LeaveType.valueOf(requestDto.getType()));
             leaveRequest.setTypeDetails(requestDto.getTypeDetails());
-            leaveRequest.setRequestDate(LocalDateTime.now());
             leaveRequest.setComment(requestDto.getComment());
             leaveRequest.setApprovedByManager(false);
             leaveRequest.setApprovedByHr(false);

@@ -68,6 +68,7 @@ public class LeaveRequest {
 
     @PrePersist
     public void prePersist(){
+        this.requestDate = LocalDateTime.now();
         if(this.approvedByManager && this.approvedByHr){
             this.status = LeaveRequestStatus.APPROVED;
         }

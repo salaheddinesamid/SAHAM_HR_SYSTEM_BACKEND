@@ -40,12 +40,13 @@ public class EmployeeAdderIntegrationTest {
     @Autowired
     private JwtUtilities jwtUtilities;
 
-    // Generate an access token to access resources
-    private String ACCESS_TOKEN = jwtUtilities.generateToken("admin.hr@saham.com", List.of("ADMIN"));
+
 
     @Test
     //@WithMockUser(username = "admin.hr@saham.com", roles = {"ADMIN"})
     void testAddNewEmployee() throws Exception {
+        // Generate an access token to access resources
+        final String ACCESS_TOKEN = jwtUtilities.generateToken("admin.hr@saham.com", List.of("ADMIN"));
         NewEmployeeProfessionalDetailsDto professionalDetailsDto = new NewEmployeeProfessionalDetailsDto(
                 "SDT123456D",
                 "Software Engineer",

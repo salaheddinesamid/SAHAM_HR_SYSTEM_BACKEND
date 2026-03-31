@@ -57,7 +57,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/leaves/cancel").hasAuthority("HR")
                         // Employee Controller endpoints authorization configuration
                         .requestMatchers("/api/v1/employees/new").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/employees/update/**").hasAuthority("EMPLOYEE")
+                        .requestMatchers("/api/v1/employees/update/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
                         .requestMatchers("/api/v1/employees/update/profile-picture").hasAuthority("EMPLOYEE")
                         .requestMatchers("/api/v1/employees/get_all").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/employees/balances/get_all").hasAuthority("ADMIN")
