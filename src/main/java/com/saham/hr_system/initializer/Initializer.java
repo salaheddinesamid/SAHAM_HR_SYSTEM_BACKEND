@@ -68,6 +68,12 @@ public class Initializer implements CommandLineRunner {
         Employee admin = new Employee();
         Role adminRole  = roleRepository.findByRoleName("ADMIN")
                         .orElseThrow();
+        Role hr = roleRepository.findByRoleName("HR")
+                .orElseThrow();
+        Role employeeRole = roleRepository.findByRoleName("EMPLOYEE")
+                .orElseThrow();
+        Role managerRole = roleRepository.findByRoleName("MANAGER")
+                .orElseThrow();
         if(!employeeRepository.existsByEmail("admin.hr@saham.com")){
             // Professional Details:
             EmployeeProfessionalDetails adminProfessionalDetails = new EmployeeProfessionalDetails();
@@ -79,7 +85,7 @@ public class Initializer implements CommandLineRunner {
             admin.setCIN("");
             admin.setEmail("admin.hr@saham.com");
             admin.setPassword(passwordEncoder.encode("admin2025"));
-            admin.setRoles(List.of(adminRole));
+            admin.setRoles(List.of(adminRole, hr, employeeRole, managerRole));
             admin.setStatus(EmployeeStatus.AVAILABLE);
             admin.setAccountLocked(false);
             EmployeeProfessionalDetails savedProfessionalDetails = employeeProfessionalDetailsRepository.save(adminProfessionalDetails);
