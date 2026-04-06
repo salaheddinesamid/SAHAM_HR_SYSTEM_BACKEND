@@ -16,5 +16,7 @@ public class AbsenceAnalyticsDto {
     private long totalRejectedAbsences;
     private long totalPendingAbsenceRequests;
     private long totalAbsenceRequests;
+    private long totalRemoteWorkAbsenceRequests;
+    private long totalSicknessAbsenceRequests;
     private double absenceDaysRate;
 }

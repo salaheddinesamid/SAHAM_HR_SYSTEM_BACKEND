@@ -6,8 +6,6 @@ import com.saham.hr_system.modules.absence.repo.AbsenceRepository;
 import com.saham.hr_system.modules.absence.repo.AbsenceRequestRepo;
 import com.saham.hr_system.modules.analytics.dto.AbsenceAnalyticsDto;
 import com.saham.hr_system.modules.analytics.service.AbsenceAnalyticsService;
-import com.saham.hr_system.modules.leave.model.Leave;
-import com.saham.hr_system.modules.leave.model.LeaveRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +79,8 @@ public class AbsenceAnalyticsServiceImpl implements AbsenceAnalyticsService {
                 totalRejectedAbsences,
                 totalPendingAbsences,
                 totalRequests,
+                totalRemoteWorkLeaveRequests,
+                totalSicknessLeaveRequests,
                 absenceDaysRate
         );
     }
