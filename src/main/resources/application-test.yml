@@ -1,20 +1,27 @@
 spring:
+  application:
+    name: hr-system-test
+  # Database Configuration for Testing
   datasource:
     url: jdbc:mysql://localhost:3306/saham_hr_db_test
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: medjool
-
   jpa:
     hibernate:
       ddl-auto: update
-
   main:
     allow-bean-definition-overriding: true
 file:
   upload:
     medical-certificates: src/main/resources/folders
     payrolls: src/main/resources/payrolls
+
+outlook:
+  tenant-id: ${TENANT_ID}
+  client-id: ${CLIENT_ID}
+  client-secret: ${EMAIL_SECRET_KEY}
+  user-email: ${USER_EMAIL}
 
 secret:
   key: df84a374e250a1b5b665d42f15be06038c3a5930e8794790929863a11e980553
