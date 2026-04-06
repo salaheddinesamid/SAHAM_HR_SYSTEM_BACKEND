@@ -16,6 +16,7 @@ file:
   upload:
     medical-certificates: src/main/resources/folders
     payrolls: src/main/resources/payrolls
+    profile-pictures: src/main/resources/profile-pictures
 
 outlook:
   tenant-id: ${TENANT_ID}
