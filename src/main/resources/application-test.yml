@@ -25,3 +25,6 @@ outlook:
 
 secret:
   key: df84a374e250a1b5b665d42f15be06038c3a5930e8794790929863a11e980553
+
+frontend:
+    url: http://localhost:3000
