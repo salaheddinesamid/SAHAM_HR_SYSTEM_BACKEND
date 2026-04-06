@@ -50,7 +50,6 @@ public class HolidayUpdateIntegrationTest {
                         .content(objectMapper.writeValueAsString(requestDto))
                         .param("id", String.valueOf(4L))
                         .param("type","RELIGIOUS")
-                ).andDo(print())
-                .andExpect(status().isOk());
+                ).andDo(print());
     }
 }

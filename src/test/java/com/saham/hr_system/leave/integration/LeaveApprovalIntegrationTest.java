@@ -101,7 +101,7 @@ public class LeaveApprovalIntegrationTest {
 
     @Test
     void testApproveLeave() throws Exception {
-        String token = jwtUtilities.generateToken("salaheddine.samid@saham.com", List.of("MANAGER", "HR"));
+        String token = jwtUtilities.generateToken("admin.hr@saham.com", List.of("EMPLOYEE", "HR"));
         // Randomly fetch a leave request from the database that is pending approval and belongs to a subordinate of the manager.
         List<LeaveRequest> leaveRequests = leaveRequestRepository
                 .findAllByStatus(LeaveRequestStatus.IN_PROCESS);

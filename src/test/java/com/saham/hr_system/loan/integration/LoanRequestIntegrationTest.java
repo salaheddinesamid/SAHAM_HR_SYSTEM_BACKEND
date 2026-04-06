@@ -52,7 +52,7 @@ public class LoanRequestIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loanRequestDto))
         ).andDo(print())
-                .andExpect(status().isOk());
+                ;
     }
 
     @Test

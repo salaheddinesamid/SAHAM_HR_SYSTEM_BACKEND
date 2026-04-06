@@ -33,7 +33,7 @@ public class LeaveRequestIntegrationTest {
 
     @Test
     void testApplyLeaveRequest() throws Exception {
-        String token = jwtUtilities.generateToken("salaheddine.samid@saham.com", List.of("EMPLOYEE"));
+        String token = jwtUtilities.generateToken("admin.hr@saham.com", List.of("EMPLOYEE", "ADMIN"));
         // Mock the DTO
         LeaveRequestDto leaveRequestDto = new LeaveRequestDto(
                 LocalDate.of(2026, 4, 10),
@@ -45,7 +45,7 @@ public class LeaveRequestIntegrationTest {
         mockMvc.perform(
                 post("/api/v1/leaves/apply")
                         .header("Authorization", "Bearer " + token)
-                        .param("email", "salaheddine.samid@saham.com")
+                        .param("email", "admin.hr@saham.com")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(leaveRequestDto))
         ).andExpect(status().isOk());
@@ -53,7 +53,7 @@ public class LeaveRequestIntegrationTest {
 
     @Test
     void testApplyLeaveRequestMissingFieldsOrInvalidDates() throws Exception {
-        String token = jwtUtilities.generateToken("salaheddine.samid@saham.com", List.of("EMPLOYEE"));
+        String token = jwtUtilities.generateToken("admin.hr@saham.com", List.of("EMPLOYEE"));
         // Mock the DTO
         LeaveRequestDto leaveRequestDto = new LeaveRequestDto(
                 LocalDate.of(2026, 7, 10),
@@ -65,7 +65,7 @@ public class LeaveRequestIntegrationTest {
         mockMvc.perform(
                 post("/api/v1/leaves/apply")
                         .header("Authorization", "Bearer " + token)
-                        .param("email", "salaheddine@saham.com")
+                        .param("email", "admin.hr@saham.com")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(leaveRequestDto))
         ).andExpect(status().isBadRequest());
